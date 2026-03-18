@@ -1,0 +1,357 @@
+/* Order Status Overlay & Row Styling */
+
+.order-row-batal {
+    background-color: #f5365c !important; /* Vibrant Argon Red */
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.order-row-batal:hover {
+    background-color: #ec0c38 !important; /* Slightly deeper red for hover */
+}
+
+.order-row-batal td, 
+.order-row-batal th,
+.order-row-batal h4,
+.order-row-batal .text-dark,
+.order-row-batal strong,
+.order-row-batal span:not(.badge),
+.order-row-batal i:not(.fab):not(.fa-whatsapp),
+.order-row-batal .font-weight-bold.text-primary,
+.order-row-batal .text-success {
+    color: #ffffff !important;
+}
+
+.order-row-batal .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Specific adjustments for badges in dark red row */
+.order-row-batal .badge-pill {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.order-row-batal .badge-danger,
+.order-row-batal .badge-warning {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.order-row-batal .badge i {
+    color: #ffffff !important;
+}
+
+.order-row-diambil {
+    background-color: #172b4d !important; /* Back to Dark Blue */
+    transition: all 0.3s ease;
+    border-left: 5px solid #5e72e4 !important;
+}
+
+.order-row-diambil:hover {
+    background-color: #0d1e3a !important;
+}
+
+.order-row-diambil td, 
+.order-row-diambil th,
+.order-row-diambil h4,
+.order-row-diambil .text-dark,
+.order-row-diambil strong,
+.order-row-diambil span:not(.badge),
+.order-row-diambil i:not(.fab):not(.fa-whatsapp),
+.order-row-diambil .font-weight-bold.text-primary,
+.order-row-diambil .text-success {
+    color: #ffffff !important;
+}
+
+.order-row-diambil .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Specific adjustments for badges in dark row */
+.order-row-diambil .badge-pill {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.order-row-diambil .badge-success,
+.order-row-diambil .badge-info,
+.order-row-diambil .badge-default {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Ensure icons inside badges are white */
+.order-row-diambil .badge i {
+    color: #ffffff !important;
+}
+
+/* Status Button inside row */
+.order-row-diambil .bg-default,
+.order-row-batal .bg-danger {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+/* Status Stamp Overlay */
+.status-stamp-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.status-stamp {
+    position: absolute;
+    top: 50%;
+    right: 15%;
+    transform: translateY(-50%) rotate(-15deg);
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    pointer-events: none;
+    opacity: 0.35; /* Increased opacity for better visibility */
+    z-index: 0;
+    border: 6px solid;
+    padding: 5px 20px;
+    border-radius: 12px;
+    letter-spacing: 3px;
+}
+
+.status-stamp-batal {
+    color: #f5365c;
+    border-color: #f5365c;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.status-stamp-diambil {
+    color: #ffffff;
+    border-color: #ffffff;
+    opacity: 0.15 !important;
+}
+
+.order-row-batal td, 
+.order-row-batal th,
+.order-row-diambil td,
+.order-row-diambil th {
+    position: relative;
+    z-index: 1; /* Content above stamp */
+}
+
+/* Base styles inherited from general rules above */
+.order-row-batal td, 
+.order-row-batal th {
+    vertical-align: middle;
+}
+
+.order-row-batal .font-weight-bold.text-primary {
+    color: #ffffff !important;
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+/* Subtle Status Silhouettes */
+.order-row-cuci {
+    background-color: rgba(94, 114, 228, 0.04) !important;
+    border-left: 4px solid #5e72e4 !important;
+}
+
+.order-row-setrika {
+    background-color: rgba(251, 99, 64, 0.04) !important;
+    border-left: 4px solid #fb6340 !important;
+}
+
+.order-row-selesai {
+    background-color: rgba(45, 206, 137, 0.04) !important;
+    border-left: 4px solid #2dce89 !important;
+}
+
+/* Row-based Status Icons */
+.row-status-icon {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 0.65rem;
+    opacity: 0.4;
+    z-index: 1;
+}
+
+.order-row-cuci .row-status-icon { color: #5e72e4; }
+.order-row-setrika .row-status-icon { color: #fb6340; }
+.order-row-selesai .row-status-icon { color: #2dce89; }
+
+/* Responsive Compact Improvements for MD and below */
+@media (max-width: 991.98px) {
+    .sidebar-new ~ .main-content .table td,
+    .sidebar-new ~ .main-content .table th {
+        padding: 0.4rem 0.2rem !important;
+        font-size: 0.75rem !important;
+        letter-spacing: -0.2px;
+    }
+
+    /* Shrink the Pesanan column width */
+    .table .w-25 {
+        width: 15% !important;
+        min-width: 120px;
+    }
+
+    /* Stack buttons in Customer column */
+    .order-row-batal .btn-sm,
+    .order-row-diambil .btn-sm,
+    .table .btn-sm {
+        padding: 0.15rem 0.4rem !important;
+        font-size: 0.65rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    /* Smaller Status badges in CheckStatus */
+    .order-row-batal h4, 
+    .order-row-diambil h4,
+    .table h4 {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.75rem !important;
+        display: inline-block !important;
+        width: auto !important;
+    }
+
+    .status-stamp {
+        font-size: 1.2rem !important;
+        padding: 1px 8px !important;
+        right: 2% !important;
+        opacity: 0.2 !important;
+    }
+
+    /* Adjust Action Column width */
+    .table td:last-child {
+        width: 80px !important;
+        min-width: 80px !important;
+    }
+
+    /* Flex wrap for badges to prevent overflow */
+    .d-flex.flex-wrap {
+        gap: 2px !important;
+    }
+
+    .badge-pill {
+        margin: 1px !important;
+        padding: 0.15rem 0.35rem !important;
+    }
+
+    /* Compact icons */
+    .table i {
+        margin-right: 2px !important;
+    }
+
+    /* Force table to fit */
+    .table-responsive {
+        margin-bottom: 0 !important;
+        overflow-x: hidden !important; /* Try to fit content */
+    }
+}
+
+/* Modal Themes */
+.modal-theme-batal .modal-content,
+.modal-theme-batal .glass-modal-content {
+    background: #f5365c !important; /* Vibrant Red */
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.modal-theme-batal .modal-header {
+    background: #f5365c !important;
+    border-bottom: none !important;
+    color: #ffffff !important;
+}
+
+.modal-theme-batal .modal-footer {
+    border-top: none !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.modal-theme-batal .modal-title,
+.modal-theme-batal .close,
+.modal-theme-batal p,
+.modal-theme-batal h4,
+.modal-theme-batal span,
+.modal-theme-batal div:not(.badge),
+.modal-theme-batal .text-success-light,
+.modal-theme-batal .text-warning-light,
+.modal-theme-batal .opacity-6,
+.modal-theme-batal .text-white-50 {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.modal-theme-diambil .modal-content,
+.modal-theme-diambil .glass-modal-content {
+    background: #172b4d !important; /* Solid Dark Blue */
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.modal-theme-diambil .modal-header {
+    background: #172b4d !important;
+    border-bottom: none !important;
+    color: #ffffff !important;
+}
+
+.modal-theme-diambil .modal-footer {
+    border-top: none !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.modal-theme-diambil .modal-title,
+.modal-theme-diambil .close,
+.modal-theme-diambil p,
+.modal-theme-diambil h4,
+.modal-theme-diambil span,
+.modal-theme-diambil div,
+.modal-theme-diambil h1,
+.modal-theme-diambil h2,
+.modal-theme-diambil h3,
+.modal-theme-diambil h5,
+.modal-theme-diambil h6,
+.modal-theme-diambil .text-success-light,
+.modal-theme-diambil .text-warning-light,
+.modal-theme-diambil .opacity-6,
+.modal-theme-diambil .text-white-50,
+.modal-theme-diambil .font-weight-bold {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Force all descendants of themed modal body to be white unless they are badges or buttons */
+.modal-theme-batal .modal-body *,
+.modal-theme-diambil .modal-body *:not(.badge):not(.btn) {
+    color: #ffffff !important;
+}
+
+/* Specific fix for RupiahFormatter and inner texts */
+.modal-theme-batal .modal-body div, 
+.modal-theme-diambil .modal-body div {
+    color: #ffffff !important;
+}
+
+/* Shared Modal Element Adjustments */
+.modal-theme-batal .bg-white-10,
+.modal-theme-diambil .bg-white-10 {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: none !important;
+}
+
+.modal-theme-batal .border-bottom-white-05,
+.modal-theme-diambil .border-bottom-white-05 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-theme-batal .btn-secondary,
+.modal-theme-diambil .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+.modal-theme-batal .btn-secondary:hover,
+.modal-theme-diambil .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+}

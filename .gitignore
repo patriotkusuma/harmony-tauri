@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+src-tauri/target
+.env
+.vscode
+*.log
+package-lock.json
+pnpm-lock.yaml

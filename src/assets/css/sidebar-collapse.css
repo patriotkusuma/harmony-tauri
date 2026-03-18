@@ -1,0 +1,91 @@
+/* Sidebar Collapse Styles */
+.navbar-vertical {
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  /* Collapsed State */
+  .navbar-vertical.navbar-collapsed {
+    width: 80px !important;
+    max-width: 80px !important;
+    overflow: visible !important;
+    z-index: 1050 !important; /* Pastikan sidebar yang tertutup tetap di depan */
+  }
+
+  /* Logo adjustment */
+  .navbar-vertical.navbar-collapsed .navbar-brand {
+    padding: 1rem 0;
+    margin-right: 0;
+    text-align: center;
+  }
+  
+  .navbar-vertical.navbar-collapsed .navbar-brand-img {
+    max-height: 40px; /* Kembali ke ukuran semula */
+  }
+
+  /* Hide elements */
+  .navbar-vertical.navbar-collapsed .nav-link span,
+  .navbar-vertical.navbar-collapsed hr,
+  .navbar-vertical.navbar-collapsed .navbar-heading {
+    display: none;
+  }
+  
+  /* Link adjustments */
+  .navbar-vertical.navbar-collapsed .nav-link {
+      text-align: center;
+      padding: 0.8rem 0;
+      justify-content: center;
+  }
+
+  .navbar-vertical.navbar-collapsed .nav-link i {
+    margin-right: 0 !important;
+    font-size: 1.2rem;
+    width: 100%;
+  }
+
+  /* Main content adjustment */
+  .main-content {
+    transition: margin-left 0.3s ease;
+  }
+  
+  .main-content-collapsed {
+    margin-left: 80px !important;
+  }
+}
+
+/* Toggle Button Style */
+.sidebar-toggle-btn {
+    position: absolute;
+    right: -14px; 
+    top: 30px;
+    z-index: 999999 !important; /* Z-index ekstrem agar selalu di depan */
+    background: #5e72e4; 
+    border: 2px solid #fff; 
+    border-radius: 50%;
+    width: 28px; 
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    color: #fff;
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    transform: scale(1.1);
+    background: #324cdd;
+}
+
+.dark-mode .sidebar-toggle-btn {
+    background: #11cdef; /* Info color for dark mode */
+}
+
+/* Sidebar Tooltip-like behavior on hover could be added here if needed */
+
+/* Drag & Drop full-page overlay animation */
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

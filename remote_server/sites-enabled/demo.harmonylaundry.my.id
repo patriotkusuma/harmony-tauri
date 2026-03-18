@@ -1,0 +1,59 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name demo.harmonylaundry.my.id;
+    location /.well-known/acme-challenge {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real_IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr:$remote_port;
+        proxy_pass http://127.0.0.1:9180;
+    }
+}
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    server_name demo.harmonylaundry.my.id;
+    ssl_certificate /etc/nginx/ssl/demo.harmonylaundry.my.id_2048/fullchain.cer;
+    ssl_certificate_key /etc/nginx/ssl/demo.harmonylaundry.my.id_2048/private.key;
+
+    
+     # === Headers Keamanan Umum ===
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+  
+    # === Root Aplikasi Laravel ===
+    root /home/patriot/harmony/public/;
+    index index.php;
+    
+    location ^~ /build/ {
+        add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0";
+        try_files $uri $uri/ =404;
+    }
+
+
+    # === Aturan untuk Laravel Routing (Pastikan ini ada dan berfungsi) ===
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # === Konfigurasi PHP-FPM ===
+    location ~ ^/index\.php(/|$) {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_buffers 16 16k; # Bisa bantu dengan buffering PHP
+        fastcgi_buffer_size 32k;
+    }
+
+   
+    # === Lokasi File Statis Lainnya ===
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    # Error pages
+    error_page 404 /index.php;
+
+  
+}

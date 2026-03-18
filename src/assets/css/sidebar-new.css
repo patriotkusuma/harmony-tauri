@@ -1,0 +1,182 @@
+/* Sidebar New Design - Premium & Modern */
+:root {
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #172b4d;
+  --sidebar-heading: #8898aa;
+  --sidebar-active-bg: #f6f9fc;
+  --sidebar-active-text: #5e72e4;
+  --pos-bg: #172b4d;
+  --pos-accent: #fb6340;
+}
+
+.dark-mode {
+  --sidebar-bg: #172b4d;
+  --sidebar-text: #ced4da;
+  --sidebar-heading: #adb5bd;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-active-text: #ffffff;
+}
+
+.sidebar-new {
+  box-shadow: 0 0 2rem 0 rgba(0, 0, 0, 0.05) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
+  background-color: var(--sidebar-bg) !important;
+  transition: all 0.3s ease;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important; /* Move content to very top */
+}
+
+.sidebar-new .container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.sidebar-new .navbar-brand {
+  padding-top: 0.5rem !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+  padding-bottom: 0.5rem !important;
+  margin-bottom: 0 !important;
+  height: auto !important;
+  background: var(--sidebar-bg);
+  position: sticky;
+  top: 0;
+  z-index: 101;
+}
+
+/* POS Super Button - Massive Full Width Action - FIXED TOP */
+.pos-wrapper-fixed {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--sidebar-bg);
+  padding-bottom: 0.5rem;
+}
+
+.pos-card-new {
+  margin: 0 0 0.5rem 0 !important; /* Managed by wrapper */
+  padding: 1.75rem 1.5rem !important;
+  background: var(--pos-bg) !important;
+  border-radius: 0 !important; 
+  display: flex !important;
+  align-items: center !important;
+  box-shadow: 0 4px 15px rgba(23, 43, 77, 0.1) !important;
+  border: none !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  width: 100% !important;
+}
+
+.pos-card-new::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--pos-accent);
+}
+
+.pos-card-new:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px rgba(23, 43, 77, 0.3) !important;
+  filter: brightness(1.1);
+}
+
+.pos-card-new .icon-box {
+  background: var(--pos-accent) !important;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 1rem !important;
+}
+
+.pos-card-new i {
+  font-size: 1.5rem !important;
+  color: #fff !important;
+}
+
+.pos-card-new .text-content .title {
+  font-size: 1.2rem !important;
+  font-weight: 850 !important;
+  color: #ffffff !important;
+  letter-spacing: 1px;
+  display: block;
+  text-align: center;
+}
+
+.pos-card-new .text-content .sub {
+  font-size: 0.75rem !important;
+  color: #adb5bd !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+}
+
+/* Navigation Items */
+.nav-link-new {
+  margin: 0.2rem 1rem !important;
+  padding: 0.85rem 1.25rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  color: var(--sidebar-text) !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease;
+  font-size: 0.9rem !important;
+}
+
+.nav-link-new i {
+  font-size: 1.1rem !important;
+  margin-right: 0.75rem !important;
+  width: 25px;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.nav-link-new:hover {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-active-text) !important;
+}
+
+.nav-link-new:hover i {
+  transform: scale(1.1);
+}
+
+.nav-link-new.active {
+  background: var(--sidebar-active-bg) !important;
+  color: var(--sidebar-active-text) !important;
+  box-shadow: 0 4px 12px rgba(94, 114, 228, 0.1) !important;
+}
+
+.nav-link-new.active i {
+  color: var(--sidebar-active-text) !important;
+}
+
+/* Section Headings */
+.heading-new {
+  padding: 1.5rem 1.75rem 0.5rem 1.75rem !important;
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sidebar-heading) !important;
+}
+
+.sidebar-divider-new {
+  margin: 1rem 1.5rem !important;
+  opacity: 0.05;
+}
+
+/* User Section at Bottom */
+.sidebar-user-new {
+  margin-top: auto;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.02);
+}

@@ -1,0 +1,27 @@
+server {
+    server_name harmonylaundry.my.id;
+    listen [::]:443 ssl;
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/ssl/harmonylaundry.my.id_2048/fullchain.cer;
+    ssl_certificate_key /etc/nginx/ssl/harmonylaundry.my.id_2048/private.key;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    location /.well-known/acme-challenge {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real_IP $remote_addr;
+        proxy_set_header X-Forwarded-For $remote_addr:$remote_port;
+        proxy_pass http://127.0.0.1:9180;
+    }
+    location / {
+        return 301 https://harmonylaundrys.com;
+    }
+}
+server {
+    if ($host = harmonylaundry.my.id) {
+        return 301 https://$host$request_uri;
+    }
+    server_name harmonylaundry.my.id;
+    listen 80;
+    listen [::]:80;
+    return 404;
+}

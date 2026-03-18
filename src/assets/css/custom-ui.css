@@ -1,0 +1,346 @@
+@charset "UTF-8";
+
+/* =========================================================
+   Custom UI Overrides (Glassmorphism & Theming)
+   ========================================================= */
+
+/* Glassmodal Content Base */
+.glass-modal-content {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15) !important;
+}
+
+/* Light Mode Modal Text */
+.glass-modal-content .modal-title,
+.glass-modal-content h4,
+.glass-modal-content h5,
+.glass-modal-content span,
+.glass-modal-content p,
+.glass-modal-content .close {
+    color: #32325d !important;
+}
+
+.bg-white-10 {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.border-bottom-white-05 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.shadow-inner {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Dark Mode Modal Overrides */
+body.dark-mode .glass-modal-content {
+    background: rgba(30, 41, 59, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .glass-modal-content .modal-title,
+body.dark-mode .glass-modal-content h4,
+body.dark-mode .glass-modal-content h5,
+body.dark-mode .glass-modal-content span,
+body.dark-mode .glass-modal-content p,
+body.dark-mode .glass-modal-content .close {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .bg-white-10 {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .border-bottom-white-05 {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Common Helpers */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.transition-all {
+    transition: all 0.23s ease;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 1rem !important;
+}
+
+body.dark-mode .glass-card {
+    background: rgba(30, 41, 59, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.shadow-premium {
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.12) !important;
+}
+
+.hover-translate-up:hover {
+    transform: translateY(-5px);
+}
+
+.icon-gradient-info {
+    background: linear-gradient(87deg, #11cdef 0, #1171ef 100%) !important;
+}
+
+.icon-gradient-success {
+    background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%) !important;
+}
+
+.icon-gradient-danger {
+    background: linear-gradient(87deg, #f5365c 0, #f56036 100%) !important;
+}
+
+/* Fix Sidebar: enable overflow and redesign scrollbar */
+.navbar-vertical.navbar-expand-md {
+    overflow-y: hidden !important; /* Keep outer container clean */
+}
+
+.navbar-vertical.navbar-expand-md .navbar-collapse {
+    overflow-y: auto !important;
+    max-height: calc(100vh - 100px); /* Leave space for logo/top area */
+    padding-right: 5px;
+}
+
+/* Redesign Scrollbar (Custom Slim Design) */
+.navbar-vertical .navbar-collapse::-webkit-scrollbar {
+    width: 4px;
+}
+
+.navbar-vertical .navbar-collapse::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.navbar-vertical .navbar-collapse::-webkit-scrollbar-thumb {
+    background: rgba(94, 114, 228, 0.2);
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.navbar-vertical .navbar-collapse:hover::-webkit-scrollbar-thumb {
+    background: rgba(94, 114, 228, 0.5);
+}
+
+/* Firefox Support */
+.navbar-vertical .navbar-collapse {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(94, 114, 228, 0.2) transparent;
+}
+
+/* Position Sidebar Toggle at the Top Right of Sidebar */
+.sidebar-toggle-btn {
+    position: absolute;
+    top: 15px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    background: #5e72e4;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1050;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    transform: scale(1.1);
+    background: #32325d;
+}
+
+/* Global Text contrast improvements */
+.text-dark {
+    color: #172b4d !important; /* Argon's default-darker */
+}
+
+h1.text-dark, h2.text-dark, h3.text-dark, h4.text-dark, h5.text-dark, h6.text-dark {
+    color: #000000 !important;
+}
+
+.text-muted {
+    color: #525f7f !important; /* Darker than default muted for better readability */
+}
+
+.opacity-7 {
+    opacity: 0.85 !important; /* Increase opacity for better visibility */
+}
+
+.opacity-8 {
+    opacity: 0.9 !important;
+}
+
+/* Dark mode contrast preservation */
+body.dark-mode .text-dark {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .text-muted {
+    color: #cbd5e1 !important;
+}
+
+/* =========================================================
+   Tauri / Webview UX Fixes (Inputs & Dropdowns)
+   ========================================================= */
+
+/* Remove Spin Buttons from Number Inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Improve Select / Dropdown Appearance for Tauri */
+select.form-control-alternative {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2332325d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px 10px;
+    padding-right: 2.5rem !important;
+    color: #32325d !important;
+    background-color: #ffffff !important;
+    border-radius: 10px !important;
+}
+
+/* Explicitly style options for light mode */
+select.form-control-alternative option {
+    background-color: #ffffff !important;
+    color: #32325d !important;
+    padding: 10px;
+}
+
+body.dark-mode select.form-control-alternative {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f1f5f9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+}
+
+body.dark-mode select.form-control-alternative option {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+/* Premium Focus States */
+.form-control:focus, 
+.form-control-alternative:focus {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05), 0 1px 11px 0 rgba(94, 114, 228, 0.1) !important;
+    border-color: #5e72e4 !important;
+    outline: none !important;
+}
+
+body.dark-mode .form-control:focus, 
+body.dark-mode .form-control-alternative:focus {
+    border-color: #8fa4ff !important;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 1px 11px 0 rgba(143, 164, 255, 0.2) !important;
+}
+
+/* Transition for all inputs */
+.form-control, .form-control-alternative {
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Fix for Datetime Input in Tauri/Webview2 */
+input[type="datetime-local"],
+input[type="date"] {
+    position: relative;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.5);
+    transition: filter 0.2s;
+}
+
+input[type="datetime-local"]:hover::-webkit-calendar-picker-indicator,
+input[type="date"]:hover::-webkit-calendar-picker-indicator {
+    filter: invert(0.3);
+}
+
+body.dark-mode input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* =========================================================
+   Desktop App Feel (Selection & Interaction)
+   ========================================================= */
+
+/* Prevent text selection on UI components for a native app feel */
+.btn, .nav-link, .dropdown-item, .card-header, .navbar, .badge, .sidebar-toggle-btn {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Fix Input Backgrounds for consistency */
+.form-control, .form-control-alternative {
+    background-color: #ffffff !important;
+}
+
+body.dark-mode .form-control, 
+body.dark-mode .form-control-alternative {
+    background-color: #0f172a !important; /* Slightly darker than panel for contrast */
+    color: #f1f5f9 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Improved placeholder visibility */
+::placeholder {
+    color: #adb5bd !important;
+    opacity: 0.7 !important;
+}
+
+body.dark-mode ::placeholder {
+    color: #64748b !important;
+}
+
+/* Global focus override - get rid of browser defaults */
+*:focus {
+    outline: none !important;
+}
+
+/* Fix for Select elements in Argon Dashboard Select Groups */
+.input-group-alternative .form-control {
+    border: 0;
+    box-shadow: none !important;
+}
+
+.input-group-alternative {
+    transition: box-shadow .15s ease;
+    border: 0;
+    box-shadow: 0 1px 3px rgba(50, 50, 93, .15), 0 1px 0 rgba(0, 0, 0, .02);
+}
+
+.input-group-alternative:focus-within {
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+/* Fix text contrast in help blocks / small text */
+.form-text, .help-block {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    color: #8898aa;
+}
+
+body.dark-mode .form-text {
+    color: #94a3b8;
+}

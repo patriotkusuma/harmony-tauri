@@ -1,0 +1,549 @@
+/* Dashboard Custom UI */
+
+.dashboard-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dashboard-row {
+  transition: all 0.2s ease;
+}
+
+.dashboard-row:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-urgent {
+  box-shadow: 0 0 0.75rem rgba(245, 54, 92, 0.4);
+}
+
+/* ===== ORDER LOG TIMELINE ===== */
+
+.order-log-timeline {
+  padding-left: 8px;
+}
+
+.order-log-item {
+  position: relative;
+}
+
+.order-log-left {
+  position: relative;
+  margin-right: 16px;
+}
+
+.order-log-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.order-log-line {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  width: 2px;
+  height: calc(100% - 32px);
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateX(-50%);
+}
+
+.order-log-content {
+  flex: 1;
+  font-size: 0.85rem;
+}
+
+/* ================= DARK MODE ================= */
+.dark-mode {
+  background-color: #0f1218;
+  color: #e5e7eb;
+}
+
+/* ===== CARD ===== */
+.dark-mode .card {
+  background-color: #161b22;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode .card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .card-body {
+  background-color: transparent;
+}
+
+/* ===== TEXT ===== */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: #f1f5f9;
+}
+
+.dark-mode .text-muted {
+  color: #9ca3af !important;
+}
+
+/* ===== TABLE ===== */
+.dark-mode table {
+  color: #e5e7eb;
+}
+
+.dark-mode thead {
+  background-color: #1f2933;
+}
+
+.dark-mode tbody tr {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ===== BADGE ===== */
+.dark-mode .badge-secondary {
+  background-color: #374151;
+}
+
+.dark-mode .badge-light {
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+/* ===== ORDER LOG TIMELINE ===== */
+.dark-mode .order-log-content {
+  color: #d1d5db;
+}
+
+.dark-mode .order-log-line {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ===== WORKBOARD ===== */
+.dark-mode .work-item {
+  background: #161b22;
+}
+
+.dark-mode .work-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .work-item-top {
+  background: linear-gradient(90deg,
+      rgba(245, 54, 92, 0.25),
+      rgba(22, 27, 34, 1));
+}
+
+.dark-mode .bg-gradient-info {
+  background: linear-gradient(87deg, #1e293b 0, #020617 100%) !important;
+}
+
+.dark-mode .bg-gradient-default {
+  background: linear-gradient(87deg, #111827 0, #020617 100%) !important;
+}
+
+/* ================= CARD DARK POLISH ================= */
+
+.dark-mode .card {
+  background: linear-gradient(180deg,
+      #161b22 0%,
+      #0f141b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+/* Header lebih subtle */
+.dark-mode .card-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ================= LIST ITEM ================= */
+
+.dashboard-list-item {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  padding: 14px 16px;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.dashboard-list-item+.dashboard-list-item {
+  margin-top: 10px;
+}
+
+.dashboard-list-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+/* ================= STATUS CHIP ================= */
+
+.status-chip {
+  font-size: 0.65rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.status-chip.setrika {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+/* ================= TIME ================= */
+
+.item-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.item-dot {
+  width: 8px;
+  height: 8px;
+  background: #fb7185;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.dark-mode .card-body {
+  background: transparent;
+  color: #e5e7eb;
+}
+
+.dark-mode .card-footer {
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #9ca3af;
+}
+
+.dark-mode .card {
+  background: linear-gradient(180deg,
+      #161b22 0%,
+      #0f141b 100%);
+}
+
+.dark-mode .card-body>.dashboard-list-item {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+// .dark-mode .container,
+// .dark-mode .container-fluid,
+// .dark-mode .content,
+// .dark-mode .main-content {
+//   background-color: #0f1218 !important;
+// }
+.dark-mode .row {
+  background: transparent;
+}
+
+.dark-mode .card-body,
+.dark-mode .paket-card-body {
+  background: transparent !important;
+}
+
+.dark-mode .paket-card,
+.dark-mode .product-card,
+.dark-mode .laundry-card,
+.dark-mode .card-custom {
+  background: linear-gradient(180deg,
+      #161b22 0%,
+      #0f141b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #e5e7eb;
+}
+
+.dark-mode input,
+.dark-mode .form-control {
+  background-color: #111827;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #e5e7eb;
+}
+
+.dark-mode input::placeholder {
+  color: #9ca3af;
+}
+
+.dark-mode .btn {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .btn-light {
+  background-color: #1f2933;
+  color: #e5e7eb;
+}
+
+.dark-mode .bg-secondary {
+  background-color: #1f2933 !important;
+}
+
+.dark-mode .text-secondary {
+  color: #9ca3af !important;
+}
+
+.dark-mode .badge-secondary {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dark-mode .btn-secondary {
+  background-color: #1f2933;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+}
+
+.dark-mode .btn-secondary:hover {
+  background-color: #273449;
+}
+
+.dark-mode .list-group-item-secondary {
+  background-color: #1f2933;
+  color: #e5e7eb;
+}
+
+:root {
+  --dark-secondary-bg: #1f2933;
+  --dark-secondary-text: #9ca3af;
+}
+
+.dark-mode .bg-secondary {
+  background-color: var(--dark-secondary-bg) !important;
+}
+
+.dark-mode .text-secondary {
+  color: var(--dark-secondary-text) !important;
+}
+
+.dark-mode .modal-content {
+  background: linear-gradient(180deg,
+      #161b22 0%,
+      #0f141b 100%);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.dark-mode .modal-content {
+  background: linear-gradient(180deg,
+      #161b22 0%,
+      #0f141b 100%);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.dark-mode .modal-content {
+  background: linear-gradient(180deg,
+      #161b22 0%,
+      #0f141b 100%);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.modal-backdrop.show {
+  opacity: 0.75;
+}
+
+.dark-mode .modal-backdrop {
+  background-color: #020617;
+}
+
+.dark-mode .list-group {
+  background: transparent;
+}
+
+.dark-mode .list-group-item {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dark-mode .list-group-item-action:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+}
+
+.dark-mode .list-group-item.active {
+  background-color: rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #fff;
+}
+
+.dark-mode .list-group-item-secondary {
+  background-color: #1f2933;
+  color: #e5e7eb;
+}
+
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SOFT CONTRAST MODE — untuk monitor lama / layar sensitif
+   Toggle via class `.low-contrast` di <body>
+   ═══════════════════════════════════════════════════════════ */
+
+/*
+   Pendekatan paling bersih: 1 filter di level html.
+   Jangan override per-elemen — hasilnya konflik dan aneh.
+   filter: saturate turunkan ketajaman warna,
+           contrast turunkan gap terang-gelap,
+           brightness sedikit turun supaya tidak silau.
+*/
+html:has(body.low-contrast) {
+  filter: saturate(0.78) contrast(0.90) brightness(0.95);
+}
+
+/* Fallback untuk browser tanpa :has() support */
+body.low-contrast {
+  filter: saturate(0.78) contrast(0.90) brightness(0.95);
+}
+
+/* combined dark + low-contrast */
+body.dark-mode.low-contrast {
+  filter: saturate(0.72) contrast(0.86) brightness(0.88);
+}
+
+
+.dark-mode .bg-white {
+  background-color: var(--dark-secondary-bg) !important;
+}
+
+.dark-mode .bg-light {
+  background-color: var(--dark-secondary-bg) !important;
+}
+
+.dark-mode .text-dark {
+  color: var(--dark-secondary-text) !important;
+}
+
+.dark-mode .navbar-collapse {
+  background-color: #1f2937 !important;
+}
+
+.dark-mode .dropdown-item {
+  color: var(--dark-secondary-text);
+}
+
+.dark-mode .navbar-toggler .navbar-toggler-icon {
+  color: var(--dark-secondary-text);
+}
+
+.dark-mode .navbar-light .navbar-toggler-icon {
+  color: var(--dark-secondary-text);
+}
+
+/* ─── TipTap Editor ─────────────────────────────────────── */
+.tiptap-editor-container {
+  position: relative;
+  overflow: visible !important;
+
+  .tiptap-inner {
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+
+  .ProseMirror {
+    outline: none;
+    flex-grow: 1;
+    width: 100%;
+    word-break: break-word;
+    white-space: pre-wrap;
+
+    a {
+      color: #5e72e4;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    blockquote {
+      border-left: 3px solid #dee2e6;
+      padding-left: 1rem;
+      color: #6c757d;
+      margin: 0.5rem 0;
+    }
+
+    code {
+      background: rgba(27, 31, 35, 0.1);
+      border-radius: 3px;
+      padding: 2px 5px;
+      font-size: 0.88em;
+      font-family: monospace;
+    }
+  }
+}
+
+/* Bubble menu z-index agar tidak tertimpa modal */
+.tippy-box {
+  z-index: 9999 !important;
+}
+
+/* Dark mode editor */
+.dark-mode .tiptap-editor-container {
+  background: #111827;
+  border-color: rgba(255, 255, 255, 0.08);
+
+  >div:first-child {
+    background: #1f2933 !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+
+    button {
+      color: #9ca3af !important;
+
+      &:hover {
+        color: #f1f5f9 !important;
+      }
+    }
+  }
+
+  .ProseMirror {
+    color: #e5e7eb;
+
+    a {
+      color: #818cf8;
+    }
+  }
+}
+
+.tiptap-editor-container .ProseMirror {
+  outline: none;
+  flex-grow: 1;
+  align-self: stretch;
+  width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  padding: 10px;
+}
+
+.hover-elevate {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-elevate:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}

@@ -1,5 +1,5 @@
 // Local docs variables
-$ct-primary:        theme-color("primary") !default;
+$ct-primary:        $primary !default;
 $ct-primary-bright: lighten(saturate($ct-primary, 5%), 15%) !default;
 $ct-primary-light:  rgba(255, 255, 255, .9) !default;
 $ct-dark:          	#2a2730 !default;

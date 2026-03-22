@@ -13,7 +13,7 @@
 
         &:checked {
              + .custom-toggle-slider {
-                border: $custom-control-indicator-border-width solid $custom-control-indicator-checked-border-color;
+                border: $form-check-indicator-border-width solid $form-check-indicator-checked-border-color;
 
                 &:before {
                     background: $custom-toggle-checked-bg;
@@ -24,15 +24,15 @@
 
         &:disabled {
             + .custom-toggle-slider {
-                border: $custom-control-indicator-border-width solid $custom-control-indicator-disabled-bg;
+                border: $form-check-indicator-border-width solid $form-check-indicator-disabled-bg;
             }
 
             &:checked {
                 + .custom-toggle-slider {
-                    border: $custom-control-indicator-border-width solid $custom-control-indicator-disabled-bg;
+                    border: $form-check-indicator-border-width solid $form-check-indicator-disabled-bg;
 
                     &:before {
-                        background-color: lighten($custom-control-indicator-checked-bg, 10%);
+                        background-color: lighten($form-check-indicator-checked-bg, 10%);
                     }
                 }
             }
@@ -47,7 +47,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border: $custom-control-indicator-border-width solid $input-border-color;
+    border: $form-check-indicator-border-width solid $input-border-color;
     border-radius: 34px !important;
     background-color: transparent;
 

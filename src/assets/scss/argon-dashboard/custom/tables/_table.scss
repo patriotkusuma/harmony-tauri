@@ -46,7 +46,7 @@
 
    // Styles for dark table
 
-   .thead-dark {
+   .table-dark {
         th {
             background-color: $table-dark-head-bg;
             color: $table-dark-head-color;
@@ -56,7 +56,7 @@
 
     // Styles for light table
 
-    .thead-light {
+    .table-light {
         th {
             background-color: $table-head-bg;
             color: $table-head-color;

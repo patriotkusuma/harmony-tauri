@@ -2,14 +2,14 @@
 // Close
 //
 
-.close {
+.btn-close {
     @if $enable-transitions {
         transition: $transition-base;
     }
     
     &>span:not(.sr-only) {
-        background-color: $close-bg;
-        color: $close-color;
+        background-color: $argon-btn-close-bg;
+        color: $argon-btn-close-color;
         line-height: 17px;
         height: 1.25rem;
         width: 1.25rem;
@@ -23,12 +23,12 @@
 
     &:hover,
     &:focus {
-        background-color: $close-hover-bg;
-        color: $close-hover-color;
+        background-color: $argon-btn-close-hover-bg;
+        color: $argon-btn-close-hover-color;
         outline: none;
 
         span:not(.sr-only) {
-            background-color: $close-hover-bg;
+            background-color: $argon-btn-close-hover-bg;
         }
     }
 }

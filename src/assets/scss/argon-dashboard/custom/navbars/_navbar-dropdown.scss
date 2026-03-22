@@ -40,7 +40,7 @@
                     animation: show-navbar-dropdown .25s ease forwards;
                 }
 
-                &.close {
+                &.btn-close {
                     display: block;
                     animation: hide-navbar-dropdown .15s ease backwards;
                 }

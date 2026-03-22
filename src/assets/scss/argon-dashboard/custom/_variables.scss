@@ -331,8 +331,8 @@ $box-shadow:                  0 0 2rem 0 rgba($gray-600, .15) !default;
 $box-shadow-lg:               0 0 3rem rgba($gray-600, .175) !default;
 
 $component-active-color:        $white !default;
-$component-active-bg:           theme-color("primary") !default;
-$component-active-border-color: theme-color("primary") !default;
+$component-active-bg:           $primary !default;
+$component-active-border-color: $primary !default;
 
 $component-hover-color:        $gray-300 !default;
 $component-hover-bg:           $gray-300 !default;
@@ -466,14 +466,14 @@ $table-head-letter-spacing:   1px !default;
 
 $table-body-font-size:        .8125rem !default;
 
-$table-dark-bg:               theme-color("default") !default;
+$table-dark-bg:               $default !default;
 $table-dark-accent-bg:        rgba($white, .05) !default;
 $table-dark-hover-bg:         rgba($white, .075) !default;
-$table-dark-border-color:     lighten(theme-color("default"), 7%) !default;
+$table-dark-border-color:     lighten($default, 7%) !default;
 $table-dark-color:            $body-bg !default;
 
-$table-dark-head-bg:          lighten(theme-color("default"), 4%) !default;
-$table-dark-head-color:       lighten(theme-color("default"), 35%) !default;
+$table-dark-head-bg:          lighten($default, 4%) !default;
+$table-dark-head-color:       lighten($default, 35%) !default;
 
 // Buttons + Forms
 
@@ -594,50 +594,50 @@ $form-group-margin-bottom:              1.5rem !default;
 
 // Custom forms
 
-$custom-control-gutter:                 1.75rem !default;
-$custom-control-spacer-x:               1rem !default;
-$custom-control-indicator-size:         1.25rem !default;
+$form-check-gutter:                 1.75rem !default;
+$form-check-spacer-x:               1rem !default;
+$form-check-indicator-size:         1.25rem !default;
 
-$custom-control-indicator-bg:                   $input-bg !default;
-$custom-control-indicator-border-width:         1px !default;
-$custom-control-indicator-border-color:         $input-border-color !default;
-$custom-control-indicator-box-shadow:           none !default;
+$form-check-indicator-bg:                   $input-bg !default;
+$form-check-indicator-border-width:         1px !default;
+$form-check-indicator-border-color:         $input-border-color !default;
+$form-check-indicator-box-shadow:           none !default;
 
-$custom-control-indicator-focus-box-shadow:     $custom-control-indicator-box-shadow !default;
+$form-check-indicator-focus-box-shadow:     $form-check-indicator-box-shadow !default;
 
-$custom-control-indicator-hover-color:         $component-hover-color !default;
-$custom-control-indicator-hover-bg:            $component-hover-bg !default;
-$custom-control-indicator-hover-border-color:  $component-hover-border-color !default;
+$form-check-indicator-hover-color:         $component-hover-color !default;
+$form-check-indicator-hover-bg:            $component-hover-bg !default;
+$form-check-indicator-hover-border-color:  $component-hover-border-color !default;
 
-$custom-control-indicator-active-color:         $component-active-color !default;
-$custom-control-indicator-active-bg:            $component-active-bg !default;
-$custom-control-indicator-active-border-color:  $component-active-border-color !default;
-$custom-control-indicator-active-box-shadow:    $custom-control-indicator-box-shadow !default;
+$form-check-indicator-active-color:         $component-active-color !default;
+$form-check-indicator-active-bg:            $component-active-bg !default;
+$form-check-indicator-active-border-color:  $component-active-border-color !default;
+$form-check-indicator-active-box-shadow:    $form-check-indicator-box-shadow !default;
 
-$custom-control-indicator-checked-color:        $component-active-color !default;
-$custom-control-indicator-checked-bg:           $component-active-bg !default;
-$custom-control-indicator-checked-border-color: $component-active-border-color !default;
-$custom-control-indicator-checked-box-shadow:   $custom-control-indicator-box-shadow !default;
-$custom-control-indicator-checked-disabled-bg:  rgba(theme-color("primary"), .5) !default;
+$form-check-indicator-checked-color:        $component-active-color !default;
+$form-check-indicator-checked-bg:           $component-active-bg !default;
+$form-check-indicator-checked-border-color: $component-active-border-color !default;
+$form-check-indicator-checked-box-shadow:   $form-check-indicator-box-shadow !default;
+$form-check-indicator-checked-disabled-bg:  rgba($primary, .5) !default;
 
-$custom-control-indicator-disabled-bg:          $gray-200 !default;
-$custom-control-label-disabled-color:           $gray-600 !default;
+$form-check-indicator-disabled-bg:          $gray-200 !default;
+$form-check-label-disabled-color:           $gray-600 !default;
 
-$custom-checkbox-indicator-border-radius:       $border-radius-sm !default;
-//$custom-checkbox-indicator-icon-checked:        str-replace(url("data:image/svg+xml !default;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E"), "#", "%23") !default;
+$custom-checkbox-indicator-icon-checked: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E") !default;
+$custom-radio-indicator-icon-checked:    url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3E%3Ccircle r='3' fill='%23fff'/%3E%3C/svg%3E") !default;
 
 // Custom toggle
 
 $custom-toggle-width:           50px !default;
 $custom-toggle-slider-bg:       $gray-200 !default;
-$custom-toggle-checked-bg:      theme-color("primary") !default;
+$custom-toggle-checked-bg:      $primary !default;
 
 // Form validation
 
 $form-feedback-valid-bg:         lighten($success, 15%) !default;
-$form-feedback-valid-color:      theme-color("success") !default;
+$form-feedback-valid-color:      $success !default;
 $form-feedback-invalid-bg:       lighten($warning, 15%) !default;
-$form-feedback-invalid-color:    theme-color("warning") !default;
+$form-feedback-invalid-color:    $warning !default;
 
 
 // Allows for customizing button radius independently from global border radius
@@ -676,7 +676,7 @@ $noui-slider-connect-bg:          $primary !default;
 $noui-slider-connect-disabled-bg: #b2b2b2 !default;
 
 $noui-handle-width:               15px !default;
-$noui-handle-bg:                  theme-color("primary") !default;
+$noui-handle-bg:                  $primary !default;
 $noui-handle-border:              0 !default;
 $noui-handle-border-radius:       100% !default;
 
@@ -697,7 +697,7 @@ $dropdown-box-shadow:            0 50px 100px rgba(50, 50, 93, .1), 0 15px 35px 
 $nav-link-padding-y:                .25rem !default;
 $nav-link-padding-x:                .75rem !default;
 $nav-link-color:                    $gray-700 !default;
-$nav-link-hover-color:              theme-color("primary") !default;
+$nav-link-hover-color:              $primary !default;
 $nav-link-disabled-color:           $gray-600 !default;
 
 $nav-pills-padding-y:               .75rem !default;
@@ -707,13 +707,13 @@ $nav-pills-space-x:                 1rem !default;
 
 $nav-pills-bg:                      $white !default;
 $nav-pills-border-width:            1px !default;
-$nav-pills-border-color:            theme-color("primary") !default;
+$nav-pills-border-color:            $primary !default;
 $nav-pills-border-radius:           $border-radius !default;
 
-$nav-pills-link-color:              theme-color("primary") !default;
-$nav-pills-link-hover-color:        darken(theme-color("primary"), 5%) !default;
-$nav-pills-link-active-color:       color-yiq(theme-color("primary")) !default;
-$nav-pills-link-active-bg:          theme-color("primary") !default;
+$nav-pills-link-color:              $primary !default;
+$nav-pills-link-hover-color:        darken($primary, 5%) !default;
+$nav-pills-link-active-color:       color-yiq($primary) !default;
+$nav-pills-link-active-bg:          $primary !default;
 $nav-pills-box-shadow:              $btn-box-shadow !default;
 
 // Navbar
@@ -789,7 +789,7 @@ $navbar-light-border-color: $border-color !default;
 // Main content
 
 $main-content-padding-y: 40px !default;
-$main-content-padding-x: 24px !default; // in px to combine with $grid-gutter-width
+$main-content-padding-x: 1.5rem !default; // in rems to match $grid-gutter-width
 
 
 // Alerts
@@ -829,14 +829,13 @@ $list-group-action-active-bg:       $gray-200 !default;
 
 
 // Close
-
-$close-font-size:                   $font-size-base * 1.5 !default;
-$close-font-weight:                 $font-weight-bold !default;
-$close-bg:                          transparent !default;
-$close-hover-bg:                    transparent !default;
-$close-color:                       rgba(0, 0, 0, .6) !default;
-$close-hover-color:                 rgba(0, 0, 0, .9) !default;
-$close-text-shadow:                 none !default;
+$argon-btn-close-font-size:                   $font-size-base * 1.5 !default;
+$argon-btn-close-font-weight:                 $font-weight-bold !default;
+$argon-btn-close-bg:                          transparent !default;
+$argon-btn-close-hover-bg:                    transparent !default;
+$argon-btn-close-color:                       rgba(0, 0, 0, .6) !default;
+$argon-btn-close-hover-color:                 rgba(0, 0, 0, .9) !default;
+$argon-btn-close-text-shadow:                 none !default;
 
 
 // Popovers
@@ -874,8 +873,8 @@ $badge-padding-x:                   .375rem !default;
 $badge-border-radius:               $border-radius !default;
 $badge-text-transfom:               uppercase;
 
-$badge-pill-padding-x:              .875em !default;
-$badge-pill-border-radius:          10rem !default;
+$rounded-pill-padding-x:              .875em !default;
+$rounded-pill-border-radius:          10rem !default;
 
 $badge-circle-size:                 2rem !default;
 
@@ -976,10 +975,10 @@ $datepicker-disabled-old-new-color: $gray-500 !default;
 $datepicker-header-cell-border-radius: $border-radius !default;
 
 $datepicker-active-color: $white !default;
-$datepicker-active-background: theme-color("primary") !default;
+$datepicker-active-background: $primary !default;
 $datepicker-active-box-shadow:      none !default;
 
-$datepicker-range-background: theme-color("primary") !default;
+$datepicker-range-background: $primary !default;
 $datepicker-range-cell-focused-background: darken($datepicker-range-background, 5%);
 $datepicker-range-color: $white !default;
 $datepicker-range-highlighted-bg: $gray-200 !default;
@@ -997,7 +996,7 @@ $footer-padding-x:              0;
 
 
 $footer-link-font-size: .85rem !default;
-$footer-bg: theme-color("secondary") !default;
+$footer-bg: $secondary !default;
 $footer-color: $gray-600 !default;
 $footer-link-color: $gray-600 !default;
 $footer-link-hover-color: $gray-700 !default;

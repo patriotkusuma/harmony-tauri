@@ -43,13 +43,14 @@
     width: 100%;
   }
 
-  /* Main content adjustment */
+  /* Main content adjustment — mirrors --sb-width and .sb-collapsed in sidebar-new.css */
   .main-content {
-    transition: margin-left 0.3s ease;
+    margin-left: 260px;
+    transition: margin-left 0.3s cubic-bezier(.4,0,.2,1);
   }
   
   .main-content-collapsed {
-    margin-left: 80px !important;
+    margin-left: 72px !important;
   }
 }
 

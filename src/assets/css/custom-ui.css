@@ -161,34 +161,131 @@ body.dark-mode .glass-card {
     background: #32325d;
 }
 
-/* Global Text contrast improvements */
-.text-dark {
-    color: #172b4d !important; /* Argon's default-darker */
+/* =========================================================
+   Global Typography & Color Refinement
+   ========================================================= */
+
+/* High Contrast Base Colors */
+body {
+    color: #32325d; /* Dark slate for primary text */
 }
 
-h1.text-dark, h2.text-dark, h3.text-dark, h4.text-dark, h5.text-dark, h6.text-dark {
-    color: #000000 !important;
+.text-dark {
+    color: #172b4d !important;
+}
+
+.text-default {
+    color: #172b4d !important;
+}
+
+.text-primary {
+    color: #5e72e4 !important;
+    font-weight: 600;
 }
 
 .text-muted {
-    color: #525f7f !important; /* Darker than default muted for better readability */
+    color: #525f7f !important; /* Darker than BS5 default for better readability */
 }
 
-.opacity-7 {
-    opacity: 0.85 !important; /* Increase opacity for better visibility */
+/* Headings - Modern Weight & Color */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    color: #172b4d;
+    font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
-.opacity-8 {
-    opacity: 0.9 !important;
+/* Sidebar & Nav Specifics */
+.nav-link-new {
+    color: #525f7f !important;
 }
 
-/* Dark mode contrast preservation */
-body.dark-mode .text-dark {
+body.dark-mode .nav-link-new {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .nav-link-new:hover,
+body.dark-mode .nav-link-new.active {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Table Text Colors */
+.table thead th,
+.table thead td {
+    color: #8898aa !important;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background-color: #f6f9fc;
+}
+
+.table tbody td {
+    color: #525f7f !important;
+    font-size: 0.875rem;
+}
+
+.table tbody th {
+    color: #32325d !important;
+}
+
+/* Dark Mode Color Palette Refresh (Premium Slate) */
+body.dark-mode {
+    color: #cbd5e1;
+    background-color: #0f172a;
+}
+
+body.dark-mode .main-content {
+    background-color: #0f172a;
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+body.dark-mode .h1, body.dark-mode .h2, body.dark-mode .h3, 
+body.dark-mode .h4, body.dark-mode .h5, body.dark-mode .h6 {
     color: #f8fafc !important;
 }
 
+body.dark-mode .text-dark, 
+body.dark-mode .text-default {
+    color: #f1f5f9 !important;
+}
+
 body.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .text-primary {
+    color: #8fa4ff !important;
+}
+
+body.dark-mode .table thead th,
+body.dark-mode .table thead td {
+    background-color: #1e293b;
+    color: #94a3b8 !important;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .table tbody td,
+body.dark-mode .table tbody th {
     color: #cbd5e1 !important;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .card {
+    background-color: #1e293b;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .card-header {
+    background-color: transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode .footer, 
+body.dark-mode footer {
+    background-color: transparent;
 }
 
 /* =========================================================
@@ -199,6 +296,7 @@ body.dark-mode .text-muted {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
+    appearance: none;
     margin: 0;
 }
 input[type=number] {
@@ -344,3 +442,54 @@ body.dark-mode ::placeholder {
 body.dark-mode .form-text {
     color: #94a3b8;
 }
+
+/* =========================================================
+   Bootstrap 5 Button Color Fixes - Comprehensive
+   =========================================================*/
+
+/* Solid buttons */
+.btn-primary,.btn-primary:hover,.btn-primary:focus,.btn-primary:active,
+.btn-info,.btn-info:hover,.btn-info:focus,.btn-info:active,
+.btn-success,.btn-success:hover,.btn-success:focus,.btn-success:active,
+.btn-danger,.btn-danger:hover,.btn-danger:focus,.btn-danger:active,
+.btn-warning,.btn-warning:hover,.btn-warning:focus,.btn-warning:active,
+.btn-dark,.btn-dark:hover,.btn-dark:focus,.btn-dark:active,
+.btn-default,.btn-default:hover,.btn-default:focus,.btn-default:active { color:#fff !important; }
+
+.btn-secondary,.btn-secondary:hover,.btn-secondary:focus,.btn-secondary:active,
+.btn-light,.btn-light:hover,.btn-light:focus,.btn-light:active { color:#212529 !important; }
+
+/* Outline buttons */
+.btn-outline-primary { color:#5e72e4 !important; }
+.btn-outline-primary:hover,.btn-outline-primary:active { color:#fff !important; }
+.btn-outline-info { color:#11cdef !important; }
+.btn-outline-info:hover,.btn-outline-info:active { color:#fff !important; }
+.btn-outline-success { color:#2dce89 !important; }
+.btn-outline-success:hover,.btn-outline-success:active { color:#fff !important; }
+.btn-outline-danger { color:#f5365c !important; }
+.btn-outline-danger:hover,.btn-outline-danger:active { color:#fff !important; }
+.btn-outline-warning { color:#fb6340 !important; }
+.btn-outline-warning:hover,.btn-outline-warning:active { color:#fff !important; }
+.btn-outline-dark { color:#212529 !important; }
+.btn-outline-dark:hover,.btn-outline-dark:active { color:#fff !important; }
+.btn-outline-secondary { color:#525f7f !important; }
+.btn-outline-secondary:hover,.btn-outline-secondary:active { color:#fff !important; }
+
+/* Fix: buttons inside td must not inherit the table td color !important rule */
+td .btn-primary,th .btn-primary,td .btn-info,th .btn-info,
+td .btn-success,th .btn-success,td .btn-danger,th .btn-danger,
+td .btn-warning,th .btn-warning,td .btn-dark,th .btn-dark,
+td .btn-default,th .btn-default { color:#fff !important; }
+td .btn-secondary,th .btn-secondary,td .btn-light,th .btn-light { color:#212529 !important; }
+td .btn-outline-primary,th .btn-outline-primary { color:#5e72e4 !important; }
+td .btn-outline-success,th .btn-outline-success { color:#2dce89 !important; }
+td .btn-outline-danger,th .btn-outline-danger { color:#f5365c !important; }
+td .btn-outline-warning,th .btn-outline-warning { color:#fb6340 !important; }
+td .btn-outline-info,th .btn-outline-info { color:#11cdef !important; }
+td .btn-outline-secondary,th .btn-outline-secondary { color:#525f7f !important; }
+td .btn-outline-primary:hover,th .btn-outline-primary:hover,
+td .btn-outline-success:hover,th .btn-outline-success:hover,
+td .btn-outline-danger:hover,th .btn-outline-danger:hover,
+td .btn-outline-warning:hover,th .btn-outline-warning:hover { color:#fff !important; }
+/* Fix badge text color in tables - exclude specific light badges */
+.table .badge:not(.bg-secondary):not(.badge-secondary):not(.bg-light):not(.badge-light), .table .badge:not(.bg-secondary):not(.badge-secondary):not(.bg-light):not(.badge-light) * { color: #ffffff !important; }

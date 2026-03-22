@@ -3,16 +3,16 @@
 //
 
 .custom-checkbox {
-    .custom-control-input ~ .custom-control-label {
+    .form-check-input ~ .form-check-label {
         cursor: pointer;
         font-size: $font-size-sm;
     }
 
-    .custom-control-input {
+    .form-check-input {
         &:checked {
-            ~ .custom-control-label {
+            ~ .form-check-label {
                 &::before {
-                    border-color: $custom-control-indicator-checked-border-color;
+                    border-color: $form-check-indicator-checked-border-color;
                 }
                 &::after {
                     background-image: $custom-checkbox-indicator-icon-checked;
@@ -21,15 +21,15 @@
         }
 
         &:disabled {
-            ~ .custom-control-label {
+            ~ .form-check-label {
                 &::before {
-                    border-color: $custom-control-indicator-disabled-bg;
+                    border-color: $form-check-indicator-disabled-bg;
                 }
             }
 
             &:checked {
                 &::before {
-                    border-color: $custom-control-indicator-checked-disabled-bg;
+                    border-color: $form-check-indicator-checked-disabled-bg;
                 }
             }
         }

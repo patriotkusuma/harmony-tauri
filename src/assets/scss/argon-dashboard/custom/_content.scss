@@ -35,7 +35,7 @@
             @include media-breakpoint-up(#{$breakpoint}) {
 
                 // Left
-                &.fixed-left + .main-content {
+                &.fixed-start + .main-content {
                     margin-left: $navbar-vertical-width;
                 } // Right
                 &.fixed-right + .main-content {

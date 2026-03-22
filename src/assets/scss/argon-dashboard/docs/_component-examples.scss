@@ -21,7 +21,7 @@
     }
   }
 
-  .no-gutters {
+  .g-0 {
     > .col,
     > [class^="col-"] {
       span {
@@ -157,7 +157,7 @@
     }
   }
 
-  .custom-file-input:lang(es) ~ .custom-file-label::after {
+  .form-file-input:lang(es) ~ .form-file-label::after {
     content: "Elegir";
   }
 
@@ -207,7 +207,7 @@
     margin-bottom: 0;
   }
 
-  > .close {
+  > .btn-close {
     float: none;
   }
 }

@@ -17,3 +17,14 @@ export const useAiInsights = (period = 'monthly', outletId = null) => {
 
   return { ...query, refetchWithRefresh };
 };
+
+export const useOrderDuration = (period = 'monthly', outletId = null) => {
+  const authToken = localStorage.getItem("token");
+
+  return useQuery({
+    queryKey: ["order-duration", period, outletId],
+    queryFn: () => insightService.fetchOrderDuration(period, outletId),
+    enabled: !!authToken,
+    staleTime: 1000 * 60 * 60, // 1 hour state time
+  });
+};

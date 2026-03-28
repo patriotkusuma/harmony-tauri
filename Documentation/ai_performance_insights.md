@@ -46,17 +46,14 @@ Endpoint ini akan mengembalikan data statistik mentah sekaligus narasi analisis 
 {
   "status": "success",
   "data": {
-    "stats": {
+    "summary_stats": {
       "total_revenue": 15500000,
       "total_orders": 245,
       "new_customers": 12,
       "total_expenses": 3200000,
-      "net_profit": 12300000,
-      "top_services": null,
-      "period_start": "2026-03-01T00:00:00+07:00",
-      "period_end": "2026-03-23T11:33:42.116515297+07:00"
+      "net_profit": 12300000
     },
-    "ai_insight": {
+    "ai_insights": {
       "summary": "Performa bulan ini stabil dengan kenaikan profit 8%.",
       "performance_analysis": "Peningkatan pesanan terjadi di hari Sabtu-Minggu sebesar 40% dibanding hari kerja.",
       "strategic_recommendations": [
@@ -65,6 +62,43 @@ Endpoint ini akan mengembalikan data statistik mentah sekaligus narasi analisis 
       ],
       "daily_report_narrative": "Laporan harian: Hari ini 12 pesanan selesai tepat waktu, 0 keterlambatan."
     }
+  }
+}
+```
+
+---
+
+### `GET /api/v1/insights/order-duration`
+
+Endpoint baru ini digunakan untuk menganalisis rata-rata durasi pengerjaan pesanan dari masuk hingga status "selesai" atau "diambil". Fitur ini murni metrik database dan tidak memanggil AI secara langsung, namun sangat berguna untuk analitik operasional.
+
+**Query Parameters:**
+- `period`: `daily` | `monthly` | `yearly` (Default: `monthly`)
+- `outlet_id`: (Optional) Filter berdasarkan outlet.
+
+**Contoh Response:**
+```json
+{
+  "code": 200,
+  "message": "Insight durasi pengerjaan pesanan monthly berhasil didapatkan",
+  "data": {
+    "total_orders": 84,
+    "avg_hours": 46.31,
+    "max_hours": 219.62,
+    "min_hours": 4.25,
+    "status_breakdown": [
+      {
+        "status": "selesai",
+        "total": 18,
+        "avg_hours": 87.39
+      },
+      {
+        "status": "diambil",
+        "total": 66,
+        "avg_hours": 35.11
+      }
+    ],
+    "period": "monthly"
   }
 }
 ```

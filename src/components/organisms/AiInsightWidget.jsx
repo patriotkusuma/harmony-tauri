@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Card, CardBody, Row, Col, Badge, Spinner, UncontrolledTooltip, Button } from 'reactstrap';
-import { useAiInsights } from '../../hooks/useAiInsights';
+import { useAiInsights, useOrderDuration } from '../../hooks/useAiInsights';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 
 const AiInsightWidget = () => {
     const [period, setPeriod] = useState('monthly');
     const { data, isLoading, error, refetch, refetchWithRefresh } = useAiInsights(period);
+    const { data: durationData, isLoading: durationLoading } = useOrderDuration(period);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const stats = data?.stats;
-    const insights = data?.ai_insight;
+    const stats = data?.summary_stats;
+    const insights = data?.ai_insights;
 
     const handleForceRefresh = async () => {
         setIsRefreshing(true);
@@ -76,11 +77,6 @@ const AiInsightWidget = () => {
                         <h5 className="text-white mb-0 font-weight-bold ls-1">AI Business Insights</h5>
                         <div className="d-flex align-items-center">
                             <small className="text-white-50 text-uppercase font-weight-bold" style={{ fontSize: '0.65rem' }}>Powered by Gemini AI</small>
-                            {stats?.period_start && (
-                                <small className="text-white-50 ms-2 italic" style={{ fontSize: '0.65rem' }}>
-                                    • {moment(stats.period_start).format('DD MMM')} - {moment(stats.period_end).format('DD MMM YYYY')}
-                                </small>
-                            )}
                         </div>
                     </div>
                 </div>
@@ -195,6 +191,44 @@ const AiInsightWidget = () => {
                             </div>
                         )}
                     </div>
+
+                    {/* Order Duration Insight */}
+                    {!durationLoading && durationData && (
+                        <div className="insight-item mt-4">
+                            <div className="d-flex align-items-center mb-2">
+                                 <div className="icon-circle-sm bg-warning-soft text-warning me-2">
+                                    <i className="fas fa-stopwatch" />
+                                 </div>
+                                 <h6 className="mb-0 font-weight-bold text-warning">Durasi Pengerjaan Pesanan</h6>
+                            </div>
+                            <div className="ps-4 ms-1 border-left-soft-warning">
+                                <Row className="mt-2 mb-2">
+                                    <Col xs="4">
+                                        <div className="text-xs text-muted">Rata-rata</div>
+                                        <div className="font-weight-bold">{durationData.avg_hours?.toFixed(1) || 0} Jam</div>
+                                    </Col>
+                                    <Col xs="4">
+                                        <div className="text-xs text-muted">Tercepat</div>
+                                        <div className="font-weight-bold text-success">{durationData.min_hours?.toFixed(1) || 0} Jam</div>
+                                    </Col>
+                                    <Col xs="4">
+                                        <div className="text-xs text-muted">Terlambat</div>
+                                        <div className="font-weight-bold text-danger">{durationData.max_hours?.toFixed(1) || 0} Jam</div>
+                                    </Col>
+                                </Row>
+                                {durationData.status_breakdown && durationData.status_breakdown.length > 0 && (
+                                    <div className="mt-2">
+                                        <span className="text-xs font-weight-bold text-uppercase text-muted d-block mb-1">Berdasarkan Status Bawah:</span>
+                                        {durationData.status_breakdown.map((b, i) => (
+                                            <Badge key={i} color="light" className="text-dark me-2 mb-1 shadow-sm border">
+                                                {b.status.toUpperCase()}: {(b.avg_hours || 0).toFixed(1)} Jam
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </CardBody>
 
@@ -225,9 +259,11 @@ const AiInsightWidget = () => {
                 .icon-circle-sm { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.8rem; }
                 .bg-info-soft { background: rgba(17, 205, 239, 0.08); }
                 .bg-success-soft { background: rgba(45, 206, 137, 0.08); }
+                .bg-warning-soft { background: rgba(251, 99, 64, 0.08); }
                 .text-success-light { color: #2dce89; opacity: 0.6; }
                 .border-left-soft { border-left: 2px dashed rgba(17, 205, 239, 0.3); }
                 .border-left-soft-success { border-left: 2px dashed rgba(45, 206, 137, 0.3); }
+                .border-left-soft-warning { border-left: 2px dashed rgba(251, 99, 64, 0.3); }
                 .text-dark-75 { color: #525f7f; }
                 .bg-light-success { background: rgba(45, 206, 137, 0.05); }
                 .border-left-success-solid { border-left: 3px solid #2dce89; }

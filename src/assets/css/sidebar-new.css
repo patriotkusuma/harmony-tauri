@@ -19,6 +19,7 @@
   --sb-radius: 10px;
   --sb-shadow: 0 0 28px rgba(50, 50, 93, 0.08);
   --sb-item-height: 44px;
+  --sb-bottom-nav-height: 62px;
 }
 
 body.dark-mode {
@@ -49,7 +50,7 @@ body.dark-mode {
   top: 0;
   left: 0;
   z-index: 1040;
-  transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s;
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s, width 0.3s cubic-bezier(.4,0,.2,1);
 }
 
 /* ── Logo Area ────────────────────────────────────────────────── */
@@ -94,6 +95,7 @@ body.dark-mode .sb-brand-title { color: #e2e8f0; }
 .sb-scroll::-webkit-scrollbar { width: 4px; }
 .sb-scroll::-webkit-scrollbar-track { background: transparent; }
 .sb-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 2px; }
+body.dark-mode .sb-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
 /* ── POS Button ───────────────────────────────────────────────── */
 .sb-pos-btn {
@@ -193,7 +195,7 @@ body.dark-mode .sb-item:hover .sb-item-icon { color: var(--sb-text-hover); }
   margin: 0.5rem 1.5rem;
 }
 
-/* ── Toggle Button (Mobile) ───────────────────────────────────── */
+/* ── Toggle Button (Sidebar collapse, desktop only) ───────────── */
 .sb-toggle {
   background: none;
   border: none;
@@ -210,30 +212,54 @@ body.dark-mode .sb-item:hover .sb-item-icon { color: var(--sb-text-hover); }
 }
 .sb-toggle:hover { background: rgba(0,0,0,0.05); }
 
-/* ── Mobile Overlay ───────────────────────────────────────────── */
+/* ── Mobile Overlay backdrop ──────────────────────────────────── */
 .sb-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.45);
   z-index: 1039;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
-.sb-overlay.show { display: block; }
+.sb-overlay.show {
+  display: block;
+  animation: sb-overlay-in 0.25s ease forwards;
+}
+@keyframes sb-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
-/* ── Responsive ───────────────────────────────────────────────── */
+/* ── Responsive — Mobile first ────────────────────────────────── */
 @media (max-width: 767.98px) {
-  .sb-wrap { transform: translateX(-100%); }
-  .sb-wrap.sb-open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+  /* Sidebar: hidden off-screen by default on mobile */
+  .sb-wrap {
+    transform: translateX(-100%);
+    /* Height: full screen minus the bottom nav bar */
+    height: calc(100dvh - var(--sb-bottom-nav-height));
+    /* Fallback for browsers without dvh support */
+    height: calc(100vh - var(--sb-bottom-nav-height));
+  }
+  .sb-wrap.sb-open {
+    transform: translateX(0);
+    box-shadow: 6px 0 32px rgba(0,0,0,0.18);
+  }
+
+  /* Extra right-padding on brand area to make room for the close button */
+  .sb-wrap .sb-brand {
+    padding-right: 3.5rem;
+  }
+
   .main-content { margin-left: 0 !important; }
 }
 
-/* ── Main Content Offset ──────────────────────────────────────── */
+/* ── Main Content Offset (desktop) ───────────────────────────── */
 @media (min-width: 768px) {
   .main-content { margin-left: var(--sb-width) !important; }
 }
 
-/* ── Collapsed sidebar ────────────────────────────────────────── */
+/* ── Collapsed sidebar (desktop only) ────────────────────────── */
 .sb-wrap.sb-collapsed {
   width: 72px;
 }
@@ -268,4 +294,161 @@ body.dark-mode .sb-item:hover .sb-item-icon { color: var(--sb-text-hover); }
 @media (min-width: 768px) {
   .sb-wrap.sb-collapsed ~ .main-content,
   .main-content.main-content-collapsed { margin-left: 72px !important; }
+}
+
+/* ── Mobile: Inside-Sidebar Close Button ──────────────────────── */
+.sb-mobile-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(0,0,0,0.06);
+  border-radius: 50%;
+  color: var(--sb-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.15s, transform 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.sb-mobile-close:hover,
+.sb-mobile-close:focus {
+  background: rgba(0,0,0,0.12);
+  transform: rotate(90deg);
+  outline: none;
+}
+body.dark-mode .sb-mobile-close { background: rgba(255,255,255,0.08); }
+body.dark-mode .sb-mobile-close:hover { background: rgba(255,255,255,0.16); }
+
+/* ── Mobile Bottom Navigation Bar ────────────────────────────── */
+.sb-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1041;
+  background: var(--sb-bg);
+  border-top: 1px solid var(--sb-border);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  height: var(--sb-bottom-nav-height);
+  /* Safe area for modern devices (iOS notch/home bar) */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+body.dark-mode .sb-bottom-nav {
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.28);
+}
+
+/* ── Bottom Nav Items ─────────────────────────────────────────── */
+.sb-bottom-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none !important;
+  color: var(--sb-icon);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 0.5rem 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  /* Remove tap highlight on Android/iOS */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Ripple on tap */
+.sb-bottom-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0);
+}
+.sb-bottom-item:active::after {
+  transform: scale(3);
+  opacity: 0.06;
+  transition: 0s;
+}
+
+.sb-bottom-item i {
+  font-size: 1.2rem;
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), color 0.15s ease;
+}
+
+/* Active state */
+.sb-bottom-item.active {
+  color: var(--sb-active-text);
+  background: rgba(94,114,228,0.05);
+}
+.sb-bottom-item.active i {
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* Active indicator — pill at the top */
+.sb-bottom-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  background: var(--sb-active-border);
+  border-radius: 0 0 4px 4px;
+  animation: sb-indicator-in 0.2s ease forwards;
+}
+@keyframes sb-indicator-in {
+  from { width: 0; opacity: 0; }
+  to   { width: 32px; opacity: 1; }
+}
+
+.sb-bottom-item:focus { outline: none; }
+.sb-bottom-item:hover { color: var(--sb-text-hover); }
+
+/* Dark mode bottom nav */
+body.dark-mode .sb-bottom-item { color: var(--sb-icon); }
+body.dark-mode .sb-bottom-item.active {
+  color: var(--sb-active-text);
+  background: rgba(129,140,248,0.08);
+}
+
+/* ── Menu / Hamburger button ──────────────────────────────────── */
+.sb-bottom-menu-btn { color: var(--sb-icon); }
+.sb-bottom-menu-btn:hover { color: var(--sb-text-hover); }
+
+/* When sidebar is open: highlight the menu button */
+.sb-bottom-menu-btn.sb-menu-open {
+  color: var(--sb-active-text);
+  background: rgba(94,114,228,0.07);
+}
+.sb-bottom-menu-btn.sb-menu-open i {
+  transform: rotate(90deg) scale(1.05);
+}
+body.dark-mode .sb-bottom-menu-btn.sb-menu-open {
+  color: var(--sb-active-text);
+  background: rgba(129,140,248,0.1);
+}
+
+/* ── Push main content above bottom nav on mobile ─────────────── */
+@media (max-width: 767.98px) {
+  .main-content {
+    padding-bottom: calc(var(--sb-bottom-nav-height) + env(safe-area-inset-bottom, 0px)) !important;
+  }
 }

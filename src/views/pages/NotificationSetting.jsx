@@ -270,7 +270,7 @@ const NotificationSetting = ({ selectedOutlet }) => {
   return (
     <>
       {/* ToastContainer removed because it's handled in Admin.js */}
-      <header className="header bg-gradient-info pb-8 pt-5 pt-md-8" />
+      <header className="header bg-gradient-premium-notif pb-8 pt-5 pt-md-8 shadow-lg" />
       <Container className="mt--7 notification-settings-container" fluid>
         <Row>
           <Col lg="8">
@@ -334,122 +334,159 @@ const NotificationSetting = ({ selectedOutlet }) => {
       </Container>
 
       <style>{`
-        /* Full Width Settings Rows */
-        .custom-switch-notification {
-          display: flex !important;
-          align-items: center !important;
-          width: 100% !important;
-          min-height: 3.5rem;
-          padding: 0.5rem 1rem 0.5rem 3.75rem !important;
-          margin-left: 0 !important;
-          margin-right: 0 !important;
-          margin-bottom: 0.75rem;
-          background-color: #f8f9fe;
-          border: 1px solid #e9ecef;
-          border-radius: 0.5rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          box-sizing: border-box !important;
-          position: relative;
-        }
-        
-        .custom-switch-notification:hover {
-          background-color: #f1f3f9;
-          border-color: #dee2e6;
+        /* 1. Header & Container Layout */
+        .bg-gradient-premium-notif {
+          background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%) !important;
+          border-bottom-left-radius: 40px;
+          border-bottom-right-radius: 40px;
+          min-height: 280px;
         }
 
-        .custom-switch-notification .form-check-label {
-          width: 100%;
+        /* Max Width & Centralization */
+        .notification-settings-container {
+          max-width: 1300px !important;
+          margin: 0 auto !important;
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+          margin-top: -120px !important; 
+        }
+        
+        /* 2. Main Card Styling - More Compact */
+        .card-notification {
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.4) !important;
+          box-shadow: 0 15px 35px rgba(50, 50, 93, 0.08), 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+          transition: all 0.3s ease;
+          border-radius: 20px !important;
+        }
+
+        /* 3. Modern Switch List Item - Slimmer Height */
+        .custom-switch-notification-wrapper {
+          position: relative;
+          background: #ffffff;
+          border: 1.2px solid #edf2f7;
+          border-radius: 14px;
+          padding: 1rem 1rem 1rem 4.2rem;
+          margin-bottom: 0.85rem;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: pointer;
-          font-weight: 500;
-          color: #525f7f;
-          margin-bottom: 0 !important; /* Hapus margin bawah default */
+          min-height: 65px;
           display: flex;
           align-items: center;
         }
 
-        /* Posisi sakelar (track dan knob) benar-benar di tengah vertikal */
-        .custom-switch-notification .form-check-label::before,
-        .custom-switch-notification .form-check-label::after {
+        .custom-switch-notification-wrapper:hover {
+          border-color: #5e72e4;
+          background: #fcfdff;
+          box-shadow: 0 4px 12px rgba(94, 114, 228, 0.05);
+        }
+
+        /* Input Switch Styling Fix */
+        .custom-switch-notif-input {
+          position: absolute !important;
+          left: 1.25rem !important;
           top: 50% !important;
           transform: translateY(-50%) !important;
-          left: -2.75rem !important;
-          margin-top: 0 !important;
+          margin: 0 !important;
+          cursor: pointer;
+          width: 34px !important;
+          height: 18px !important;
+          z-index: 5;
+          appearance: none;
+          background-color: #cbd5e0;
+          border-radius: 18px;
+          transition: all 0.3s ease;
         }
 
-        /* Khusus untuk knob (bulatan) agar tidak terpengaruh transform saat transisi horizontal */
-        .custom-switch-notification .form-check-input:checked ~ .form-check-label::after {
-          transform: translateX(0.9375rem) translateY(-50%) !important;
+        .custom-switch-notif-input:checked {
+          background-color: #5e72e4;
         }
 
-        /* Dark Mode Support for Notification Settings */
+        .custom-switch-notif-input::before {
+          content: "";
+          position: absolute;
+          width: 14px;
+          height: 14px;
+          background: white;
+          border-radius: 50%;
+          top: 2px;
+          left: 2px;
+          transition: transform 0.3s ease;
+        }
+
+        .custom-switch-notif-input:checked::before {
+          transform: translateX(16px);
+        }
+
+        .notif-label-group {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .notif-label-text {
+          font-weight: 700;
+          color: #2d3748;
+          font-size: 0.9rem;
+          letter-spacing: -0.01em;
+        }
+
+        .notif-desc-text {
+          font-size: 0.775rem;
+          color: #718096;
+          line-height: 1.4;
+          font-weight: 500;
+        }
+
+        /* 4. Tab Styling - More Compact */
+        .nav-tabs-notification {
+          border: none !important;
+          background: #f7fafc;
+          padding: 5px;
+          border-radius: 12px;
+          gap: 2px;
+        }
+        
+        .nav-tabs-notification .nav-link {
+          border: none !important;
+          border-radius: 9px !important;
+          font-weight: 700 !important;
+          font-size: 0.8rem !important;
+          color: #718096 !important;
+          padding: 0.6rem 0.85rem !important;
+          transition: all 0.2s;
+        }
+
+        .nav-tabs-notification .nav-link.active {
+          background: #ffffff !important;
+          color: #5e72e4 !important;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.04) !important;
+        }
+
+        /* 5. Dark Mode Overrides */
         .dark-mode .card-notification {
-          background-color: #1a1a2e !important;
-          border: 1px solid #2b2b4b !important;
-        }
-        /* ... rest of dark mode styles ... */
-        .dark-mode .card-header-notification {
-          background-color: #1a1a2e !important;
-          border-bottom: 1px solid #2b2b4b !important;
-        }
-        .dark-mode .title-notification {
-          color: #fff !important;
-        }
-        .dark-mode .card-body-notification {
-          background-color: #161625 !important;
-        }
-        .dark-mode .card-inner-notification {
-          background-color: #1a1a2e !important;
-          box-shadow: 0 0 2rem 0 rgba(0,0,0,.2);
-        }
-        .dark-mode .section-title-notification {
-          color: #adb5bd !important;
-        }
-        .dark-mode .label-notification {
-          color: #ced4da !important;
-        }
-        .dark-mode .input-notification {
-          background-color: #161625 !important;
-          border: 1px solid #2b2b4b !important;
-          color: #fff !important;
-        }
-        .dark-mode .input-notification:focus {
-          background-color: #1a1a2e !important;
-          border-color: #5e72e4 !important;
-        }
-        .dark-mode .divider-notification {
-          border-top: 1px solid #2b2b4b !important;
+          background: #1a202c !important;
+          border-color: #2d3748 !important;
         }
         
-        .dark-mode .custom-switch-notification {
-          background-color: #1a1a2e !important;
-          border-color: #2b2b4b !important;
+        .dark-mode .custom-switch-notification-wrapper {
+          background: #2d3748;
+          border-color: #4a5568;
         }
         
-        .dark-mode .custom-switch-notification:hover {
-          background-color: #21213d !important;
+        .dark-mode .custom-switch-notification-wrapper:hover {
+          background: #343e50;
         }
 
-        .dark-mode .custom-switch-notification .form-check-label::before {
-          background-color: #2b2b4b !important;
-          border-color: #32325d !important;
+        .dark-mode .bg-gradient-premium-notif {
+          background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
         }
-        .dark-mode .custom-switch-notification .form-check-label {
-          color: #ced4da !important;
-        }
-        .dark-mode .nav-tabs-notification .nav-link {
-          background-color: #161625 !important;
-          color: #adb5bd !important;
-          border: 1px solid #2b2b4b !important;
-        }
-        .dark-mode .nav-tabs-notification .nav-link.active {
-          background-color: #5e72e4 !important;
-          color: #fff !important;
-          border-color: #5e72e4 !important;
-        }
-        .dark-mode .text-muted {
-          color: #8898aa !important;
-        }
+
+        .dark-mode .notif-label-text { color: #edf2f7; }
+        .dark-mode .notif-desc-text { color: #a0aec0; }
+        .dark-mode .nav-tabs-notification { background: #1a202c; }
+        .dark-mode .nav-tabs-notification .nav-link.active { background: #2d3748 !important; }
       `}</style>
     </>
   );

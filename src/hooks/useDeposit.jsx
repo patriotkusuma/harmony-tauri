@@ -29,7 +29,7 @@ export const useDeposit = () => {
             if (s) params.append("search", s);
             const res = await axios.get(`api/v2/deposit?${params.toString()}`);
             setDeposits(res.data.items || []);
-            setTotalItems(res.data.total_items || 0);
+            setTotalItems(res.data.total_items || 1); // fallback to 1 to avoid /0
             setPage(res.data.page || 1);
         } catch (err) {
             console.error("Error fetching deposits:", err);
@@ -80,11 +80,23 @@ export const useDeposit = () => {
     };
 
     const openTopUp = (customer) => {
-        setTopUpData({
-            id_customer: customer.id_customer,
-            amount: "",
-            keterangan: ""
-        });
+        if (customer) {
+            setTopUpData({
+                id_customer: customer.id_customer,
+                customer_name: customer.customer_name,
+                amount: "",
+                keterangan: "",
+                fixedCustomer: true
+            });
+        } else {
+            setTopUpData({
+                id_customer: "",
+                customer_name: "",
+                amount: "",
+                keterangan: "",
+                fixedCustomer: false
+            });
+        }
         setTopUpModal(true);
     };
 

@@ -1,10 +1,10 @@
 import React from "react";
 import { Col, Row, Button, Input } from "reactstrap";
 
-const OperationalReportHeader = ({ filters, setFilters, onExport }) => {
+const OperationalReportHeader = ({ filters, setFilters, onExport, onRefresh, loading }) => {
     return (
         <Row className="align-items-center mb-4">
-            <Col lg="6">
+            <Col lg="5">
                 <h2 className="text-white font-weight-900 mb-1" style={{ letterSpacing: '-0.02em', fontSize: '2rem' }}>
                     Laporan Operasional
                 </h2>
@@ -12,9 +12,9 @@ const OperationalReportHeader = ({ filters, setFilters, onExport }) => {
                     Monitor detak jantung bisnis Anda secara riil dan transparan.
                 </p>
             </Col>
-            <Col lg="6" className="text-lg-end mt-4 mt-lg-0">
+            <Col lg="7" className="text-lg-end mt-4 mt-lg-0">
                 <div className="d-flex justify-content-lg-end align-items-center flex-wrap" style={{ gap: '15px' }}>
-                    <div className="filter-group bg-white-10 p-2 rounded-pill backdrop-blur d-flex align-items-center flex-grow-1 flex-md-grow-0 justify-content-center border-light-subtle">
+                    <div className="filter-group bg-white-10 p-2 rounded-pill backdrop-blur d-flex align-items-center flex-grow-1 flex-md-grow-0 justify-content-center border-light-subtle shadow-sm">
                         <i className="far fa-calendar-alt text-white opacity-6 ms-3 me-2" />
                         <Input
                             type="date"
@@ -32,6 +32,16 @@ const OperationalReportHeader = ({ filters, setFilters, onExport }) => {
                             style={{ fontSize: '0.85rem' }}
                         />
                     </div>
+                    <Button 
+                        color="info" 
+                        className="rounded-pill shadow-sm px-4 font-weight-bold uppercase ls-1 btn-refresh-premium m-0 p-2 d-flex align-items-center"
+                        onClick={onRefresh}
+                        disabled={loading}
+                        style={{ fontSize: '0.8rem', padding: '0.65rem 1.5rem', border: 'none' }}
+                    >
+                        <i className={`fas fa-sync-alt me-2 ${loading ? 'fa-spin' : ''}`} />
+                        {loading ? 'Syncing...' : 'Real-time Sync'}
+                    </Button>
                     <Button 
                         color="secondary" 
                         className="rounded-pill shadow-sm px-4 font-weight-bold uppercase ls-1 btn-export-premium m-0 p-2"

@@ -12,7 +12,6 @@ const THEME_KEY = "theme";
 
 const SbItem = ({ to, icon, label, onClick }) => {
   const { pathname } = useLocation();
-  // active when path starts with the route (handles /admin/* sub-paths)
   const isActive = pathname === to || pathname.startsWith(to + "/");
   return (
     <Link to={to} onClick={onClick} className={`sb-item${isActive ? " active" : ""}`}>
@@ -30,16 +29,36 @@ const SbDivider = () => <div className="sb-divider" />;
 
 /* ── Main Component ───────────────────────────────────────────── */
 
-const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar }) => {
+const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen, setMobileOpen }) => {
   const [isDark, setIsDark] = useState(localStorage.getItem(THEME_KEY) === "dark");
-  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Internal fallback if mobileOpen is not controlled from outside
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false);
+  const isMobileOpen   = mobileOpen   !== undefined ? mobileOpen   : internalMobileOpen;
+  const setIsMobileOpen = setMobileOpen !== undefined ? setMobileOpen : setInternalMobileOpen;
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", isDark);
     localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
   }, [isDark]);
 
-  const closeMobile = () => setMobileOpen(false);
+  // Close sidebar on route change (mobile)
+  const { pathname } = useLocation();
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [isMobileOpen]);
+
+  const closeMobile = () => setIsMobileOpen(false);
 
   const logout = async () => {
     if (token) {
@@ -54,19 +73,29 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar }) => {
 
   return (
     <>
-      {/* ── Mobile Hamburger (renders in AdminNavbar via portal, see below) ─ */}
-      {/* We expose a toggle button for mobile via the overlay mechanism */}
-      <div className={`sb-overlay${mobileOpen ? " show" : ""}`} onClick={closeMobile} />
+      {/* ── Backdrop overlay ───────────────────────────────────── */}
+      <div
+        className={`sb-overlay${isMobileOpen ? " show" : ""}`}
+        onClick={closeMobile}
+        aria-hidden="true"
+      />
 
-      <nav className={`sb-wrap${isCollapsed ? " sb-collapsed" : ""}${mobileOpen ? " sb-open" : ""}`}>
-        
+      <nav className={`sb-wrap${isCollapsed ? " sb-collapsed" : ""}${isMobileOpen ? " sb-open" : ""}`}
+           role="navigation"
+           aria-label="Sidebar navigasi utama"
+      >
+        {/* Mobile close button (inside sidebar, top right) */}
+        <button
+          className="sb-mobile-close d-md-none"
+          onClick={closeMobile}
+          aria-label="Tutup menu"
+        >
+          <i className="fas fa-times" />
+        </button>
+
         {/* ── Brand / Logo ─────────────────────────────────────── */}
         <Link to="/admin/dashboard" className="sb-brand" onClick={closeMobile}>
           {logo && <img src={logo.imgSrc} alt={logo.imgAlt} />}
-          {/* <span className="sb-brand-title">
-            Harmony
-            <span className="sb-brand-sub">Laundry System</span>
-          </span> */}
         </Link>
 
         {/* ── Scrollable body ──────────────────────────────────── */}
@@ -90,6 +119,8 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar }) => {
           {/* ── Section: Manajemen & Laporan */}
           <SbHeading text="Manajemen & Laporan" />
           <SbItem to="/admin/dashboard"          icon="fas fa-tachometer-alt"        label="Dashboard Utama"        onClick={closeMobile} />
+          {isAdminOrOwner && <SbItem to="/admin/ai-chat"            icon="fas fa-robot"                label="AI Assistant"           onClick={closeMobile} />}
+          <SbItem to="/admin/customers"          icon="fas fa-users"                 label="Manajemen Pelanggan"    onClick={closeMobile} />
           {isAdminOrOwner && <SbItem to="/admin/operational-report" icon="fas fa-chart-line"     label="Laporan Operasional"    onClick={closeMobile} />}
           {isAdminOrOwner && <SbItem to="/admin/suppliers"          icon="fas fa-truck-loading"   label="Supplier & Vendor"      onClick={closeMobile} />}
           {isAdminOrOwner && <SbItem to="/admin/purchases"          icon="fas fa-shopping-basket" label="Belanja Kebutuhan"      onClick={closeMobile} />}
@@ -109,15 +140,17 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar }) => {
           <SbItem to="/admin/notification-setting" icon="fas fa-bell"               label="Pengaturan Notifikasi"  onClick={closeMobile} />
           <SbItem to="/admin/rfid"                icon="fas fa-id-card"              label="RFID Attach/Detach"     onClick={closeMobile} />
           <SbItem to="/admin/rfid-cards"          icon="fas fa-credit-card"          label="RFID Kartu Master"      onClick={closeMobile} />
+          {isAdminOrOwner && <SbItem to="/admin/system-settings"  icon="fas fa-cogs"                 label="Konfigurasi Inti"       onClick={closeMobile} />}
 
         </div>
 
         {/* ── Footer Actions ────────────────────────────────────── */}
         <div style={{ borderTop: "1px solid var(--sb-border)", padding: "0.75rem 1rem", display: "flex", gap: "0.5rem", flexShrink: 0 }}>
-          {/* Collapse Toggle */}
+          {/* Collapse Toggle — hidden on mobile since we hide sidebar by default */}
           <button
             onClick={toggleSidebar}
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            className="d-none d-md-flex"
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
               gap: "0.5rem", height: "38px", borderRadius: "8px", border: "1px solid var(--sb-border)",
@@ -165,6 +198,31 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar }) => {
         </div>
 
       </nav>
+
+      {/* ── Mobile Bottom Nav Bar ─────────────────────────────── */}
+      <nav className="sb-bottom-nav d-md-none" aria-label="Navigasi bawah mobile">
+        <Link to="/pesanan" className={`sb-bottom-item${pathname === '/pesanan' ? ' active' : ''}`}>
+          <i className="fas fa-shopping-basket" />
+          <span>Kasir</span>
+        </Link>
+        <Link to="/admin/dashboard" className={`sb-bottom-item${pathname === '/admin/dashboard' ? ' active' : ''}`}>
+          <i className="fas fa-tachometer-alt" />
+          <span>Dashboard</span>
+        </Link>
+        <Link to="/admin/riwayat" className={`sb-bottom-item${pathname.startsWith('/admin/riwayat') ? ' active' : ''}`}>
+          <i className="fas fa-history" />
+          <span>Riwayat</span>
+        </Link>
+        <button
+          className={`sb-bottom-item sb-bottom-menu-btn${isMobileOpen ? " sb-menu-open" : ""}`}
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          aria-label="Buka menu lengkap"
+          aria-expanded={isMobileOpen}
+        >
+          <i className={`fas ${isMobileOpen ? "fa-times" : "fa-bars"}`} />
+          <span>{isMobileOpen ? "Tutup" : "Menu"}</span>
+        </button>
+      </nav>
     </>
   );
 };
@@ -176,6 +234,8 @@ SidebarNew.propTypes = {
   token: PropTypes.string,
   isCollapsed: PropTypes.bool,
   toggleSidebar: PropTypes.func,
+  mobileOpen: PropTypes.bool,
+  setMobileOpen: PropTypes.func,
 };
 
 export default SidebarNew;

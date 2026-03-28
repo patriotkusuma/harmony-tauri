@@ -9,6 +9,7 @@ import { useDashboard } from 'hooks/useDashboard';
 import DashboardStats from 'components/organisms/DashboardStats';
 import TodayWorkBoard from 'components/organisms/TodayWorkBoard';
 import DeliveryOverview from 'components/organisms/DeliveryOverview';
+import AiInsightWidget from 'components/organisms/AiInsightWidget';
 
 const Dashboard = () => {
   const { 
@@ -59,6 +60,9 @@ const Dashboard = () => {
 
       {/* 2. Main Operasional Boards Section */}
       <Container className="mt--7 px-4" fluid>
+        {/* AI INSIGHTS SECTION */}
+        <AiInsightWidget />
+
         {isLoading && !urutanKerja && !ambilPesanan ? (
           <Row>
              <Col xs="12" className="text-center py-5 glass-card mb-4 border-0">

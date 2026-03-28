@@ -2,17 +2,18 @@
  * useMQTTRFID – React hook & Provider untuk menerima event RFID dari MQTT broker.
  *
  * Strategi dual-mode:
- *   ① ELECTRON  → main process buka koneksi native TCP mqtt://
- *                  dan kirim ke renderer via IPC.
- *   ② BROWSER   → WebSocket fallback via mqtt.js CDN (window.mqtt)
+ *   ① TAURI/ELECTRON (desktop) → main process buka koneksi native TCP mqtt://
+ *                                 dan kirim ke renderer via IPC / bridge.
+ *   ② TAURI browser runtime    → WebSocket fallback via mqtt.js (window.mqtt)
+ *   ③ BROWSER BIASA (web)      → DISABLED — tidak ada koneksi dibuka.
  *
- * Refactor ke Global Provider:
- *   Koneksi MQTT dipindah ke context agar global dan persisten (hanya ada 1 koneksi).
- *   Ini mencegah multiple WebSocket/IPC listener.
+ * Rule: MQTT hanya aktif ketika isTauriRuntime() === true (Tauri) atau
+ *       hasDesktopMQTTBridge() === true (Electron).
  */
 
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import desktopBridge from 'services/desktop-bridge';
+import { isTauriRuntime, isDesktopRuntime } from 'services/runtime';
 
 /* ─── Konfigurasi broker ─────────────────────────────────────── */
 const BROKER = {
@@ -153,9 +154,17 @@ export function MQTTRFIDProvider({ children }) {
     };
   }, [handleUID, handleDeviceStatus]);
 
-  /* ── ② BROWSER / WebSocket fallback ──────────────────────────── */
+  /* ── ② BROWSER / WebSocket fallback (TAURI only) ────────────── */
   useEffect(() => {
+    // Skip jika sudah ditangani desktop bridge
     if (hasDesktopMQTTBridge()) return;
+
+    // ⛔ Bukan Tauri runtime → jangan buka koneksi MQTT sama sekali
+    if (!isTauriRuntime()) {
+      setMode('disabled');
+      console.info('[MQTT] Bukan Tauri runtime — koneksi MQTT dinonaktifkan.');
+      return;
+    }
 
     const mqttLib = typeof window !== 'undefined' ? window.mqtt : null;
     if (!mqttLib) {
@@ -234,7 +243,7 @@ export function MQTTRFIDProvider({ children }) {
     client.on('reconnect', () => { setConnecting(true); setConnected(false); });
     client.on('offline',   () => { setConnected(false); setConnecting(false); });
     client.on('error',     (err) => { setError(err.message); setConnected(false); setConnecting(false); });
-    client.on('btn-close',     () => { setConnected(false); });
+    client.on('btn-close', () => { setConnected(false); });
 
     return () => {
       client.end(true);
@@ -250,10 +259,11 @@ export function MQTTRFIDProvider({ children }) {
     connected,
     connecting,
     error,
-    mode,      // 'electron' | 'websocket'
+    mode,      // 'desktop' | 'websocket' | 'disabled'
     devices,   // { [device_id]: 'online'|'offline' }
     clearUID,
     subscribe,
+    isDisabled: mode === 'disabled',
   }), [uid, lastScan, connected, connecting, error, mode, devices, clearUID, subscribe]);
 
   return (

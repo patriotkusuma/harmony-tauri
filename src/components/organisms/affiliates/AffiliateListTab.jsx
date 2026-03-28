@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Spinner, Badge, Modal, ModalHeader, ModalBody, ModalFooter, Input, FormGroup, Label, Row, Col } from "reactstrap";
-import axios from "../../../services/axios-instance";
 import { toast } from "react-toastify";
+import affiliateService from "../../../services/api/affiliate";
 
 const AffiliateListTab = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [custModalOpen, setCustModalOpen] = useState(false);
+  const [trxModalOpen, setTrxModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [activeAffiliate, setActiveAffiliate] = useState(null);
+  const [linkedCustomers, setLinkedCustomers] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [searchCust, setSearchCust] = useState("");
+  const [allCustomers, setAllCustomers] = useState([]);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -22,7 +29,7 @@ const AffiliateListTab = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("api/v2/affiliates");
+      const res = await affiliateService.getAffiliates();
       setData(res.data?.data || []);
     } catch (err) {
       console.error(err);
@@ -32,11 +39,40 @@ const AffiliateListTab = () => {
     }
   };
 
+  const fetchLinkedCustomers = async (affiliateId) => {
+    try {
+      const res = await affiliateService.getLinkedCustomers(affiliateId);
+      setLinkedCustomers(res.data?.data || []);
+    } catch (err) {
+      toast.error("Gagal memuat data pelanggan tertaut");
+    }
+  };
+
+  const fetchTransactions = async (affiliateId) => {
+    try {
+      const res = await affiliateService.getTransactions(affiliateId);
+      setTransactions(res.data?.data || []);
+    } catch (err) {
+      toast.error("Gagal memuat riwayat transaksi");
+    }
+  };
+
+  const fetchAllCustomers = async (search = "") => {
+    try {
+      const res = await affiliateService.searchCustomers(search); 
+      setAllCustomers(res.data?.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const toggleModal = () => setModalOpen(!modalOpen);
+  const toggleCustModal = () => setCustModalOpen(!custModalOpen);
+  const toggleTrxModal = () => setTrxModalOpen(!trxModalOpen);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -55,11 +91,33 @@ const AffiliateListTab = () => {
     setModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus partner afiliasi ini? Semua data terkait (kecuali riwayat komisi yang sudah tercatat) dapat hilang!")) return;
-    
+  const handleManageCustomers = (item) => {
+    setActiveAffiliate(item);
+    fetchLinkedCustomers(item.id);
+    fetchAllCustomers();
+    setCustModalOpen(true);
+  };
+
+  const handleViewTransactions = (item) => {
+    setActiveAffiliate(item);
+    fetchTransactions(item.id);
+    setTrxModalOpen(true);
+  };
+
+  const handleLinkCustomer = async (customerId) => {
     try {
-      await axios.delete(`api/v2/affiliates/${id}`);
+      await affiliateService.linkCustomers(activeAffiliate.id, [customerId]);
+      toast.success("Pelanggan berhasil ditautkan!");
+      fetchLinkedCustomers(activeAffiliate.id);
+    } catch (err) {
+      toast.error("Gagal menautkan pelanggan");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus partner afiliasi ini?")) return;
+    try {
+      await affiliateService.deleteAffiliate(id);
       toast.success("Partner berhasil dihapus");
       fetchData();
     } catch (err) {
@@ -69,20 +127,18 @@ const AffiliateListTab = () => {
 
   const handleSave = async () => {
     if (!formData.name) return toast.warning("Nama partner wajib diisi");
-    
     setSaving(true);
     try {
       if (editId) {
-        await axios.put(`api/v2/affiliates/${editId}`, formData);
+        await affiliateService.updateAffiliate(editId, formData);
         toast.success("Data partner berhasil diperbarui!");
       } else {
-        await axios.post("api/v2/affiliates", formData);
+        await affiliateService.createAffiliate(formData);
         toast.success("Partner Afiliasi berhasil ditambahkan!");
       }
       toggleModal();
-      fetchData(); // refresh list
+      fetchData();
     } catch (err) {
-      console.error(err);
       toast.error(err.response?.data?.details || "Gagal menyimpan partner");
     } finally {
       setSaving(false);
@@ -167,10 +223,16 @@ const AffiliateListTab = () => {
                     </div>
                   </td>
                   <td className="text-center border-bottom-custom px-4">
-                    <Button color="link" className="text-primary btn-sm p-0 me-3" onClick={() => handleEdit(item)}>
+                    <Button color="link" title="Riwayat Transaksi" className="text-warning btn-sm p-0 me-3" onClick={() => handleViewTransactions(item)}>
+                       <i className="fas fa-history"></i>
+                    </Button>
+                    <Button color="link" title="Kelola Pelanggan" className="text-info btn-sm p-0 me-3" onClick={() => handleManageCustomers(item)}>
+                       <i className="fas fa-users-cog"></i>
+                    </Button>
+                    <Button color="link" title="Edit Data" className="text-primary btn-sm p-0 me-3" onClick={() => handleEdit(item)}>
                        <i className="fas fa-edit"></i>
                     </Button>
-                    <Button color="link" className="text-danger btn-sm p-0" onClick={() => handleDelete(item.id)}>
+                    <Button color="link" title="Hapus" className="text-danger btn-sm p-0" onClick={() => handleDelete(item.id)}>
                        <i className="fas fa-trash"></i>
                     </Button>
                   </td>
@@ -180,6 +242,49 @@ const AffiliateListTab = () => {
           </tbody>
         </Table>
       </div>
+
+      {/* MODAL RIWAYAT TRANSAKSI */}
+      <Modal isOpen={trxModalOpen} toggle={toggleTrxModal} size="lg" className="modal-dialog-centered dark-modal-ready">
+        <ModalHeader toggle={toggleTrxModal} className="border-bottom-custom">
+          <span className="font-weight-900 text-dark title-adaptive">
+            <i className="fas fa-history me-2 text-warning" />
+            Riwayat Transaksi: {activeAffiliate?.name}
+          </span>
+        </ModalHeader>
+        <ModalBody className="bg-white custom-wrapper">
+            <div className="table-responsive">
+                <Table size="sm" className="align-middle border-0">
+                    <thead className="table-header-row" style={{ fontSize: '0.65rem' }}>
+                        <tr>
+                            <th className="py-2">KODE PESAN</th>
+                            <th className="py-2">PELANGGAN</th>
+                            <th className="py-2 text-end">TOTAL HARGA</th>
+                            <th className="py-2 text-end">KOMISI</th>
+                            <th className="py-2 text-center">TANGGAL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {transactions.length > 0 ? transactions.map((t, idx) => (
+                            <tr key={idx} className="border-bottom-custom text-sm">
+                                <td className="font-weight-bold">{t.kode_pesan}</td>
+                                <td>{t.customer_nama}</td>
+                                <td className="text-end">Rp {t.total_harga?.toLocaleString()}</td>
+                                <td className="text-end text-success font-weight-bold">Rp {t.commission?.toLocaleString()}</td>
+                                <td className="text-center small text-muted">{new Date(t.created_at).toLocaleDateString()}</td>
+                            </tr>
+                        )) : (
+                            <tr>
+                                <td colSpan="5" className="text-center py-4 text-muted">Belum ada riwayat transaksi</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </Table>
+            </div>
+        </ModalBody>
+        <ModalFooter className="bg-white border-top-0">
+          <Button color="secondary" onClick={toggleTrxModal} className="rounded-pill font-weight-bold px-4">Tutup</Button>
+        </ModalFooter>
+      </Modal>
 
       {/* MODAL TAMBAH */}
       <Modal isOpen={modalOpen} toggle={toggleModal} className="modal-dialog-centered dark-modal-ready">
@@ -232,6 +337,89 @@ const AffiliateListTab = () => {
           <Button color="primary" onClick={handleSave} className="rounded-pill font-weight-bold px-4 shadow-sm" disabled={saving}>
             {saving ? <i className="fas fa-spinner fa-spin me-2" /> : <i className="fas fa-save me-2" />} Simpan Partner
           </Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* MODAL KELOLA PELANGGAN (LINKING) */}
+      <Modal isOpen={custModalOpen} toggle={toggleCustModal} size="lg" className="modal-dialog-centered dark-modal-ready">
+        <ModalHeader toggle={toggleCustModal} className="border-bottom-custom">
+          <span className="font-weight-900 text-dark title-adaptive">
+            <i className="fas fa-users-cog me-2 text-info" />
+            Kelola Pelanggan: {activeAffiliate?.name}
+          </span>
+        </ModalHeader>
+        <ModalBody className="bg-white custom-wrapper">
+          <Row>
+            <Col md="6" className="border-end-custom">
+              <h5 className="font-weight-bold mb-3 title-adaptive">Tautkan Pelanggan Baru</h5>
+              <FormGroup>
+                <div className="search-box mb-2">
+                  <Input 
+                    type="text" 
+                    placeholder="Cari Nama/ID Pelanggan..." 
+                    value={searchCust} 
+                    onChange={(e) => {
+                      setSearchCust(e.target.value);
+                      fetchAllCustomers(e.target.value);
+                    }}
+                    className="custom-input bg-input-box"
+                  />
+                </div>
+                <div className="list-group list-group-flush rounded border-0 overflow-auto" style={{ maxHeight: '300px' }}>
+                  {allCustomers.filter(c => !linkedCustomers.some(lc => lc.id === c.id)).map(c => (
+                    <div key={c.id} className="list-group-item d-flex justify-content-between align-items-center px-1 py-2 bg-transparent border-bottom-custom">
+                      <div className="text-sm">
+                        <div className="font-weight-bold title-adaptive">
+                          {c.nama} {c.keterangan ? <span className="text-muted fw-normal">({c.keterangan})</span> : ''}
+                        </div>
+                        <div className="d-block text-muted small mt-1">
+                          <i className="fas fa-phone-alt me-1" /> {c.telpon || '-'}
+                        </div>
+                      </div>
+                      <Button color="info" size="sm" className="rounded-pill p-1 px-2" onClick={() => handleLinkCustomer(c.id)}>
+                        <i className="fas fa-link me-1" /> Tautkan
+                      </Button>
+                    </div>
+                  ))}
+                  {allCustomers.length === 0 && <div className="text-muted small text-center py-4">Ketik untuk mencari pelanggan...</div>}
+                </div>
+              </FormGroup>
+            </Col>
+            <Col md="6">
+              <h5 className="font-weight-bold mb-3 title-adaptive">Pelanggan Terdaftar ({linkedCustomers.length})</h5>
+              <div className="overflow-auto" style={{ maxHeight: '350px' }}>
+                {linkedCustomers.length > 0 ? (
+                  <Table size="sm" borderless className="align-middle border-0">
+                    <tbody>
+                      {linkedCustomers.map(lc => (
+                        <tr key={lc.id} className="border-bottom-custom">
+                          <td className="ps-0 py-2">
+                            <div className="font-weight-bold text-sm title-adaptive">
+                                {lc.nama} {lc.keterangan ? <span className="text-muted fw-normal small">({lc.keterangan})</span> : ''}
+                            </div>
+                            <small className="text-muted d-block opacity-8 mt-1">
+                                <i className="fas fa-map-marker-alt me-1" /> {lc.alamat || 'Tanpa Alamat'}
+                            </small>
+                          </td>
+                          <td className="text-end pe-0">
+                            <Badge color="success" pill className="px-2">Aktif</Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-5 opacity-5">
+                    <i className="fas fa-user-slash fa-2x mb-3 d-block" />
+                    <span className="small font-weight-bold">Belum ada pelanggan terhubung</span>
+                  </div>
+                )}
+              </div>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter className="bg-white border-top-0">
+          <Button color="secondary" onClick={toggleCustModal} className="rounded-pill font-weight-bold px-4">Tutup</Button>
         </ModalFooter>
       </Modal>
 

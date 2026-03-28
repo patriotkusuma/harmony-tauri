@@ -27,6 +27,8 @@ const Admin = (props) => {
     localStorage.getItem("sidebar-collapsed") === "true"
   );
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
     localStorage.setItem("sidebar-collapsed", !isCollapsed);
@@ -194,6 +196,8 @@ const Admin = (props) => {
         outlets={outlets || null}
         isCollapsed={isCollapsed}
         toggleSidebar={toggleSidebar}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
       />
       <div className={`main-content ${isCollapsed ? 'main-content-collapsed' : ''}`} ref={mainContent}>
         <AdminNavbar
@@ -204,6 +208,8 @@ const Admin = (props) => {
           selectCabang={selectCabang}
           selectedOutlet={selectedOutlet}
           brandText={getBrandText()}
+          onToggleMobile={() => setMobileOpen(prev => !prev)}
+          mobileOpen={mobileOpen}
         />
         <Routes>
           {getRoutes(routes)}

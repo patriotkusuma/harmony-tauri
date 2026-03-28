@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Row, Col } from "reactstrap";
 import moment from "moment";
 
-const InventoryUsageTable = ({ data, lowStockAlerts, loading }) => {
+const InventoryUsageTable = ({ data, lowStockAlerts, aiInsight, loading }) => {
     if (loading) return (
         <div className="text-center py-5">
             <div className="spinner-border text-info mb-3 shadow-sm" role="status" style={{ width: '3rem', height: '3rem' }}>
@@ -13,7 +13,45 @@ const InventoryUsageTable = ({ data, lowStockAlerts, loading }) => {
     );
 
     return (
-        <div className="inventory-report-content">
+        <div className="inventory-report-content animate__animated animate__fadeIn">
+            {/* AI Insight Section */}
+            {aiInsight && (
+                <div className="mb-4">
+                    <div className="ai-insight-panel p-4 rounded-xl shadow-premium border-0 mb-4" style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff' }}>
+                        <div className="d-flex align-items-center mb-3">
+                            <div className="bg-primary rounded-circle p-2 me-3 shadow-sm">
+                                <i className="fas fa-brain text-white" />
+                            </div>
+                            <div>
+                                <h5 className="mb-0 text-white font-weight-bold ls-1 uppercase" style={{ fontSize: '0.9rem' }}>AI Operational Insight</h5>
+                                <small className="opacity-6">Analisis otomatis penggunaan stok</small>
+                            </div>
+                        </div>
+                        <div className="mb-3 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            <div className="font-weight-bold text-info mb-2 small uppercase ls-1">Ringkasan</div>
+                            <p className="mb-0" style={{ fontSize: '0.92rem', lineHeight: '1.6' }}>{aiInsight.summary}</p>
+                        </div>
+                        <div className="row">
+                            <Col lg="7">
+                                <div className="font-weight-bold text-warning mb-2 small uppercase ls-1">Analisis Penggunaan</div>
+                                <p className="opacity-8 mb-4 mb-lg-0" style={{ fontSize: '0.88rem', lineHeight: '1.6' }}>{aiInsight.usage_analysis}</p>
+                            </Col>
+                            <Col lg="5">
+                                <div className="font-weight-bold text-success mb-2 small uppercase ls-1">Rekomendasi Tindakan</div>
+                                <ul className="list-unstyled mb-0">
+                                    {(aiInsight.recommendations || []).map((rec, i) => (
+                                        <li key={i} className="d-flex align-items-start mb-2" style={{ fontSize: '0.85rem' }}>
+                                            <i className="fas fa-check-circle text-success mt-1 me-2" style={{ fontSize: '0.75rem' }} />
+                                            <span className="opacity-9">{rec}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Col>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {lowStockAlerts && lowStockAlerts.length > 0 && (
                 <div className="mb-4 animate__animated animate__fadeIn">
                     <h5 className="title-text uppercase ls-1 mb-3 font-weight-900 border-bottom-custom pb-2">
@@ -22,13 +60,13 @@ const InventoryUsageTable = ({ data, lowStockAlerts, loading }) => {
                     </h5>
                     <Row>
                         {lowStockAlerts.map((alert, idx) => (
-                            <Col md="4" key={idx} className="mb-3">
+                            <Col md="4" key={idx} className="mb-3 text-white">
                                 <div className="p-3 rounded-lg border-0 shadow-sm custom-alert-danger d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong className="d-block font-weight-900 mb-1" style={{ fontSize: '0.9rem' }}>{alert.item_name}</strong>
                                         <small className="font-weight-600 opacity-8">Sisa Tersedia: {alert.current_qty} {alert.unit}</small>
                                     </div>
-                                    <div className="bg-white rounded px-2 py-1 shadow-sm border text-danger font-weight-bold" style={{ fontSize: '0.75rem' }}>
+                                    <div className="bg-white rounded px-2 py-1 shadow-sm border text-danger font-weight-bold text-white" style={{ fontSize: '0.75rem' }}>
                                         Min: {alert.minimum_qty}
                                     </div>
                                 </div>
@@ -66,6 +104,7 @@ const InventoryUsageTable = ({ data, lowStockAlerts, loading }) => {
                                     </td>
                                     <td className="px-4 border-bottom-custom font-weight-900 item-title">
                                         {item.item_name}
+                                        {item.category && <small className="d-block text-muted font-weight-600 opacity-7">{item.category}</small>}
                                     </td>
                                     <td className="px-4 border-bottom-custom">
                                         <div className="d-inline-flex bg-input-box border-input rounded px-3 py-1 align-items-center">
@@ -74,9 +113,9 @@ const InventoryUsageTable = ({ data, lowStockAlerts, loading }) => {
                                         </div>
                                     </td>
                                     <td className="text-center border-bottom-custom">
-                                        <div className={`d-inline-flex align-items-center rounded-pill font-weight-bold px-3 py-1 ${item.type === 'out' ? 'badge-soft-danger' : 'badge-soft-success'}`} style={{ fontSize: '0.75rem' }}>
+                                        <div className={`d-inline-flex align-items-center rounded-pill font-weight-bold px-3 py-1 ${item.type === 'Keluar' || item.type === 'out' ? 'badge-soft-danger' : 'badge-soft-success'}`} style={{ fontSize: '0.75rem' }}>
                                             <div className="dot-indicator rounded-circle me-2"></div>
-                                            {item.type === 'out' ? 'Stok Keluar' : 'Stok Masuk'}
+                                            {item.type === 'Keluar' || item.type === 'out' ? 'Stok Keluar' : 'Stok Masuk'}
                                         </div>
                                     </td>
                                     <td className="px-4 border-bottom-custom">
@@ -92,6 +131,21 @@ const InventoryUsageTable = ({ data, lowStockAlerts, loading }) => {
             </div>
 
             <style>{`
+                /* AI Insight Styling */
+                .ai-insight-panel {
+                    position: relative;
+                    overflow: hidden;
+                }
+                .ai-insight-panel::after {
+                    content: '';
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+                    pointer-events: none;
+                }
                 /* Wrapper & Layout Core */
                 .custom-wrapper { background-color: #ffffff; border: 1px solid #f1f3f9 !important; }
                 body.dark-mode .custom-wrapper { background-color: #1e293b; border: 1px solid rgba(255,255,255,0.05) !important; }

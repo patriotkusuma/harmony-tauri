@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Spinner, Badge, FormGroup, Input } from "reactstrap";
-import axios from "../../../services/axios-instance";
+import { Table, Button, Spinner, Badge, Input } from "reactstrap";
 import { toast } from "react-toastify";
 import moment from "moment";
+import affiliateService from "../../../services/api/affiliate";
 
 const formatRupiah = (number) => {
   return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(number);
@@ -11,6 +11,7 @@ const formatRupiah = (number) => {
 const AffiliateCommissionsTab = () => {
   const [affiliates, setAffiliates] = useState([]);
   const [selectedAffiliate, setSelectedAffiliate] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [commissions, setCommissions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(null);
@@ -19,7 +20,7 @@ const AffiliateCommissionsTab = () => {
   useEffect(() => {
     const fetchAffiliates = async () => {
       try {
-        const res = await axios.get("api/v2/affiliates");
+        const res = await affiliateService.getAffiliates();
         const list = res.data?.data || [];
         setAffiliates(list);
         if (list.length > 0) setSelectedAffiliate(list[0].id.toString());
@@ -35,7 +36,7 @@ const AffiliateCommissionsTab = () => {
     if (!selectedAffiliate) return;
     setLoading(true);
     try {
-      const res = await axios.get(`api/v2/affiliates/${selectedAffiliate}/commissions`);
+      const res = await affiliateService.getCommissions(selectedAffiliate, selectedStatus);
       setCommissions(res.data?.data || []);
     } catch (err) {
       console.error(err);
@@ -48,16 +49,16 @@ const AffiliateCommissionsTab = () => {
   useEffect(() => {
     fetchCommissions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAffiliate]);
+  }, [selectedAffiliate, selectedStatus]);
 
   const handleAction = async (id, action) => {
     setProcessing(id);
     try {
       if (action === 'confirm') {
-        await axios.put(`api/v2/affiliates/commissions/${id}/confirm`);
+        await affiliateService.confirmCommission(id);
         toast.success("Komisi berhasil diverifikasi!");
       } else if (action === 'pay') {
-        await axios.put(`api/v2/affiliates/commissions/${id}/pay`);
+        await affiliateService.payCommission(id);
         toast.success("Komisi dicairkan! Saldo partner bertambah/terbayar.");
       }
       fetchCommissions();
@@ -85,12 +86,19 @@ const AffiliateCommissionsTab = () => {
           <h3 className="mb-0 text-dark font-weight-900 title-adaptive">Log Payout Komisi</h3>
           <p className="text-muted mb-0 small opacity-8">Transparansi status fee partner, pencairan uang tunai, atau transfer deposit.</p>
         </div>
-        <div className="d-flex align-items-center">
-            <span className="text-muted fw-bold small me-2 d-none d-md-block">Lihat Payout Untuk:</span>
+        <div className="d-flex align-items-center gap-2">
+            <span className="text-muted fw-bold small d-none d-md-block">Filter:</span>
+            <Input type="select" className="w-auto custom-input py-2 text-sm bg-input-box title-adaptive cursor-pointer shadow-sm rounded-pill" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+                <option value="">Semua Status</option>
+                <option value="pending">Menunggu</option>
+                <option value="verified">Terverifikasi</option>
+                <option value="paid">Terbayar</option>
+                <option value="canceled">Dibatalkan</option>
+            </Input>
             <Input type="select" className="w-auto custom-input py-2 text-sm bg-input-box title-adaptive cursor-pointer shadow-sm rounded-pill" value={selectedAffiliate} onChange={(e) => setSelectedAffiliate(e.target.value)}>
-                <option value="">-- Silakan Pilih Partner --</option>
+                <option value="">-- Partner --</option>
                 {affiliates.map(af => (
-                    <option key={af.id} value={af.id}>{af.name} ({af.group_name || 'Personal'})</option>
+                    <option key={af.id} value={af.id}>{af.name}</option>
                 ))}
             </Input>
         </div>

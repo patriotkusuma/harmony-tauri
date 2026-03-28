@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Col, FormGroup, Label, Input, Card, CardBody, Row, Button } from "reactstrap";
-import axios from "../../../services/axios-instance";
 import { toast } from "react-toastify";
+import affiliateService from "../../../services/api/affiliate";
 
 const AffiliateFeeForm = ({ services = [], onSuccess, editFee, setEditFee }) => {
   const [saving, setSaving] = useState(false);
@@ -63,11 +63,11 @@ const AffiliateFeeForm = ({ services = [], onSuccess, editFee, setEditFee }) => 
       };
 
       if (editFee) {
-          await axios.put(`api/v2/affiliates/fees/${editFee.ID}`, payload);
+          await affiliateService.updateFee(editFee.ID, payload);
           toast.success("Aturan berhasil diperbarui!");
           setEditFee(null);
       } else {
-          await axios.post("api/v2/affiliates/fees", payload);
+          await affiliateService.setFee(payload);
           toast.success("Pengaturan skema komisi berhasil disimpan!");
       }
       
@@ -75,7 +75,6 @@ const AffiliateFeeForm = ({ services = [], onSuccess, editFee, setEditFee }) => 
       setSearchSvc("");
       if (onSuccess) onSuccess();
     } catch (err) {
-      console.error(err);
       toast.error(err.response?.data?.details || "Gagal menyimpan fee komisi");
     } finally {
       setSaving(false);

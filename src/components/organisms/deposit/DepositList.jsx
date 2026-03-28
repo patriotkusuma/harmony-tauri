@@ -15,16 +15,24 @@ const DepositList = ({ items, loading, search, onSearch, onSelect, onTopUp, tota
                             Daftar Saldo Pelanggan
                         </h3>
                     </Col>
-                    <Col md="6">
-                        <div className="search-box float-md-right mt-3 mt-md-0">
+                    <Col md="6" className="d-flex align-items-center justify-content-md-end gap-3 mt-3 mt-md-0">
+                        <div className="search-box flex-grow-1" style={{ maxWidth: 300 }}>
                             <Input
-                                placeholder="Cari nama atau no. telp..."
+                                placeholder="Cari saldo..."
                                 value={search}
                                 onChange={(e) => onSearch(e.target.value)}
                                 className="rounded-pill shadow-sm border-0"
                                 style={{ backgroundColor: '#f1f3f9' }}
                             />
                         </div>
+                        <Button 
+                            color="primary" 
+                            className="rounded-pill px-4 shadow-premium"
+                            onClick={() => onTopUp(null)}
+                        >
+                            <i className="fas fa-plus me-2" />
+                            Top-up Baru
+                        </Button>
                     </Col>
                 </Row>
             </CardHeader>

@@ -24,7 +24,7 @@ const THEME_KEY = "theme";
 
 
 const AdminNavbar = (props) => {
-  const {auth, token, outlets, selectCabang, selectedOutlet} = props
+  const {auth, token, outlets, selectCabang, selectedOutlet, onToggleMobile, mobileOpen} = props
   const { unreadCount, wsConnected, markAsRead, notifications, clearNotifications } = useRawWebSocket();
   const headers = {
     'Authorization' : `Bearer ${token}`
@@ -83,6 +83,17 @@ const AdminNavbar = (props) => {
     <>
       <Navbar className="navbar-top navbar-dark border-bottom-0" expand="md" id="navbar-main" style={{ minHeight: '80px' }}>
         <Container fluid className="d-flex align-items-center justify-content-between">
+          {/* Hamburger toggle - mobile only (hidden on desktop since sidebar is always visible) */}
+          <button
+            type="button"
+            className="d-md-none btn btn-link text-white p-2 me-1"
+            onClick={onToggleMobile}
+            aria-label="Buka / tutup menu"
+            style={{ fontSize: '1.3rem', lineHeight: 1 }}
+          >
+            <i className={`fas ${mobileOpen ? 'fa-times' : 'fa-bars'}`} />
+          </button>
+
           <Link
             className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block font-weight-700"
             to="/"
@@ -159,31 +170,37 @@ const AdminNavbar = (props) => {
                     )}
                   </div>
                 </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-arrow mt-3 border-0 shadow-lg" end style={{ minWidth: '300px', borderRadius: '8px' }}>
-                  <DropdownItem className="noti-title bg-secondary" header tag="div">
-                    <h6 className="text-overflow m-0 text-muted small text-uppercase font-weight-bold">Notifikasi Pesan</h6>
+                <DropdownMenu className="dropdown-menu-arrow mt-3 border-0 shadow-lg" end style={{ minWidth: '240px', borderRadius: '8px', padding: '0' }}>
+                  <DropdownItem className="noti-title bg-secondary py-2" header tag="div">
+                    <h6 className="text-overflow m-0 text-muted small text-uppercase font-weight-bold" style={{ fontSize: '0.65rem' }}>Notifikasi Pesan</h6>
                   </DropdownItem>
-                  <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                  <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
                     {notifications.length > 0 ? (
                       notifications.map((notif, idx) => (
-                        <DropdownItem key={idx} to="/admin/messages" tag={Link} className="py-2">
+                        <DropdownItem key={idx} to="/admin/messages" tag={Link} className="py-2 px-3 border-bottom border-light">
                           <div className="d-flex align-items-center">
-                            <div className="avatar avatar-sm rounded-circle bg-success me-3">
-                              <i className="fab fa-whatsapp text-white" />
+                            <div className="rounded-circle bg-success d-flex align-items-center justify-content-center me-2" style={{ width: '28px', height: '28px', flexShrink: 0 }}>
+                              <i className="fab fa-whatsapp text-white" style={{ fontSize: '0.8rem' }} />
                             </div>
                             <div className="text-truncate" style={{ flex: 1 }}>
-                              <h6 className="mb-0 text-sm font-weight-bold text-truncate">{notif.from_name || notif.from?.split('@')[0]}</h6>
-                              <p className="mb-0 text-xs text-muted text-truncate">{notif.body || 'Pesan gambar/file'}</p>
+                              <div className="mb-0 text-xs font-weight-bold text-dark text-truncate" style={{ lineHeight: '1.2' }}>{notif.from_name || notif.from?.split('@')[0]}</div>
+                              <div className="mb-0 text-muted text-truncate" style={{ fontSize: '0.65rem', lineHeight: '1.2' }}>{notif.body || 'Pesan gambar/file'}</div>
                             </div>
                           </div>
                         </DropdownItem>
                       ))
                     ) : (
-                      <div className="text-center py-4">
-                        <p className="mb-0 text-muted small">Tidak ada pesan baru.</p>
+                      <div className="text-center py-3">
+                        <i className="ni ni-bell-55 text-muted opacity-3 mb-2 d-block" style={{ fontSize: '1.2rem' }} />
+                        <p className="mb-0 text-muted small" style={{ fontSize: '0.7rem' }}>Tidak ada pesan baru</p>
                       </div>
                     )}
                   </div>
+                  {notifications.length > 0 && (
+                     <DropdownItem to="/admin/messages" tag={Link} className="text-center text-primary text-xs font-weight-bold py-2 bg-light">
+                        Lihat Semua Pesan
+                     </DropdownItem>
+                  )}
                 </DropdownMenu>
               </UncontrolledDropdown>
             </div>

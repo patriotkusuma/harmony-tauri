@@ -44,6 +44,13 @@ const OperationalReport = () => {
         console.log("Exporting data for ", activeTab);
     };
 
+    const handleRefresh = () => {
+        if (activeTab === "orders") fetchOrderReport(true);
+        if (activeTab === "inventory") fetchInventoryReport(true);
+        if (activeTab === "employees") fetchEmployeeReport(true);
+        if (activeTab === "rfid") fetchRfidReport(true);
+    };
+
     return (
         <div className="op-report-page">
             <div className="header bg-gradient-premium pb-8 pt-5 pt-md-8 px-4 position-relative overflow-hidden">
@@ -55,6 +62,8 @@ const OperationalReport = () => {
                             filters={filters} 
                             setFilters={setFilters} 
                             onExport={handleExport} 
+                            onRefresh={handleRefresh}
+                            loading={loading}
                         />
 
                         {/* Summary Metrics Section */}
@@ -144,6 +153,7 @@ const OperationalReport = () => {
                                 <InventoryUsageTable 
                                     data={inventoryReports.data} 
                                     lowStockAlerts={inventoryReports.lowStockAlerts} 
+                                    aiInsight={inventoryReports.aiInsight}
                                     loading={loading} 
                                 />
                             </TabPane>

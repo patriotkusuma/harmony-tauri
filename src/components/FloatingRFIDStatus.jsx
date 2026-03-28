@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { useMQTTRFID } from '../hooks/useMQTTRFID';
+import { isTauriRuntime } from '../services/runtime';
 
 const FloatingRFIDStatus = () => {
-  const { connected, connecting, error, mode, devices } = useMQTTRFID({ enabled: false });
+  const { connected, connecting, error, mode, devices, isDisabled } = useMQTTRFID({ enabled: false });
   const [expanded, setExpanded] = useState(false);
+
+  // Tidak tampilkan widget sama sekali di browser biasa (bukan Tauri/Electron)
+  if (!isTauriRuntime() || isDisabled) return null;
 
   // If there's an error and not connected
   const isError = error && !connected;

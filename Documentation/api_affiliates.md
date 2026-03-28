@@ -66,6 +66,34 @@ Mendapatkan semua daftar afiliasi.
 
 ---
 
+## 2.a Mengedit Data Partner Afiliasi
+Memperbarui informasi partner afiliasi yang sudah ada.
+
+- **Endpoint:** `PUT /api/v2/affiliates/:id`
+- **Body / JSON Payload:** (Sama dengan format Create, isi parameter yang ingin diubah)
+- **Response (200 OK):**
+```json
+{
+  "message": "Affiliate updated successfully",
+  "data": { ... }
+}
+```
+
+---
+
+## 2.b Menghapus Partner Afiliasi
+Menghapus data partner afiliasi yang sudah tidak aktif.
+
+- **Endpoint:** `DELETE /api/v2/affiliates/:id`
+- **Response (200 OK):**
+```json
+{
+  "message": "Affiliate deleted successfully"
+}
+```
+
+---
+
 ## 3. Mengatur Fee Layanan
 Mengatur besaran fee per jenis cucian untuk tipe afiliasi tertentu.
 
@@ -115,10 +143,37 @@ Mendapatkan konfigurasi fee layanan berdasarkan jenis afiliasi.
 
 ---
 
+## 4.a Mengedit Skema Fee Layanan
+Memperbarui skema konfigurasi fee afiliasi.
+
+- **Endpoint:** `PUT /api/v2/affiliates/fees/:id`
+- **Body / JSON Payload:** (Sama seperti Set Fee / Create Fee)
+- **Response (200 OK):**
+```json
+{
+  "message": "Fee updated successfully"
+}
+```
+
+---
+
+## 4.b Menghapus Skema Fee Layanan
+Menghapus konfigurasi fee layanan, misalnya ketika promo dihentikan.
+
+- **Endpoint:** `DELETE /api/v2/affiliates/fees/:id`
+- **Response (200 OK):**
+```json
+{
+  "message": "Fee deleted successfully"
+}
+```
+
+---
+
 ## 5. Mendapatkan Riwayat Komisi
 Mendapatkan laporan riwayat komisi per pengguna afiliasi.
 
-- **Endpoint:** `GET /api/v2/affiliates/:affiliate_id/commissions`
+- **Endpoint:** `GET /api/v2/affiliates/:id/commissions`
 - **Query Parameter (Pilihan):**
   - `status`: Filter status komisi ("pending", "verified", "paid", "canceled")
 - **Response (200 OK):**
@@ -167,6 +222,101 @@ Tandai komisi telah dibayarkan ke partner (dicairkan).
   "message": "Commission paid successfully"
 }
 ```
+
+## 8. Integrasi dengan Manajemen Pelanggan (Customer)
+Untuk menautkan seorang pelanggan kos dengan sebuah afiliasi pengurus kos, sistem mendukung parameter `id_affiliate` pada semua versi API Customer.
+
+### A. API Customer V2 (`/api/v2/customer`)
+Request Body (`POST` atau `PUT`):
+```json
+{
+  "nama": "Mahasiswa A",
+  "id_affiliate": 1,
+  "is_active_resident": true
+}
+```
+
+### B. API Customer Legacy (`/api/customer/create`)
+Request Body (`POST`):
+```json
+{
+  "nama": "Mahasiswa B",
+  "telpon": "0812...",
+  "id_affiliate": 1
+}
+```
+
+---
+
+## 9. Mendapatkan Daftar Pelanggan per Afiliasi
+Melihat siapa saja pelanggan yang terdaftar di bawah pengurus kos tertentu.
+
+- **Endpoint:** `GET /api/v2/affiliates/:id/customers`
+- **Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "id": 10,
+      "nama": "Andi Mahasiswa",
+      "telpon": "0812345678",
+      "alamat": "Kamar 102"
+    }
+  ]
+}
+```
+
+---
+
+## 10. Menghubungkan Daftar Pelanggan (Bulk Link)
+Menghubungkan banyak pelanggan sekaligus ke seorang pengurus kos.
+
+- **Endpoint:** `POST /api/v2/affiliates/:id/customers`
+- **Body / JSON Payload:**
+```json
+{
+  "customer_ids": [10, 11, 12]
+}
+```
+- **Response (200 OK):**
+```json
+{
+  "message": "Customers linked successfully"
+}
+```
+
+---
+
+## 11. Mendapatkan Daftar Transaksi per Affiliate
+Melihat riwayat pesanan yang dilakukan oleh customer di bawah affiliate ini beserta komisi yang dihasilkan.
+
+- **Endpoint:** `GET /api/v2/affiliates/:id/transactions`
+- **Response (200 OK):**
+```json
+{
+  "data": [
+    {
+      "order_id": 105,
+      "kode_pesan": "HRMN-12345678",
+      "customer_id": 32,
+      "customer_nama": "Andi Mahasiswa",
+      "total_harga": 35000,
+      "commission": 2500,
+      "created_at": "2026-03-21T10:30:00Z"
+    }
+  ]
+}
+```
+
+---
+
+## 12. Mekanisme Pencatatan Otomatis (Automated Recording)
+Sistem sekarang sudah mendukung pencatatan komisi otomatis tanpa perlu memanggil API komisi secara manual:
+
+1. **Trigger Baru Pesanan**: Setiap kali pesanan dibuat (baik melalui API V2 `CreateOrderWithBill` maupun API Legacy `StorePesanan`), sistem akan secara otomatis mengecek apakah pelanggan terhubung dengan Afiliasi aktif.
+2. **Kalkulasi Fee**: Sistem akan mengambil aturan fee (Fee Rules) yang sesuai dengan layanan yang dipesan dan menghitung nilai komisi secara real-time berdasarkan biaya layanan tersebut.
+3. **Status Pending**: Komisi baru akan dicatat dengan status `pending` dan akan muncul di daftar komisi afiliator.
+4. **Idempotensi**: Sistem menjamin tidak ada pencatatan ganda untuk ID Pesanan yang sama, mencegah komisi ganda saat status pesanan diperbarui.
 
 ---
 

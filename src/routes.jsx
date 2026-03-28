@@ -42,8 +42,18 @@ import WhatsAppPayloadSettings from "views/pages/WhatsAppPayloadSettings";
 import OperationalReport from "views/pages/OperationalReport";
 import AffiliateManagement from "views/pages/AffiliateManagement";
 import SupplierManagement from "views/pages/SupplierManagement";
+import CustomerManagement from "views/pages/CustomerManagement";
+import SystemSettings from "views/pages/SystemSettings";
+import AiChat from "views/pages/AiChat";
 
 var routes = [
+  {
+    path: "/customers",
+    name: "Manajemen Pelanggan",
+    icon: "fas fa-users text-primary",
+    component: <CustomerManagement />,
+    layout: "/admin",
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -177,6 +187,22 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: <Login />,
     layout: "/auth",
+  },
+  {
+    path: "/ai-chat",
+    name: "AI Assistant",
+    icon: "fas fa-robot text-purple",
+    component: <AiChat />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+  },
+  {
+    path: "/system-settings",
+    name: "Pengaturan Sistem",
+    icon: "fas fa-cogs text-blue",
+    component: <SystemSettings />,
+    layout: "/admin",
+    role: ["admin", "owner"],
   }
 ];
 export default routes;

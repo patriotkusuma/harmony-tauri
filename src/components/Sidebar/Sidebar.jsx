@@ -372,6 +372,14 @@ const Sidebar = (props) => {
           {/* Heading */}
           <h6 className="navbar-heading text-muted">Pengaturan Sistem</h6>
           <Nav navbar className="mb-md-3">
+            {user !== null && (user.role === "admin" || user.role === "owner") && (
+              <NavItem>
+                <NavLink to="/admin/system-settings" tag={NavLinkRRD} onClick={closeCollapse}>
+                  <i className="fas fa-cogs text-blue" />
+                  <span className="ms-2">Konfigurasi Inti</span>
+                </NavLink>
+              </NavItem>
+            )}
             <NavItem>
               <NavLink to="/admin/messages" tag={NavLinkRRD} onClick={closeCollapse}>
                 <i className="fas fa-comments text-cyan" />

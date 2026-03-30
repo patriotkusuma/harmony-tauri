@@ -138,6 +138,7 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
           {isAdminOrOwner && <SbItem to="/admin/service-revenue"   icon="fas fa-file-invoice-dollar" label="Service & Revenue"   onClick={closeMobile} />}
           <SbItem to="/admin/whatsapp-payload"    icon="fab fa-whatsapp"             label="WhatsApp Payload"       onClick={closeMobile} />
           <SbItem to="/admin/notification-setting" icon="fas fa-bell"               label="Pengaturan Notifikasi"  onClick={closeMobile} />
+          {isAdminOrOwner && <SbItem to="/admin/webhook-logs"      icon="fas fa-plug"                 label="Webhook Logs"           onClick={closeMobile} />}
           <SbItem to="/admin/rfid"                icon="fas fa-id-card"              label="RFID Attach/Detach"     onClick={closeMobile} />
           <SbItem to="/admin/rfid-cards"          icon="fas fa-credit-card"          label="RFID Kartu Master"      onClick={closeMobile} />
           {isAdminOrOwner && <SbItem to="/admin/system-settings"  icon="fas fa-cogs"                 label="Konfigurasi Inti"       onClick={closeMobile} />}

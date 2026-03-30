@@ -45,6 +45,7 @@ import SupplierManagement from "views/pages/SupplierManagement";
 import CustomerManagement from "views/pages/CustomerManagement";
 import SystemSettings from "views/pages/SystemSettings";
 import AiChat from "views/pages/AiChat";
+import WebhookLogs from "views/pages/WebhookLogs";
 
 var routes = [
   {
@@ -201,6 +202,14 @@ var routes = [
     name: "Pengaturan Sistem",
     icon: "fas fa-cogs text-blue",
     component: <SystemSettings />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+  },
+  {
+    path: "/webhook-logs",
+    name: "Webhook Logs",
+    icon: "fas fa-plug text-danger",
+    component: <WebhookLogs />,
     layout: "/admin",
     role: ["admin", "owner"],
   }

@@ -24,7 +24,7 @@ const PayableOrderItem = ({ pesanan }) => {
                     {detailPesan.qty}
                     {detailPesan.jenis_cuci.satuan === 'Kg' ? ' Kg' : (detailPesan.jenis_cuci.satuan === 'Pcs' ? ' Pcs' : ` ${detailPesan.jenis_cuci.satuan}`)}
                     {' x '}
-                    <RupiahFormater value={detailPesan.jenis_cuci.harga} />
+                    <RupiahFormater value={detailPesan.harga} />
                   </small>
                 </div>
               </Col>

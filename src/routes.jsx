@@ -40,12 +40,14 @@ import PurchaseManagement from "views/pages/PurchaseManagement";
 import InventoryManagement from "views/pages/InventoryManagement";
 import WhatsAppPayloadSettings from "views/pages/WhatsAppPayloadSettings";
 import OperationalReport from "views/pages/OperationalReport";
+import AccountingReport from "views/pages/AccountingReport";
 import AffiliateManagement from "views/pages/AffiliateManagement";
 import SupplierManagement from "views/pages/SupplierManagement";
 import CustomerManagement from "views/pages/CustomerManagement";
 import SystemSettings from "views/pages/SystemSettings";
 import AiChat from "views/pages/AiChat";
 import WebhookLogs from "views/pages/WebhookLogs";
+import IoTDeviceManagement from "views/pages/IoTDeviceManagement";
 
 var routes = [
   {
@@ -67,6 +69,14 @@ var routes = [
     name: "Laporan Operasional",
     icon: "fas fa-chart-line text-info",
     component: <OperationalReport />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+  },
+  {
+    path: "/accounting-report",
+    name: "Laporan Akuntansi",
+    icon: "fas fa-file-invoice-dollar text-emerald",
+    component: <AccountingReport />,
     layout: "/admin",
     role: ["admin", "owner"],
   },
@@ -99,6 +109,14 @@ var routes = [
     icon: "fas fa-microchip text-success",
     component: <OrderLogTimelinePage />,
     layout: "/admin",
+  },
+  {
+    path: "/iot-management",
+    name: "IoT & Device",
+    icon: "fas fa-robot text-primary",
+    component: <IoTDeviceManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
   },
   {
     path: "/rfid",

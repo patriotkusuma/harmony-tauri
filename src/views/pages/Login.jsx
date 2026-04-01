@@ -43,6 +43,8 @@ const Login = () => {
 
                 if (res.data.user) {
                     localStorage.setItem("user", JSON.stringify(res.data.user));
+                    // Simpan RFID yang digunakan untuk login agar bisa digunakan sebagai filter navigasi
+                    localStorage.setItem("active_rfid", uid);
                 }
 
                 toast.update(loadingToast, {

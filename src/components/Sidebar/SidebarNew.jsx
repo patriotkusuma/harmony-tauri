@@ -4,35 +4,16 @@ import { Link, useLocation } from "react-router-dom";
 import { PropTypes } from "prop-types";
 import axios from "../../services/axios-instance";
 import Cookies from "js-cookie";
+import SidebarNavSection from "components/molecules/sidebar/SidebarNavSection";
 import "../../assets/css/sidebar-new.css";
 
 const THEME_KEY = "theme";
-
-/* ── Micro components ─────────────────────────────────────────── */
-
-const SbItem = ({ to, icon, label, onClick }) => {
-  const { pathname } = useLocation();
-  const isActive = pathname === to || pathname.startsWith(to + "/");
-  return (
-    <Link to={to} onClick={onClick} className={`sb-item${isActive ? " active" : ""}`}>
-      <span className="sb-item-icon"><i className={icon} /></span>
-      <span className="sb-item-label">{label}</span>
-    </Link>
-  );
-};
-
-const SbHeading = ({ text }) => (
-  <div className="sb-heading">{text}</div>
-);
-
-const SbDivider = () => <div className="sb-divider" />;
 
 /* ── Main Component ───────────────────────────────────────────── */
 
 const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen, setMobileOpen }) => {
   const [isDark, setIsDark] = useState(localStorage.getItem(THEME_KEY) === "dark");
 
-  // Internal fallback if mobileOpen is not controlled from outside
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const isMobileOpen   = mobileOpen   !== undefined ? mobileOpen   : internalMobileOpen;
   const setIsMobileOpen = setMobileOpen !== undefined ? setMobileOpen : setInternalMobileOpen;
@@ -42,13 +23,11 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
     localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
   }, [isDark]);
 
-  // Close sidebar on route change (mobile)
   const { pathname } = useLocation();
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
 
-  // Prevent body scroll when mobile sidebar is open
   useEffect(() => {
     if (isMobileOpen) {
       document.body.style.overflow = "hidden";
@@ -69,11 +48,44 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
     }
   };
 
-  const isAdminOrOwner = user && (user.role === "admin" || user.role === "owner");
+  const userRole = user?.role || "";
+
+  const sectionOperasional = [
+    { to: "/pembayaran", icon: "fas fa-cash-register", label: "Pembayaran Selesai" },
+    { to: "/admin/riwayat", icon: "fas fa-history", label: "Riwayat Transaksi" },
+    { to: "/admin/bayar", icon: "fas fa-money-check-alt", label: "Customer Bayar" },
+    { to: "/admin/deposit", icon: "fas fa-piggy-bank", label: "Saldo / Deposit" },
+  ];
+
+  const sectionManajemen = [
+    { to: "/admin/dashboard", icon: "fas fa-tachometer-alt", label: "Dashboard Utama" },
+    { to: "/admin/ai-chat", icon: "fas fa-robot", label: "AI Assistant", role: ["admin", "owner"] },
+    { to: "/admin/customers", icon: "fas fa-users", label: "Manajemen Pelanggan" },
+    { to: "/admin/operational-report", icon: "fas fa-chart-line", label: "Laporan Operasional", role: ["admin", "owner"] },
+    { to: "/admin/accounting-report", icon: "fas fa-file-invoice-dollar", label: "Laporan Akuntansi", role: ["admin", "owner"] },
+    { to: "/admin/suppliers", icon: "fas fa-truck-loading", label: "Supplier & Vendor", role: ["admin", "owner"] },
+    { to: "/admin/purchases", icon: "fas fa-shopping-basket", label: "Belanja Kebutuhan", role: ["admin", "owner"] },
+    { to: "/admin/inventory", icon: "fas fa-boxes", label: "Stok Inventaris", role: ["admin", "owner"] },
+    { to: "/admin/employees", icon: "fas fa-users", label: "Manajemen Pegawai", role: ["admin", "owner"] },
+    { to: "/admin/affiliates", icon: "fas fa-handshake", label: "Afiliasi & Partner", role: ["admin", "owner"] },
+    { to: "/admin/order-timeline", icon: "fas fa-microchip", label: "Log Mesin Aktif" },
+  ];
+
+  const sectionSettings = [
+    { to: "/admin/messages", icon: "fas fa-comments", label: "Broadcast Messages" },
+    { to: "/admin/blog", icon: "fas fa-newspaper", label: "Blog & Artikel" },
+    { to: "/admin/service-revenue", icon: "fas fa-file-invoice-dollar", label: "Service & Revenue", role: ["admin", "owner"] },
+    { to: "/admin/whatsapp-payload", icon: "fab fa-whatsapp", label: "WhatsApp Payload" },
+    { to: "/admin/notification-setting", icon: "fas fa-bell", label: "Pengaturan Notifikasi" },
+    { to: "/admin/webhook-logs", icon: "fas fa-plug", label: "Webhook Logs", role: ["admin", "owner"] },
+    { to: "/admin/rfid", icon: "fas fa-id-card", label: "RFID Attach/Detach" },
+    { to: "/admin/rfid-cards", icon: "fas fa-credit-card", label: "RFID Kartu Master" },
+    { to: "/admin/iot-management", icon: "fas fa-robot", label: "IoT & Device", role: ["admin", "owner"] },
+    { to: "/admin/system-settings", icon: "fas fa-cogs", label: "Konfigurasi Inti", role: ["admin", "owner"] },
+  ];
 
   return (
     <>
-      {/* ── Backdrop overlay ───────────────────────────────────── */}
       <div
         className={`sb-overlay${isMobileOpen ? " show" : ""}`}
         onClick={closeMobile}
@@ -84,7 +96,6 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
            role="navigation"
            aria-label="Sidebar navigasi utama"
       >
-        {/* Mobile close button (inside sidebar, top right) */}
         <button
           className="sb-mobile-close d-md-none"
           onClick={closeMobile}
@@ -93,61 +104,39 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
           <i className="fas fa-times" />
         </button>
 
-        {/* ── Brand / Logo ─────────────────────────────────────── */}
         <Link to="/admin/dashboard" className="sb-brand" onClick={closeMobile}>
           {logo && <img src={logo.imgSrc} alt={logo.imgAlt} />}
         </Link>
 
-        {/* ── Scrollable body ──────────────────────────────────── */}
         <div className="sb-scroll">
-
-          {/* POS Button */}
           <Link to="/pesanan" className="sb-pos-btn" onClick={closeMobile} style={{ marginTop: "1rem" }}>
             <i className="fas fa-shopping-basket" />
             <span className="sb-pos-label">Buka Kasir POS</span>
           </Link>
 
-          {/* ── Section: Kasir & Operasional */}
-          <SbHeading text="Kasir & Operasional" />
-          <SbItem to="/pembayaran"       icon="fas fa-cash-register"       label="Pembayaran Selesai"     onClick={closeMobile} />
-          <SbItem to="/admin/riwayat"    icon="fas fa-history"             label="Riwayat Transaksi"      onClick={closeMobile} />
-          <SbItem to="/admin/bayar"      icon="fas fa-money-check-alt"     label="Customer Bayar"         onClick={closeMobile} />
-          <SbItem to="/admin/deposit"    icon="fas fa-piggy-bank"          label="Saldo / Deposit"        onClick={closeMobile} />
+          <SidebarNavSection 
+            heading="Kasir & Operasional" 
+            items={sectionOperasional} 
+            userRole={userRole} 
+            onClick={closeMobile} 
+          />
 
-          <SbDivider />
+          <SidebarNavSection 
+            heading="Manajemen & Laporan" 
+            items={sectionManajemen} 
+            userRole={userRole} 
+            onClick={closeMobile} 
+          />
 
-          {/* ── Section: Manajemen & Laporan */}
-          <SbHeading text="Manajemen & Laporan" />
-          <SbItem to="/admin/dashboard"          icon="fas fa-tachometer-alt"        label="Dashboard Utama"        onClick={closeMobile} />
-          {isAdminOrOwner && <SbItem to="/admin/ai-chat"            icon="fas fa-robot"                label="AI Assistant"           onClick={closeMobile} />}
-          <SbItem to="/admin/customers"          icon="fas fa-users"                 label="Manajemen Pelanggan"    onClick={closeMobile} />
-          {isAdminOrOwner && <SbItem to="/admin/operational-report" icon="fas fa-chart-line"     label="Laporan Operasional"    onClick={closeMobile} />}
-          {isAdminOrOwner && <SbItem to="/admin/suppliers"          icon="fas fa-truck-loading"   label="Supplier & Vendor"      onClick={closeMobile} />}
-          {isAdminOrOwner && <SbItem to="/admin/purchases"          icon="fas fa-shopping-basket" label="Belanja Kebutuhan"      onClick={closeMobile} />}
-          {isAdminOrOwner && <SbItem to="/admin/inventory"          icon="fas fa-boxes"           label="Stok Inventaris"        onClick={closeMobile} />}
-          {isAdminOrOwner && <SbItem to="/admin/employees"          icon="fas fa-users"           label="Manajemen Pegawai"      onClick={closeMobile} />}
-          {isAdminOrOwner && <SbItem to="/admin/affiliates"         icon="fas fa-handshake"       label="Afiliasi & Partner"     onClick={closeMobile} />}
-          <SbItem to="/admin/order-timeline"     icon="fas fa-microchip"             label="Log Mesin Aktif"        onClick={closeMobile} />
-
-          <SbDivider />
-
-          {/* ── Section: Pengaturan Sistem */}
-          <SbHeading text="Pengaturan Sistem" />
-          <SbItem to="/admin/messages"            icon="fas fa-comments"             label="Broadcast Messages"     onClick={closeMobile} />
-          <SbItem to="/admin/blog"                icon="fas fa-newspaper"            label="Blog & Artikel"         onClick={closeMobile} />
-          {isAdminOrOwner && <SbItem to="/admin/service-revenue"   icon="fas fa-file-invoice-dollar" label="Service & Revenue"   onClick={closeMobile} />}
-          <SbItem to="/admin/whatsapp-payload"    icon="fab fa-whatsapp"             label="WhatsApp Payload"       onClick={closeMobile} />
-          <SbItem to="/admin/notification-setting" icon="fas fa-bell"               label="Pengaturan Notifikasi"  onClick={closeMobile} />
-          {isAdminOrOwner && <SbItem to="/admin/webhook-logs"      icon="fas fa-plug"                 label="Webhook Logs"           onClick={closeMobile} />}
-          <SbItem to="/admin/rfid"                icon="fas fa-id-card"              label="RFID Attach/Detach"     onClick={closeMobile} />
-          <SbItem to="/admin/rfid-cards"          icon="fas fa-credit-card"          label="RFID Kartu Master"      onClick={closeMobile} />
-          {isAdminOrOwner && <SbItem to="/admin/system-settings"  icon="fas fa-cogs"                 label="Konfigurasi Inti"       onClick={closeMobile} />}
-
+          <SidebarNavSection 
+            heading="Pengaturan Sistem" 
+            items={sectionSettings} 
+            userRole={userRole} 
+            onClick={closeMobile} 
+          />
         </div>
 
-        {/* ── Footer Actions ────────────────────────────────────── */}
         <div style={{ borderTop: "1px solid var(--sb-border)", padding: "0.75rem 1rem", display: "flex", gap: "0.5rem", flexShrink: 0 }}>
-          {/* Collapse Toggle — hidden on mobile since we hide sidebar by default */}
           <button
             onClick={toggleSidebar}
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -165,7 +154,6 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
             {!isCollapsed && <span>Ciutkan</span>}
           </button>
 
-          {/* Dark Mode Toggle */}
           <button
             onClick={() => setIsDark(!isDark)}
             title={isDark ? "Light Mode" : "Dark Mode"}
@@ -181,7 +169,6 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
             <i className={`fas ${isDark ? "fa-sun" : "fa-moon"}`} />
           </button>
 
-          {/* Logout */}
           <button
             onClick={logout}
             title="Logout"
@@ -200,7 +187,6 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
 
       </nav>
 
-      {/* ── Mobile Bottom Nav Bar ─────────────────────────────── */}
       <nav className="sb-bottom-nav d-md-none" aria-label="Navigasi bawah mobile">
         <Link to="/pesanan" className={`sb-bottom-item${pathname === '/pesanan' ? ' active' : ''}`}>
           <i className="fas fa-shopping-basket" />

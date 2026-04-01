@@ -365,6 +365,22 @@ const Sidebar = (props) => {
                 <span className="ms-2">Log Mesin Aktif</span>
               </NavLink>
             </NavItem>
+            {user !== null && (user.role === "admin" || user.role === "owner") && (
+              <>
+                <NavItem>
+                  <NavLink to="/admin/operational-report" tag={NavLinkRRD} onClick={closeCollapse}>
+                    <i className="fas fa-chart-line text-info" />
+                    <span className="ms-2">Laporan Operasional</span>
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink to="/admin/accounting-report" tag={NavLinkRRD} onClick={closeCollapse}>
+                    <i className="fas fa-file-invoice-dollar text-teal" />
+                    <span className="ms-2">Laporan Akuntansi</span>
+                  </NavLink>
+                </NavItem>
+              </>
+            )}
           </Nav>
 
           <hr className="my-3" />

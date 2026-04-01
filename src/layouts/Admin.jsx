@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { Bounce, toast } from "react-toastify";
 import Deposit from "views/pages/Deposit";
 import { useRawWebSocket } from "services/RawWebSocketContext";
+import { useMQTTRFID } from "hooks/useMQTTRFID";
 
 import Message from "views/pages/Message";
 import NotificationSetting from "views/pages/NotificationSetting";
@@ -69,6 +70,53 @@ const Admin = (props) => {
   });
 
   const { reconnect } = useRawWebSocket();
+
+  // Global RFID Navigation Logic
+  useMQTTRFID({
+    enabled: true,
+    onUID: (uid) => {
+      const scanned = (uid || "").trim().toUpperCase();
+      const storedRfid = localStorage.getItem("active_rfid");
+      const userRfid = (auth?.rfid_code || auth?.pegawai?.rfid_code || storedRfid || "").trim().toUpperCase();
+      
+      console.log(`[RFID-Debug] Scanned: "${scanned}" | Stored: "${userRfid}"`);
+
+      if (!userRfid) {
+          // Jika sistem tidak punya referensi RFID user ini
+          toast.warning("Akun Anda belum terikat ke RFID. Login ulang melalui RFID dulu.", { position: "top-center" });
+          return;
+      }
+
+      // 2. Security Check: Harus sama persis
+      if (scanned !== userRfid) {
+        console.warn(`[RFID-Shortcut] Mismatch: Scanned ${scanned} vs Expected ${userRfid}`);
+        // Tampilkan pesan error agar user tahu kenapa tidak pindah
+        toast.error(`Akses Ditolak: Kartu ${scanned} bukan milik ${auth?.name || 'Anda'}.`, {
+            position: "top-center",
+            autoClose: 3000
+        });
+        return;
+      }
+
+      // 3. Cek apakah sudah di halaman kasir atau halaman khusus rfid
+      const currentPath = location.pathname;
+      const isRfidPage = currentPath.startsWith('/pesanan') || 
+                         currentPath.startsWith('/admin/rfid') || 
+                         currentPath.startsWith('/admin/rfid-cards') ||
+                         currentPath.startsWith('/admin/employees');
+      
+      if (!isRfidPage) {
+        toast.success(`🚀 Menuju Kasir...`, {
+          position: "top-center",
+          autoClose: 1500
+        });
+        // Paksa navigasi
+        setTimeout(() => {
+            navigate('/pesanan', { state: { scannedRFID: scanned } });
+        }, 100);
+      }
+    }
+  });
 
     const headers = {
         "Content-Type": "application/json",

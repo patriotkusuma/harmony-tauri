@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { whatsappInstance } from 'services/whatsapp-instance';
 import api from 'services/axios-instance';
+import { formatImageUrl } from 'utils/formatImageUrl';
 import 'assets/css/chatui.css';
 import RightPanel from './RightPannel';
 import { useRawWebSocket } from 'services/RawWebSocketContext';
@@ -31,7 +32,7 @@ const ContactAvatar = ({ jid, name }) => {
   }, [jid]);
 
   if (avatarUrl) {
-    return <img src={avatarUrl} alt="avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />;
+    return <img src={formatImageUrl(avatarUrl)} alt="avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />;
   }
   return <>{name?.charAt(0) || jid?.charAt(0) || '?'}</>;
 };

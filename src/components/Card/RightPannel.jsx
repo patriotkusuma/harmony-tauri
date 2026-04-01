@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { whatsappInstance } from 'services/whatsapp-instance';
+import api from 'services/axios-instance';
+import { formatImageUrl } from 'utils/formatImageUrl';
 
 const formatWhatsAppText = (text) => {
     if (!text) return '';
@@ -55,7 +57,7 @@ const HeaderAvatar = ({ jid, name }) => {
   }, [jid]);
 
   if (avatarUrl) {
-    return <img src={avatarUrl} alt="avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />;
+    return <img src={formatImageUrl(avatarUrl)} alt="avatar" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />;
   }
   return <>{name?.charAt(0) || jid?.charAt(0) || 'N'}</>;
 };
@@ -136,6 +138,8 @@ const RightPanel = ({ messages, selectedContact, newMessage, setNewMessage, onSe
     const [isDragging, setIsDragging] = useState(false);
     const [startPos, setStartPos] = useState({ x: 0, y: 0 });
     const [visibleMessagesCount, setVisibleMessagesCount] = useState(20);
+    const [orderDropdownOpen, setOrderDropdownOpen] = useState(false);
+    const [isUpdatingOrder, setIsUpdatingOrder] = useState(false);
 
     // Context Menu State
     const [contextMenu, setContextMenu] = useState(null);
@@ -305,51 +309,161 @@ const RightPanel = ({ messages, selectedContact, newMessage, setNewMessage, onSe
       );
   }
 
+  const handleUpdateOrderStatus = async (kodePesan, newStatus) => {
+    if (isUpdatingOrder) return;
+    setIsUpdatingOrder(true);
+    try {
+      await api.put(`/api/v2/pesanan/status/${kodePesan}`, { status: newStatus });
+      alert(`Pesanan ${kodePesan} berhasil diubah ke ${newStatus}`);
+      // Refresh selectedContact data? Usually ChatUi will handle the refresh via WebSocket or Re-fetching
+      // For now, assume it's done. Close dropdown.
+      setOrderDropdownOpen(false);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      alert('Gagal mengubah status pesanan');
+    } finally {
+      setIsUpdatingOrder(false);
+    }
+  };
+
   return (
     <div className="right-panel">
-      <div className="chat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="chat-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.8rem 1.2rem', backgroundColor: '#ffffff', borderBottom: '1px solid #f1f5f9' }}>
         <div style={{ display: 'flex', alignItems: 'center', flexGrow: 1, minWidth: 0 }}>
           <div className="chat-header-avatar">
             <HeaderAvatar jid={selectedContact?.jid} name={selectedContact?.display_name || selectedContact?.name} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <h2 className="chat-header-name" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-              {selectedContact ? (selectedContact.display_name || selectedContact.name || selectedContact.jid) : 'Pilih Kontak'}
-            </h2>
-            {selectedContact?.enriched_info?.keterangan && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h2 className="chat-header-name" style={{ margin: 0, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', fontSize: '1.1rem', fontWeight: 600 }}>
+                {selectedContact ? (selectedContact.display_name || selectedContact.name || selectedContact.jid) : 'Pilih Kontak'}
+              </h2>
+              {selectedContact?.jid && (
+                <span style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 400 }}>
+                  ({selectedContact.jid.split('@')[0]})
+                </span>
+              )}
+            </div>
+            {(selectedContact?.enriched_info?.keterangan || selectedContact?.active_orders?.length > 0) && (
               <span style={{ fontSize: '0.75rem', color: '#64748b', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                {selectedContact.enriched_info.keterangan}
+                {selectedContact?.enriched_info?.keterangan || `${selectedContact?.active_orders?.length || 0} Pesanan Aktif`}
               </span>
             )}
           </div>
         </div>
 
-        {selectedContact?.enriched_info?.has_active_order && (
-          <div style={{ marginLeft: '1rem', flexShrink: 0 }}>
-            {selectedContact.enriched_info.active_orders.map(order => (
-              <div key={order.id} style={{ 
-                backgroundColor: '#f0fdf4', 
-                border: '1px solid #bbf7d0', 
-                padding: '0.3rem 0.6rem', 
-                borderRadius: '0.5rem',
-                fontSize: '0.75rem',
-                color: '#166534',
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <span style={{ fontWeight: 600 }}>{order.kode_pesan}</span>
-                <span>{order.status} - Rp {order.total_harga.toLocaleString('id-ID')}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          {selectedContact?.active_orders && selectedContact.active_orders.length > 0 && (
+            <div style={{ position: 'relative' }}>
+              <button 
+                onClick={() => setOrderDropdownOpen(!orderDropdownOpen)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: '#eff6ff',
+                  color: '#2563eb',
+                  border: '1px solid #bfdbfe',
+                  padding: '0.4rem 0.8rem',
+                  borderRadius: '20px',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <i className="fas fa-shopping-basket"></i>
+                {selectedContact.active_orders.length} Order Aktif
+                <i className={`fas fa-chevron-${orderDropdownOpen ? 'up' : 'down'}`} style={{ fontSize: '0.7rem' }}></i>
+              </button>
 
-        {isMobile && (
-          <button className="back-button" style={{ marginLeft: '1rem', flexShrink: 0 }} onClick={() => setShowChat(false)}>
-            ← Kembali
-          </button>
-        )}
-      </div>
+              {orderDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: '120%',
+                  right: 0,
+                  width: '320px',
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                  border: '1px solid #e2e8f0',
+                  zIndex: 1000,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ padding: '0.8rem 1rem', borderBottom: '1px solid #f1f5f9', backgroundColor: '#f8fafc' }}>
+                    <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 600 }}>Daftar Pesanan Aktif</h4>
+                  </div>
+                  <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    {selectedContact.active_orders.map(order => (
+                      <div key={order.id} style={{ padding: '1rem', borderBottom: '1px solid #f1f5f9' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                          <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1e293b' }}>{order.kode_pesan}</span>
+                          <span style={{ 
+                            fontSize: '0.7rem', 
+                            padding: '2px 8px', 
+                            borderRadius: '12px', 
+                            backgroundColor: order.status === 'selesai' ? '#f0fdf4' : '#fff7ed',
+                            color: order.status === 'selesai' ? '#166534' : '#9a3412',
+                            fontWeight: 600,
+                            textTransform: 'uppercase'
+                          }}>
+                            {order.status}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.8rem' }}>
+                          Total: Rp {order.total_harga?.toLocaleString('id-ID')} | {order.status_pembayaran}
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button 
+                            disabled={isUpdatingOrder || order.status === 'selesai'}
+                            onClick={() => handleUpdateOrderStatus(order.kode_pesan, 'selesai')}
+                            style={{
+                              flex: 1,
+                              padding: '0.4rem',
+                              fontSize: '0.75rem',
+                              borderRadius: '6px',
+                              backgroundColor: '#22c55e',
+                              color: 'white',
+                              border: 'none',
+                              cursor: order.status === 'selesai' ? 'not-allowed' : 'pointer',
+                              opacity: order.status === 'selesai' ? 0.6 : 1,
+                              fontWeight: 600
+                            }}
+                          >
+                            Set Selesai
+                          </button>
+                          <button 
+                            disabled={isUpdatingOrder}
+                            onClick={() => handleUpdateOrderStatus(order.kode_pesan, 'diambil')}
+                            style={{
+                              flex: 1,
+                              padding: '0.4rem',
+                              fontSize: '0.75rem',
+                              borderRadius: '6px',
+                              backgroundColor: '#3b82f6',
+                              color: 'white',
+                              border: 'none',
+                              cursor: 'pointer',
+                              fontWeight: 600
+                            }}
+                          >
+                            Set Diambil
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {isMobile && (
+            <button className="back-button" onClick={() => setShowChat(false)}>
+              ← Kembali
+            </button>
+          )}
+        </div>
 
       <div id="chat-messages" className="chat-messages">
           {/* Preview Overlay */}

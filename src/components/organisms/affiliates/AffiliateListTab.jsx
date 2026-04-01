@@ -14,6 +14,7 @@ const AffiliateListTab = () => {
   const [activeAffiliate, setActiveAffiliate] = useState(null);
   const [linkedCustomers, setLinkedCustomers] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [totalCommission, setTotalCommission] = useState(0);
   const [searchCust, setSearchCust] = useState("");
   const [allCustomers, setAllCustomers] = useState([]);
   
@@ -51,7 +52,9 @@ const AffiliateListTab = () => {
   const fetchTransactions = async (affiliateId) => {
     try {
       const res = await affiliateService.getTransactions(affiliateId);
-      setTransactions(res.data?.data || []);
+      const data = res.data?.data || {};
+      setTransactions(data.transactions || []);
+      setTotalCommission(data.total_commission || 0);
     } catch (err) {
       toast.error("Gagal memuat riwayat transaksi");
     }
@@ -264,15 +267,24 @@ const AffiliateListTab = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions.length > 0 ? transactions.map((t, idx) => (
-                            <tr key={idx} className="border-bottom-custom text-sm">
-                                <td className="font-weight-bold">{t.kode_pesan}</td>
-                                <td>{t.customer_nama}</td>
-                                <td className="text-end">Rp {t.total_harga?.toLocaleString()}</td>
-                                <td className="text-end text-success font-weight-bold">Rp {t.commission?.toLocaleString()}</td>
-                                <td className="text-center small text-muted">{new Date(t.created_at).toLocaleDateString()}</td>
-                            </tr>
-                        )) : (
+                        {transactions.length > 0 ? (
+                            <>
+                                {transactions.map((t, idx) => (
+                                    <tr key={idx} className="border-bottom-custom text-sm">
+                                        <td className="font-weight-bold">{t.kode_pesan}</td>
+                                        <td>{t.customer_nama}</td>
+                                        <td className="text-end">Rp {t.total_harga?.toLocaleString()}</td>
+                                        <td className="text-end text-success font-weight-bold">Rp {t.commission?.toLocaleString()}</td>
+                                        <td className="text-center small text-muted">{new Date(t.created_at).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                                <tr className="bg-light-soft">
+                                    <td colSpan="3" className="text-end py-3 font-weight-bold">TOTAL PENDAPATAN KOMISI</td>
+                                    <td className="text-end py-3 font-weight-900 text-primary h5 mb-0">Rp {totalCommission?.toLocaleString()}</td>
+                                    <td></td>
+                                </tr>
+                            </>
+                        ) : (
                             <tr>
                                 <td colSpan="5" className="text-center py-4 text-muted">Belum ada riwayat transaksi</td>
                             </tr>
@@ -464,8 +476,11 @@ const AffiliateListTab = () => {
         body.dark-mode .custom-input:focus { border-color: #818cf8 !important; box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2) !important; }
 
         /* Fix Modal Headers in Darkmode */
-        body.dark-mode .dark-modal-ready .modal-content { background-color: #1e293b; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+         body.dark-mode .dark-modal-ready .modal-content { background-color: #1e293b; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         body.dark-mode .dark-modal-ready .modal-header { border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .bg-light-soft { background-color: #f8f9fe; }
+        body.dark-mode .bg-light-soft { background-color: rgba(255,255,255,0.02); }
       `}</style>
     </div>
   );

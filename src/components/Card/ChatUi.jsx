@@ -251,19 +251,19 @@ const filteredContacts = contacts
 
       if (newMessage.trim() === '') return; // Don't send empty messages
       
-      const payload = {
-        phone: selectedContactId,
-        message: newMessage
-      };
+      const formData = new FormData();
+      formData.append('phone', selectedContactId);
+      formData.append('message', newMessage);
 
       if (replyMessageId) {
-        payload.reply_message_id = replyMessageId;
+        formData.append('reply_message_id', replyMessageId);
       }
 
-      const response = await whatsappInstance.post('/send/message', payload,
+      const response = await whatsappInstance.post('/send/message', formData,
         {
           headers: {
-            'X-Device-Id': 'harmony-gebang'
+            'X-Device-Id': 'harmony-gebang',
+            'Content-Type': 'multipart/form-data'
           }
         }
       );

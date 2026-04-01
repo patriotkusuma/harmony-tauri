@@ -464,6 +464,7 @@ const RightPanel = ({ messages, selectedContact, newMessage, setNewMessage, onSe
             </button>
           )}
         </div>
+      </div>
 
       <div id="chat-messages" className="chat-messages">
           {/* Preview Overlay */}

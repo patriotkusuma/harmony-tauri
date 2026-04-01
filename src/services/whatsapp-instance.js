@@ -2,7 +2,7 @@ import axios from "axios";
 import { loginRedirectPath } from "./runtime";
 
 export const whatsappInstance = axios.create({
-    baseURL: "https://wa2.harmonylaundry.my.id/",
+    baseURL: "https://go.harmonylaundry.my.id/api/v2/whatsapp/",
 });
 
 whatsappInstance.interceptors.request.use(

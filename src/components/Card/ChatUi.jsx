@@ -499,13 +499,17 @@ const filteredContacts = contacts
                   </div>
                   <div className="contact-footer" style={{marginTop: '4px'}}>
                     <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}>
-                      {contact?.enriched_info?.has_active_order && (
-                        <span className="badge badge-success me-2" style={{fontSize: '9px', padding: '2px 6px'}}>
-                          <i className="fas fa-shopping-basket me-1"></i> Order Aktif 
-                          {contact.enriched_info.active_orders?.[0]?.status ? ' ('+contact.enriched_info.active_orders[0].status+')' : ''}
+                      {(contact?.active_orders?.length > 0 || contact?.enriched_info?.has_active_order) && (
+                        <span className="badge badge-success me-2" style={{fontSize: '9px', padding: '2px 6px', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                          <i className="fas fa-shopping-basket"></i>
+                          <span>{contact.active_orders?.length || '?'} Order Aktif</span>
+                          {contact.active_orders?.[0]?.status && (
+                            <span style={{opacity: 0.8, fontSize: '8px', borderLeft: '1px solid rgba(255,255,255,0.3)', paddingLeft: '4px'}}>
+                              {contact.active_orders[0].status}
+                            </span>
+                          )}
                         </span>
                       )}
-                      {/* Optional: Add customer type (member/non-member) if needed */}
                     </div>
                   </div>
                 </div>

@@ -34,6 +34,11 @@ const ServiceItemCard = ({ service, isActive, resolvedAccount, onClick, onEdit, 
                 <Badge color="secondary" className="px-2 py-0 x-small" pill style={{ fontSize: '0.6rem' }}>
                   {tipeLabel[service.tipe] || service.tipe}
                 </Badge>
+                {service.category_paket && (
+                   <Badge color="info" className="px-2 py-0 x-small ms-1" pill style={{ fontSize: '0.6rem', background: '#e0f2fe', color: '#0369a1', border: 'none' }}>
+                     {service.category_paket.nama}
+                   </Badge>
+                )}
               </div>
               <div className="small text-muted mb-0 line-clamp-1" style={{ fontSize: '0.75rem' }}>{service.keterangan || "Tanpa keterangan"}</div>
               

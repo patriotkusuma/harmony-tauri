@@ -24,6 +24,7 @@ export const useServiceRevenueStore = create((set, get) => ({
   
   viewMode: "category", // "category" or "list"
   isDetailView: false,
+  priceHistory: [],
 
   setErrorMessage: (message) => set({ errorMessage: message }),
   clearErrorMessage: () => set({ errorMessage: "" }),
@@ -145,6 +146,7 @@ export const useServiceRevenueStore = create((set, get) => ({
         headers: { "Content-Type": "multipart/form-data" }
       });
       get().fetchServices();
+      get().fetchPriceHistory(id);
       return true;
     } catch (err) {
       set({ errorMessage: err.response?.data?.message || "Gagal update jenis cuci" });
@@ -182,6 +184,17 @@ export const useServiceRevenueStore = create((set, get) => ({
     } catch (err) {
       set({ errorMessage: err.response?.data?.message || "Gagal mengunggah gambar" });
       return null;
+    }
+  },
+
+  fetchPriceHistory: async (id) => {
+    set({ isLoading: true });
+    try {
+      const res = await axios.get(`/api/v2/jenis-cuci/${id}/history`);
+      const data = res.data.data?.items || res.data.data || [];
+      set({ priceHistory: data, isLoading: false });
+    } catch (err) {
+      set({ errorMessage: "Gagal mengambil riwayat harga", isLoading: false });
     }
   },
 

@@ -24,23 +24,27 @@ fi
 echo "[deploy] Building web bundle (PUBLIC_URL=/)"
 npm run build:server
 
-if [[ ! -f build/asset-manifest.json ]]; then
-  echo "build/asset-manifest.json tidak ditemukan. Build gagal."
+# Detect main JS/CSS (Vite support)
+if [[ -f build/index.html ]]; then
+  echo "[deploy] Extracting assets from build/index.html (Vite mode)"
+  MAIN_JS=$(grep -oE '/assets/index-[A-Za-z0-9_-]+\.js' build/index.html | head -n 1)
+  MAIN_CSS=$(grep -oE '/assets/index-[A-Za-z0-9_-]+\.css' build/index.html | head -n 1)
+elif [[ -f build/asset-manifest.json ]]; then
+  echo "[deploy] Extracting assets from build/asset-manifest.json (CRA mode)"
+  read -r MAIN_JS MAIN_CSS < <(
+    node -e '
+      const m = require("./build/asset-manifest.json");
+      const files = m.files || {};
+      console.log(files["main.js"] || "", files["main.css"] || "");
+    '
+  )
+else
+  echo "Build output not recognized. Main assets could not be found."
   exit 1
 fi
 
-read -r MAIN_JS MAIN_CSS < <(
-  node -e '
-    const m = require("./build/asset-manifest.json");
-    const files = m.files || {};
-    const js = files["main.js"] || "";
-    const css = files["main.css"] || "";
-    console.log(js, css);
-  '
-)
-
 if [[ -z "$MAIN_JS" || -z "$MAIN_CSS" ]]; then
-  echo "Gagal baca main.js/main.css dari asset-manifest.json"
+  echo "Gagal menemukan main.js/main.css di build directory."
   exit 1
 fi
 

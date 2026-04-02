@@ -17,7 +17,9 @@ const ServiceDetailPanel = ({
   onBack,
   isLoading,
   errorMessage,
-  onClearError
+  onClearError,
+  priceHistory = [],
+  onFetchHistory
 }) => {
   const [form, setForm] = useState({
     id_category_paket: "",
@@ -42,8 +44,29 @@ const ServiceDetailPanel = ({
         id_revenue_account: service.id_revenue_account || "",
         gambar: service.gambar || "",
       });
+      onFetchHistory(service.id);
     }
   }, [service]);
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "-";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0
+    }).format(val);
+  };
 
   const handleImageUpload = async () => {
     if (!imageFile) return;
@@ -230,6 +253,33 @@ const ServiceDetailPanel = ({
                     placeholder="Contoh: Estimasi pengerjaan 2 hari kerja..."
                  />
               </FormGroup>
+
+              {priceHistory && priceHistory.length > 0 && (
+                <div className="p-4 rounded-xl shadow-sm border bg-white mb-4">
+                  <h5 className="font-weight-bold mb-3">
+                    <i className="fas fa-history me-2 text-primary" />
+                    Riwayat Perubahan Harga
+                   </h5>
+                   <div className="table-responsive">
+                     <table className="table align-items-center table-flush table-sm">
+                       <thead className="thead-light">
+                         <tr>
+                            <th className="small">Tanggal Perubahan</th>
+                            <th className="small text-right">Harga</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         {priceHistory.map((h, i) => (
+                           <tr key={i}>
+                             <td className="small text-muted">{formatDate(h.created_at)}</td>
+                             <td className="text-right font-weight-bold">{formatCurrency(h.harga)}</td>
+                           </tr>
+                         ))}
+                       </tbody>
+                     </table>
+                   </div>
+                </div>
+              )}
 
               <div className="d-flex justify-content-end pt-3" style={{ gap: '12px' }}>
                  <Button color="link" className="text-muted" onClick={onBack}>Batal</Button>

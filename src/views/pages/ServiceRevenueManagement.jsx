@@ -35,6 +35,8 @@ const ServiceRevenueManagement = () => {
     clearErrorMessage,
     getSelectedService,
     uploadServiceImage,
+    priceHistory,
+    fetchPriceHistory,
   } = useServiceRevenueStore();
 
 
@@ -120,6 +122,8 @@ const ServiceRevenueManagement = () => {
                 isLoading={isLoading}
                 errorMessage={errorMessage}
                 onClearError={clearErrorMessage}
+                priceHistory={priceHistory}
+                onFetchHistory={fetchPriceHistory}
               />
 
             </Col>

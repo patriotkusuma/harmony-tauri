@@ -22,8 +22,8 @@ export const useOrderStream = () => {
             if (!outletId) return;
 
             // SSE Endpoint
-            const baseUrl = "https://go.harmonylaundry.my.id";
-            const url = `${baseUrl}/api/v2/orders/stream?outlet_id=${outletId}&token=${token}`;
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || "https://go.harmonylaundry.my.id";
+            const url = `${baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}/api/v2/orders/stream?outlet_id=${outletId}&token=${token}`;
 
             console.log('[SSE] Connecting to order stream for outlet:', outletId);
             const evtSource = new EventSource(url);

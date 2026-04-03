@@ -10,8 +10,8 @@ const AiInsightWidget = () => {
     const { data: durationData, isLoading: durationLoading } = useOrderDuration(period);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const stats = data?.summary_stats;
-    const insights = data?.ai_insights;
+    const stats = data?.stats;
+    const insights = data?.ai_insight;
 
     const handleForceRefresh = async () => {
         setIsRefreshing(true);
@@ -119,15 +119,15 @@ const AiInsightWidget = () => {
 
                 {/* 2. Mini Stats Table */}
                 <Row className="mb-4 g-3">
-                    <Col xs="6" md="3">
+                    <Col xs="6" md="4" lg="2">
                         <div className="stat-pills">
-                            <span className="text-xs text-muted text-uppercase font-weight-900">Revenue</span>
+                            <span className="text-xs text-muted text-uppercase font-weight-900">Omset</span>
                             <div className="h5 font-weight-bold text-dark mb-0">
                                 Rp {stats?.total_revenue?.toLocaleString('id-ID') || 0}
                             </div>
                         </div>
                     </Col>
-                    <Col xs="6" md="3">
+                    <Col xs="6" md="4" lg="2">
                         <div className="stat-pills">
                             <span className="text-xs text-muted text-uppercase font-weight-900">Profit</span>
                             <div className="h5 font-weight-bold text-success mb-0">
@@ -135,17 +135,33 @@ const AiInsightWidget = () => {
                             </div>
                         </div>
                     </Col>
-                    <Col xs="6" md="3">
+                    <Col xs="6" md="4" lg="2">
                         <div className="stat-pills">
-                            <span className="text-xs text-muted text-uppercase font-weight-900">Pesanan</span>
+                            <span className="text-xs text-muted text-uppercase font-weight-900">Uang Masuk</span>
+                            <div className="h5 font-weight-bold text-info mb-0">
+                                Rp {stats?.total_payments?.toLocaleString('id-ID') || 0}
+                            </div>
+                        </div>
+                    </Col>
+                    <Col xs="6" md="4" lg="3">
+                        <div className="stat-pills border-primary-op">
+                            <span className="text-xs text-muted text-uppercase font-weight-900">Saldo Kas</span>
+                            <div className="h5 font-weight-bold text-primary mb-0">
+                                Rp {stats?.total_account_balance?.toLocaleString('id-ID') || 0}
+                            </div>
+                        </div>
+                    </Col>
+                    <Col xs="6" md="4" lg="1">
+                        <div className="stat-pills">
+                            <span className="text-xs text-muted text-uppercase font-weight-900">Order</span>
                             <div className="h5 font-weight-bold text-dark mb-0">
                                 {stats?.total_orders || 0}
                             </div>
                         </div>
                     </Col>
-                    <Col xs="6" md="3">
+                    <Col xs="6" md="4" lg="2">
                         <div className="stat-pills">
-                            <span className="text-xs text-muted text-uppercase font-weight-900">Pelanggan Baru</span>
+                            <span className="text-xs text-muted text-uppercase font-weight-900">Baru</span>
                             <div className="h5 font-weight-bold text-info mb-0">
                                 {stats?.new_customers || 0}
                             </div>
@@ -267,6 +283,7 @@ const AiInsightWidget = () => {
                 .text-dark-75 { color: #525f7f; }
                 .bg-light-success { background: rgba(45, 206, 137, 0.05); }
                 .border-left-success-solid { border-left: 3px solid #2dce89; }
+                .border-primary-op { border: 1px solid rgba(94, 114, 228, 0.2) !important; background: rgba(94, 114, 228, 0.03) !important; }
             `}</style>
         </Card>
     );

@@ -15,8 +15,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const headers = {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Content-Type": "application/json"
     };
 
     useEffect(() => {

@@ -17,5 +17,7 @@ export const formatImageUrl = (url) => {
   const path = url.startsWith("/") ? url : `/${url}`;
   
   // Return with base URL
-  return `https://go.harmonylaundry.my.id${path}`;
+  const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "https://go.harmonylaundry.my.id/";
+  const baseUrl = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
+  return `${baseUrl}${path}`;
 };

@@ -111,6 +111,9 @@ const AdminNavbar = (props) => {
                       <i className="ni ni-shop me-2 text-warning" />
                       <span className="text-white text-sm font-weight-bold d-none d-lg-block">
                         {selectedOutlet?.nama || 'Pilih Cabang'}
+                        {selectedOutlet?.is_demo && (
+                          <span className="badge badge-pill badge-info ms-2 py-1 px-2" style={{ fontSize: '0.5rem', background: 'rgba(255, 255, 255, 0.2)', color: '#fff', border: '1px solid rgba(255,255,255,0.3)' }}>DEMO</span>
+                        )}
                       </span>
                       <i className="fas fa-search ms-2 text-white opacity-5" style={{ fontSize: '0.7rem' }} />
                     </div>
@@ -132,6 +135,9 @@ const AdminNavbar = (props) => {
                         <span className={olt.id === selectedOutlet?.id ? 'text-primary font-weight-bold' : ''}>
                           {olt.nama}
                         </span>
+                        {olt.is_demo && (
+                          <span className="badge badge-pill badge-info ms-2 py-1 px-2" style={{ fontSize: '0.6rem', background: 'rgba(17, 201, 240, 0.2)', color: '#11cdef' }}>DEMO</span>
+                        )}
                       </DropdownItem>
                     ))}
                   </DropdownMenu>

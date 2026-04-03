@@ -2,15 +2,7 @@ import axios from "axios";
 import { loginRedirectPath } from "./runtime";
 
 const instance = axios.create({
-    // baseURL: "https://harmony.test/api/",
-    // baseURL: "https://admin.harmonylaundry.my.id/api/",
-    // baseURL: "https://api.harmonylaundry.my.id/",
-    // baseURL: "http://192.168.1.65:3015/",
-    baseURL: "https://go.harmonylaundry.my.id/"
-    // baseURL: "https://dashboard.harmonylaundry.my.id/api/",
-    // baseURL: "https://admin.jutra.my.id/api/",
-    // baseURL: "https://silaundry.my.id/api/",
-    // timeout: 1000,
+    baseURL: import.meta.env.VITE_API_BASE_URL || "https://go.harmonylaundry.my.id/",
 })
 
 instance.interceptors.request.use(
@@ -18,6 +10,16 @@ instance.interceptors.request.use(
         const token = localStorage.getItem('token')
         if(token){
             config.headers.Authorization = `Bearer ${token}`
+        }
+
+        const selectedOutlet = localStorage.getItem("selected-outlet");
+        if (selectedOutlet) {
+            try {
+                const parsed = JSON.parse(selectedOutlet);
+                config.headers["X-Outlet-Id"] = parsed.id || parsed;
+            } catch (e) {
+                config.headers["X-Outlet-Id"] = selectedOutlet;
+            }
         }
 
         return config

@@ -9,9 +9,21 @@ const DATA_QUERY_KEY = ['pesanan'];
 
 const fetchPesanan = async ({ queryKey }) => {
   const [_key, filters, headers] = queryKey;
-  const res = await axios.get("api/pesanan/get-pesanan", {
+  
+  // Mapping parameters to align with Clean Architecture V2 endpoint
+  const params = {
+    page: filters.page,
+    per_page: filters.rowPerPage,
+    search: filters.search,
+    status: filters.status,
+  };
+
+  if (filters.dateFrom) params.date_from = filters.dateFrom;
+  if (filters.dateTo) params.date_to = filters.dateTo;
+
+  const res = await axios.get("api/v2/pesanan", {
     headers,
-    params: filters
+    params: params
   });
   return res.data;
 };

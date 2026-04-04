@@ -200,7 +200,7 @@ const WithdrawalTab = ({ data, loading, accounts, onCreateWithdrawal, onDeleteWi
                                 .filter(acc => acc.account_type === "Assets")
                                 .map(acc => (
                                     <option key={acc.id} value={acc.id}>
-                                        {acc.nama} ({formatCurrency(acc.balance)})
+                                        {acc.account_name} ({formatCurrency(acc.balance)})
                                     </option>
                                 ))}
                         </Input>

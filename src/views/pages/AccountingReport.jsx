@@ -16,6 +16,7 @@ import EquityChangesTab from "components/organisms/accounting/EquityChangesTab";
 import FinancialNotesTab from "components/organisms/accounting/FinancialNotesTab";
 import AccountingPeriodsTab from "components/organisms/accounting/AccountingPeriodsTab";
 import WithdrawalTab from "components/organisms/accounting/WithdrawalTab";
+import TransferTab from "components/organisms/accounting/TransferTab";
 
 const tabs = [
     { id: "summary", label: "Ringkasan", icon: "fas fa-th-large" },
@@ -25,6 +26,7 @@ const tabs = [
     { id: "equity-changes", label: "Ekuitas", icon: "fas fa-chart-area" },
     { id: "notes", label: "Catatan", icon: "fas fa-sticky-note" },
     { id: "withdrawals", label: "Prive", icon: "fas fa-hand-holding-usd" },
+    { id: "transfers", label: "Pemindahan", icon: "fas fa-exchange-alt" },
     { id: "periods", label: "Periode", icon: "fas fa-calendar-check" },
 ];
 
@@ -49,6 +51,7 @@ const AccountingReport = () => {
         forceClosePeriod,
         createWithdrawal,
         deleteWithdrawal,
+        createTransfer,
     } = useAccountingReport();
 
     const netIncome = (summary.total_revenue || 0) - (summary.total_expense || 0);
@@ -150,6 +153,13 @@ const AccountingReport = () => {
                                     loading={loading}
                                     onCreateWithdrawal={createWithdrawal}
                                     onDeleteWithdrawal={deleteWithdrawal}
+                                />
+                            </TabPane>
+                            <TabPane tabId="transfers">
+                                <TransferTab
+                                    accounts={summary.accounts || []}
+                                    loading={loading}
+                                    onCreateTransfer={createTransfer}
                                 />
                             </TabPane>
                             <TabPane tabId="periods">

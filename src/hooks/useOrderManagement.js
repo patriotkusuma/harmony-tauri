@@ -35,6 +35,7 @@ export const useOrderManagement = () => {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [isRFIDAttachOpen, setIsRFIDAttachOpen] = useState(false);
     const [valueBayar, setValueBayar] = useState(0);
+    const [tipeBayar, setTipeBayar] = useState("cash");
     const [antar, setAntar] = useState(0);
 
     const handlePrintNama = useCallback(async () => {
@@ -82,7 +83,8 @@ export const useOrderManagement = () => {
                 status_pembayaran: isLunas ? 'Lunas' : 'Belum Lunas',
                 sub_total: subTotal,
                 total_bayar: valueBayar !== 0 ? valueBayar : 0,
-                antar: antar
+                antar: antar,
+                metode_pembayaran: isLunas ? tipeBayar : "cash"
             }, { 
                 headers,
                 // Handle cases where backend might send multiple JSON objects concatenated
@@ -126,6 +128,7 @@ export const useOrderManagement = () => {
             setIsCustomerModalOpen(false);
             setIsPaymentModalOpen(false);
             setAntar(0);
+            setTipeBayar("cash");
             setOrderCode(generateOrderCode()); // New code for next order
             
             toast.update(loadingToast, {
@@ -143,7 +146,7 @@ export const useOrderManagement = () => {
                 autoClose: 3000
             });
         }
-    }, [idPelanggan, orderCode, nama, telpon, isLunas, subTotal, valueBayar, antar, headers, clearCart, resetCustomer]);
+    }, [idPelanggan, orderCode, nama, telpon, isLunas, subTotal, valueBayar, tipeBayar, antar, headers, clearCart, resetCustomer]);
 
     const handleOrderSubmission = useCallback(() => {
         if (isLunas) {
@@ -195,6 +198,8 @@ export const useOrderManagement = () => {
         setIsRFIDAttachOpen,
         valueBayar,
         setValueBayar,
+        tipeBayar,
+        setTipeBayar,
         antar,
         setAntar,
         kode_pesan: orderCode,
@@ -216,7 +221,7 @@ export const useOrderManagement = () => {
     }), [
         cartItems, estimasi, subTotal, category, nama, telpon, pelanggan, 
         idPelanggan, isLunas, isCustomerModalOpen, isPaymentModalOpen, 
-        isRFIDAttachOpen, valueBayar, antar, orderCode, isOrderButtonDisabled,
+        isRFIDAttachOpen, valueBayar, tipeBayar, antar, orderCode, isOrderButtonDisabled,
         addCart, updateCart, removeOneCart, clearCart, searchCategory,
         selectCustomer, resetCustomer, handlePrintNama, fetchAndPrintLastOrder,
         submitOrder, handleOrderSubmission, toggleCustomerModal, togglePaymentModal,

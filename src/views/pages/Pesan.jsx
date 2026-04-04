@@ -35,6 +35,8 @@ const Pesan = () => {
         isRFIDAttachOpen,
         valueBayar,
         setValueBayar,
+        tipeBayar,
+        setTipeBayar,
         antar,
         setAntar,
         kode_pesan,
@@ -141,6 +143,8 @@ const Pesan = () => {
                     toggle={togglePaymentModal}
                     valueBayar={valueBayar}
                     setValueBayar={setValueBayar}
+                    tipeBayar={tipeBayar}
+                    setTipeBayar={setTipeBayar}
                     subTotal={subTotal}
                     onSubmitPayment={submitOrder}
                 />

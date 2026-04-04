@@ -240,6 +240,18 @@ export const useAccountingReport = () => {
         }
     };
 
+    // ====== Transfer Functions ======
+    const createTransfer = async (payload) => {
+        const loadingToast = toast.loading("Memindahkan dana...");
+        try {
+            await axios.post("api/v2/accounting/transfers", payload);
+            toast.update(loadingToast, { render: "Pemindahan dana berhasil!", type: "success", isLoading: false, autoClose: 2000 });
+            fetchSummary(); // Refresh summary to see updated balances
+        } catch (err) {
+            toast.update(loadingToast, { render: "Gagal memindahkan dana", type: "error", isLoading: false, autoClose: 3000 });
+        }
+    };
+
     // ====== Tab-based auto-fetch ======
     const fetchByTab = useCallback((tab) => {
         switch (tab) {
@@ -306,6 +318,7 @@ export const useAccountingReport = () => {
         forceClosePeriod,
         createWithdrawal,
         deleteWithdrawal,
+        createTransfer,
         fetchByTab,
     };
-};
+}

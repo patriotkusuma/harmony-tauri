@@ -48,21 +48,69 @@ import SystemSettings from "views/pages/SystemSettings";
 import AiChat from "views/pages/AiChat";
 import WebhookLogs from "views/pages/WebhookLogs";
 import IoTDeviceManagement from "views/pages/IoTDeviceManagement";
+import KostManagement from "views/pages/KostManagement";
 
+/**
+ * sidebarGroup — menentukan di section mana menu ini muncul di SidebarNew:
+ *   "operasional" → Kasir & Operasional
+ *   "manajemen"   → Manajemen & Laporan
+ *   "settings"    → Pengaturan Sistem
+ *   (tidak ada)   → tersembunyi dari sidebar
+ *
+ * role — jika diisi, hanya role tersebut yang dapat melihat menu ini.
+ */
 var routes = [
+  // ── Kasir & Operasional ──────────────────────────────────────────
+  {
+    path: "/riwayat",
+    name: "Riwayat Transaksi",
+    icon: "fas fa-history text-info",
+    component: <RiwayatPesan/>,
+    layout: "/admin",
+    sidebarGroup: "operasional",
+  },
+  {
+    path: "/bayar",
+    name: "Customer Bayar",
+    icon: "fas fa-money-check-alt text-blue",
+    component: <Bayar/>,
+    layout: "/admin",
+    sidebarGroup: "operasional",
+  },
+  {
+    path: "/deposit",
+    name: "Saldo / Deposit",
+    icon: "fas fa-piggy-bank text-red",
+    component: <Deposit />,
+    layout: "/admin",
+    sidebarGroup: "operasional",
+  },
+
+  // ── Manajemen & Laporan ──────────────────────────────────────────
+  {
+    path: "/dashboard",
+    name: "Dashboard Utama",
+    icon: "fas fa-tachometer-alt text-primary",
+    component: <Dashboard />,
+    layout: "/admin",
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/ai-chat",
+    name: "AI Assistant",
+    icon: "fas fa-robot text-purple",
+    component: <AiChat />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
   {
     path: "/customers",
     name: "Manajemen Pelanggan",
     icon: "fas fa-users text-primary",
     component: <CustomerManagement />,
     layout: "/admin",
-  },
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "fas fa-tachometer-alt text-primary",
-    component: <Dashboard />,
-    layout: "/admin",
+    sidebarGroup: "manajemen",
   },
   {
     path: "/operational-report",
@@ -71,6 +119,7 @@ var routes = [
     component: <OperationalReport />,
     layout: "/admin",
     role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
   },
   {
     path: "/accounting-report",
@@ -79,97 +128,7 @@ var routes = [
     component: <AccountingReport />,
     layout: "/admin",
     role: ["admin", "owner"],
-  },
-  {
-    path: "/affiliates",
-    name: "Afiliasi & Partner",
-    icon: "fas fa-handshake text-purple",
-    component: <AffiliateManagement />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/employees",
-    name: "Manajemen Pegawai",
-    icon: "fas fa-users text-primary",
-    component: <EmployeeManagement />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/riwayat",
-    name: "Riwayat Pesan",
-    icon: "fas fa-history text-info",
-    component: <RiwayatPesan/>,
-    layout: "/admin"
-  },
-  {
-    path: "/order-timeline",
-    name: "Log Mesin",
-    icon: "fas fa-microchip text-success",
-    component: <OrderLogTimelinePage />,
-    layout: "/admin",
-  },
-  {
-    path: "/iot-management",
-    name: "IoT & Device",
-    icon: "fas fa-robot text-primary",
-    component: <IoTDeviceManagement />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/rfid",
-    name: "RFID Attach/Detach",
-    icon: "fas fa-id-card text-info",
-    component: <RFIDManage />,
-    layout: "/admin",
-  },
-  {
-    path: "/rfid-cards",
-    name: "RFID Kartu Master",
-    icon: "fas fa-credit-card text-purple",
-    component: <RFIDCardManagement />,
-    layout: "/admin",
-  },
-  {
-    path: "/blog",
-    name: "Blog / Artikel",
-    icon: "fas fa-newspaper text-primary",
-    component: <BlogManagement />,
-    layout: "/admin",
-  },
-  {
-    path: "/service-revenue",
-    name: "Service & Revenue",
-    icon: "fas fa-file-invoice-dollar text-success",
-    component: <ServiceRevenueManagement />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/purchases",
-    name: "Belanja Kebutuhan",
-    icon: "fas fa-shopping-basket text-danger",
-    component: <PurchaseManagement />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/inventory",
-    name: "Stok Inventaris",
-    icon: "fas fa-boxes text-info",
-    component: <InventoryManagement />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/whatsapp-payload",
-    name: "WhatsApp Payload Settings",
-    icon: "fab fa-whatsapp text-success",
-    component: <WhatsAppPayloadSettings />,
-    layout: "/admin",
-    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
   },
   {
     path: "/suppliers",
@@ -178,26 +137,147 @@ var routes = [
     component: <SupplierManagement />,
     layout: "/admin",
     role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
   },
+  {
+    path: "/purchases",
+    name: "Belanja Kebutuhan",
+    icon: "fas fa-shopping-basket text-danger",
+    component: <PurchaseManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/inventory",
+    name: "Stok Inventaris",
+    icon: "fas fa-boxes text-info",
+    component: <InventoryManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/employees",
+    name: "Manajemen Pegawai",
+    icon: "fas fa-users text-primary",
+    component: <EmployeeManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/kost-management",
+    name: "Manajemen Kost",
+    icon: "fas fa-building text-teal",
+    component: <KostManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/affiliates",
+    name: "Afiliasi & Partner",
+    icon: "fas fa-handshake text-purple",
+    component: <AffiliateManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/order-timeline",
+    name: "Log Mesin Aktif",
+    icon: "fas fa-microchip text-success",
+    component: <OrderLogTimelinePage />,
+    layout: "/admin",
+    sidebarGroup: "manajemen",
+  },
+
+  // ── Pengaturan Sistem ────────────────────────────────────────────
+  {
+    path: "/blog",
+    name: "Blog & Artikel",
+    icon: "fas fa-newspaper text-primary",
+    component: <BlogManagement />,
+    layout: "/admin",
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/service-revenue",
+    name: "Service & Revenue",
+    icon: "fas fa-file-invoice-dollar text-success",
+    component: <ServiceRevenueManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/whatsapp-payload",
+    name: "WhatsApp Payload",
+    icon: "fab fa-whatsapp text-success",
+    component: <WhatsAppPayloadSettings />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/notification-setting",
+    name: "Pengaturan Notifikasi",
+    icon: "fas fa-bell text-warning",
+    component: <NotificationSetting />,
+    layout: "/admin",
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/webhook-logs",
+    name: "Webhook Logs",
+    icon: "fas fa-plug text-danger",
+    component: <WebhookLogs />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/rfid",
+    name: "RFID Attach/Detach",
+    icon: "fas fa-id-card text-info",
+    component: <RFIDManage />,
+    layout: "/admin",
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/rfid-cards",
+    name: "RFID Kartu Master",
+    icon: "fas fa-credit-card text-purple",
+    component: <RFIDCardManagement />,
+    layout: "/admin",
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/iot-management",
+    name: "IoT & Device",
+    icon: "fas fa-robot text-primary",
+    component: <IoTDeviceManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "settings",
+  },
+  {
+    path: "/system-settings",
+    name: "Konfigurasi Inti",
+    icon: "fas fa-cogs text-blue",
+    component: <SystemSettings />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "settings",
+  },
+
+  // ── Tersembunyi dari sidebar (tanpa sidebarGroup) ────────────────
   {
     path: "/user-profile",
     name: "User Profile",
     icon: "fas fa-user-circle text-yellow",
     component: <Profile />,
-    layout: "/admin",
-  },
-  {
-    path: "/bayar",
-    name:"Customer Bayar",
-    icon: "fas fa-money-check-alt text-blue",
-    component:  <Bayar/>,
-    layout: "/admin",
-  },
-  {
-    path: "/deposit",
-    name: "Saldo / Deposit",
-    icon: "fas fa-piggy-bank text-red",
-    component: <Deposit />,
     layout: "/admin",
   },
   {
@@ -207,29 +287,5 @@ var routes = [
     component: <Login />,
     layout: "/auth",
   },
-  {
-    path: "/ai-chat",
-    name: "AI Assistant",
-    icon: "fas fa-robot text-purple",
-    component: <AiChat />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/system-settings",
-    name: "Pengaturan Sistem",
-    icon: "fas fa-cogs text-blue",
-    component: <SystemSettings />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  },
-  {
-    path: "/webhook-logs",
-    name: "Webhook Logs",
-    icon: "fas fa-plug text-danger",
-    component: <WebhookLogs />,
-    layout: "/admin",
-    role: ["admin", "owner"],
-  }
 ];
 export default routes;

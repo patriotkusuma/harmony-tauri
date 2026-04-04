@@ -493,3 +493,46 @@ td .btn-outline-danger:hover,th .btn-outline-danger:hover,
 td .btn-outline-warning:hover,th .btn-outline-warning:hover { color:#fff !important; }
 /* Fix badge text color in tables - exclude specific light badges */
 .table .badge:not(.bg-secondary):not(.badge-secondary):not(.bg-light):not(.badge-light), .table .badge:not(.bg-secondary):not(.badge-secondary):not(.bg-light):not(.badge-light) * { color: #ffffff !important; }
+
+/* =========================================================
+   Notification & Toast Enhancements
+   ========================================================= */
+
+/* Notification Dropdown Item Clamping */
+.notif-item-content {
+    min-width: 0; /* Critical for flex truncation */
+    flex: 1;
+}
+
+.notif-title-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.notif-body-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    font-size: 0.7rem;
+    color: #8898aa !important;
+}
+
+/* react-toastify fix for long content */
+.Toastify__toast {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.Toastify__toast-body {
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    padding: 8px 12px !important;
+    word-break: break-word !important; /* Forces break of long words */
+    overflow-wrap: anywhere !important;
+}

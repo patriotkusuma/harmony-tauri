@@ -176,35 +176,50 @@ const AdminNavbar = (props) => {
                     )}
                   </div>
                 </DropdownToggle>
-                <DropdownMenu className="dropdown-menu-arrow mt-3 border-0 shadow-lg" end style={{ minWidth: '240px', borderRadius: '8px', padding: '0' }}>
-                  <DropdownItem className="noti-title bg-secondary py-2" header tag="div">
+                <DropdownMenu className="dropdown-menu-arrow mt-3 border-0 shadow-lg" end style={{ width: '300px', maxWidth: '90vw', borderRadius: '12px', padding: '0', overflow: 'hidden' }}>
+                  <DropdownItem className="noti-title bg-secondary py-3 px-3 d-flex align-items-center justify-content-between" header tag="div">
                     <h6 className="text-overflow m-0 text-muted small text-uppercase font-weight-bold" style={{ fontSize: '0.65rem' }}>Notifikasi Pesan</h6>
+                    {notifications.length > 0 && (
+                      <button 
+                        className="btn btn-link p-0 text-danger text-xs font-weight-bold border-0" 
+                        onClick={clearNotifications}
+                        style={{ background: 'transparent' }}
+                      >
+                        Hapus Semua
+                      </button>
+                    )}
                   </DropdownItem>
-                  <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
+                  <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
                     {notifications.length > 0 ? (
                       notifications.map((notif, idx) => (
                         <DropdownItem key={idx} to="/admin/messages" tag={Link} className="py-2 px-3 border-bottom border-light">
                           <div className="d-flex align-items-center">
-                            <div className="rounded-circle bg-success d-flex align-items-center justify-content-center me-2" style={{ width: '28px', height: '28px', flexShrink: 0 }}>
-                              <i className="fab fa-whatsapp text-white" style={{ fontSize: '0.8rem' }} />
+                            <div className="rounded-circle bg-success d-flex align-items-center justify-content-center me-3" style={{ width: '32px', height: '32px', flexShrink: 0, boxShadow: '0 4px 10px rgba(45, 206, 137, 0.3)' }}>
+                              <i className="fab fa-whatsapp text-white" style={{ fontSize: '0.9rem' }} />
                             </div>
-                            <div className="text-truncate" style={{ flex: 1 }}>
-                              <div className="mb-0 text-xs font-weight-bold text-dark text-truncate" style={{ lineHeight: '1.2' }}>{notif.from_name || notif.from?.split('@')[0]}</div>
-                              <div className="mb-0 text-muted text-truncate" style={{ fontSize: '0.65rem', lineHeight: '1.2' }}>{notif.body || 'Pesan gambar/file'}</div>
+                            <div className="notif-item-content">
+                              <div className="notif-title-text text-dark font-weight-bold" style={{ fontSize: '0.8rem' }}>
+                                {notif.from_name || notif.from?.split('@')[0]}
+                              </div>
+                              <div className="notif-body-text">
+                                {notif.body || 'Pesan gambar/file'}
+                              </div>
                             </div>
                           </div>
                         </DropdownItem>
                       ))
                     ) : (
-                      <div className="text-center py-3">
-                        <i className="ni ni-bell-55 text-muted opacity-3 mb-2 d-block" style={{ fontSize: '1.2rem' }} />
-                        <p className="mb-0 text-muted small" style={{ fontSize: '0.7rem' }}>Tidak ada pesan baru</p>
+                      <div className="text-center py-5">
+                        <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '60px', height: '60px' }}>
+                          <i className="ni ni-bell-55 text-muted opacity-3" style={{ fontSize: '1.5rem' }} />
+                        </div>
+                        <p className="mb-0 text-muted small px-4" style={{ fontSize: '0.75rem' }}>Hening... Tidak ada notifikasi baru untuk hari ini.</p>
                       </div>
                     )}
                   </div>
                   {notifications.length > 0 && (
-                     <DropdownItem to="/admin/messages" tag={Link} className="text-center text-primary text-xs font-weight-bold py-2 bg-light">
-                        Lihat Semua Pesan
+                     <DropdownItem to="/admin/messages" tag={Link} className="text-center text-primary text-xs font-weight-bold py-3 bg-light border-0">
+                        Ke Pusat Pesan <i className="fas fa-arrow-right ms-1" />
                      </DropdownItem>
                   )}
                 </DropdownMenu>

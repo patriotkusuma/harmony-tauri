@@ -6,6 +6,7 @@ import axios from "../../services/axios-instance";
 import Cookies from "js-cookie";
 import SidebarNavSection from "components/molecules/sidebar/SidebarNavSection";
 import "../../assets/css/sidebar-new.css";
+import routes from "../../routes";
 
 const THEME_KEY = "theme";
 
@@ -50,39 +51,27 @@ const SidebarNew = ({ logo, user, token, isCollapsed, toggleSidebar, mobileOpen,
 
   const userRole = user?.role || "";
 
+  // Konversi route → item sidebar (strip color class dari icon)
+  const routeToItem = (r) => ({
+    to: r.layout + r.path,
+    icon: r.icon.split(" ").filter(c => !c.startsWith("text-")).join(" "),
+    label: r.name,
+    role: r.role,
+  });
+
+  // Derive sections dari routes.jsx secara dinamis berdasarkan sidebarGroup
   const sectionOperasional = [
     { to: "/pembayaran", icon: "fas fa-cash-register", label: "Pembayaran Selesai" },
-    { to: "/admin/riwayat", icon: "fas fa-history", label: "Riwayat Transaksi" },
-    { to: "/admin/bayar", icon: "fas fa-money-check-alt", label: "Customer Bayar" },
-    { to: "/admin/deposit", icon: "fas fa-piggy-bank", label: "Saldo / Deposit" },
+    ...routes.filter(r => r.sidebarGroup === "operasional").map(routeToItem),
   ];
 
-  const sectionManajemen = [
-    { to: "/admin/dashboard", icon: "fas fa-tachometer-alt", label: "Dashboard Utama" },
-    { to: "/admin/ai-chat", icon: "fas fa-robot", label: "AI Assistant", role: ["admin", "owner"] },
-    { to: "/admin/customers", icon: "fas fa-users", label: "Manajemen Pelanggan" },
-    { to: "/admin/operational-report", icon: "fas fa-chart-line", label: "Laporan Operasional", role: ["admin", "owner"] },
-    { to: "/admin/accounting-report", icon: "fas fa-file-invoice-dollar", label: "Laporan Akuntansi", role: ["admin", "owner"] },
-    { to: "/admin/suppliers", icon: "fas fa-truck-loading", label: "Supplier & Vendor", role: ["admin", "owner"] },
-    { to: "/admin/purchases", icon: "fas fa-shopping-basket", label: "Belanja Kebutuhan", role: ["admin", "owner"] },
-    { to: "/admin/inventory", icon: "fas fa-boxes", label: "Stok Inventaris", role: ["admin", "owner"] },
-    { to: "/admin/employees", icon: "fas fa-users", label: "Manajemen Pegawai", role: ["admin", "owner"] },
-    { to: "/admin/affiliates", icon: "fas fa-handshake", label: "Afiliasi & Partner", role: ["admin", "owner"] },
-    { to: "/admin/order-timeline", icon: "fas fa-microchip", label: "Log Mesin Aktif" },
-  ];
+  const sectionManajemen = routes
+    .filter(r => r.sidebarGroup === "manajemen")
+    .map(routeToItem);
 
-  const sectionSettings = [
-    { to: "/admin/messages", icon: "fas fa-comments", label: "Broadcast Messages" },
-    { to: "/admin/blog", icon: "fas fa-newspaper", label: "Blog & Artikel" },
-    { to: "/admin/service-revenue", icon: "fas fa-file-invoice-dollar", label: "Service & Revenue", role: ["admin", "owner"] },
-    { to: "/admin/whatsapp-payload", icon: "fab fa-whatsapp", label: "WhatsApp Payload" },
-    { to: "/admin/notification-setting", icon: "fas fa-bell", label: "Pengaturan Notifikasi" },
-    { to: "/admin/webhook-logs", icon: "fas fa-plug", label: "Webhook Logs", role: ["admin", "owner"] },
-    { to: "/admin/rfid", icon: "fas fa-id-card", label: "RFID Attach/Detach" },
-    { to: "/admin/rfid-cards", icon: "fas fa-credit-card", label: "RFID Kartu Master" },
-    { to: "/admin/iot-management", icon: "fas fa-robot", label: "IoT & Device", role: ["admin", "owner"] },
-    { to: "/admin/system-settings", icon: "fas fa-cogs", label: "Konfigurasi Inti", role: ["admin", "owner"] },
-  ];
+  const sectionSettings = routes
+    .filter(r => r.sidebarGroup === "settings")
+    .map(routeToItem);
 
   return (
     <>

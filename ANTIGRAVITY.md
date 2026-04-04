@@ -45,6 +45,13 @@ Project ini menerapkan variasi dari pendekatan **Atomic Design Architecture**:
 1. Saat membuat modul/fitur baru, perhatikan struktur file (buat *atom/molecule/organism* yang relevan).
 2. Tulis dokumentasi (*Markdown*) terlebih dulu di folder `Documentation/` bila instruksinya cukup masif, sebelum memulai revisi barisan kode.
 3. Saat *refactoring*, pisahkan kode yang dirasa terlalu tebal (*monolithic*) ke pecahan komponen yang fungsional.
-4. **Sidebar New**: Navigasi utama project sekarang menggunakan `src/components/Sidebar/SidebarNew.jsx`. Pastikan rute baru didaftarkan di sini untuk akses menu.
+4. **Mendaftarkan Menu Sidebar**: Navigasi utama menggunakan `src/components/Sidebar/SidebarNew.jsx` yang membaca menu **secara dinamis dari `src/routes.jsx`**. Untuk menambahkan menu baru:
+   - Tambahkan route di `src/routes.jsx` dengan field `sidebarGroup` yang sesuai:
+     - `"operasional"` → Section *Kasir & Operasional*
+     - `"manajemen"`   → Section *Manajemen & Laporan*
+     - `"settings"`    → Section *Pengaturan Sistem*
+     - *(tidak diisi)* → Tersembunyi dari sidebar (misal: Login, User Profile)
+   - Field `role` pada route otomatis diteruskan ke sidebar untuk pembatasan akses.
+   - **JANGAN hardcode item menu di `SidebarNew.jsx`** — semua harus lewat `routes.jsx`.
 5. **System Settings Management**: Konfigurasi inti sistem (API Keys, Gemini Model, dsb) wajib dikelola melalui menu **Konfigurasi Inti** di UI, bukan hardcode di `.env` (API `/api/v2/system-settings`).
 6. **Perhatikan *Environment***: Jangan hapus *endpoints* lama atau menimpa routing lain yang sudah bekerja pada sistem Tauri dan web.

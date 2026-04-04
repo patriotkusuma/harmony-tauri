@@ -151,6 +151,7 @@ const AccountingReport = () => {
                                 <WithdrawalTab
                                     data={withdrawals}
                                     loading={loading}
+                                    accounts={summary.accounts || []}
                                     onCreateWithdrawal={createWithdrawal}
                                     onDeleteWithdrawal={deleteWithdrawal}
                                 />

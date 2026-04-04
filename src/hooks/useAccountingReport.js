@@ -279,6 +279,10 @@ export const useAccountingReport = () => {
                 break;
             case "withdrawals":
                 fetchWithdrawals();
+                fetchSummary(); // Get accounts for Source of Funds selection
+                break;
+            case "transfers":
+                fetchSummary(); // Get accounts for transfer selection
                 break;
             default:
                 break;

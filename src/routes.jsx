@@ -85,6 +85,22 @@ var routes = [
     layout: "/admin",
     sidebarGroup: "operasional",
   },
+  {
+    path: "/messages",
+    name: "Customer Chat",
+    icon: "fab fa-whatsapp text-success",
+    component: <Message />,
+    layout: "/admin",
+    sidebarGroup: "operasional",
+  },
+  {
+    path: "/rfid",
+    name: "RFID Attach/Detach",
+    icon: "fas fa-id-card text-info",
+    component: <RFIDManage />,
+    layout: "/admin",
+    sidebarGroup: "operasional",
+  },
 
   // ── Manajemen & Laporan ──────────────────────────────────────────
   {
@@ -235,14 +251,6 @@ var routes = [
     component: <WebhookLogs />,
     layout: "/admin",
     role: ["admin", "owner"],
-    sidebarGroup: "settings",
-  },
-  {
-    path: "/rfid",
-    name: "RFID Attach/Detach",
-    icon: "fas fa-id-card text-info",
-    component: <RFIDManage />,
-    layout: "/admin",
     sidebarGroup: "settings",
   },
   {

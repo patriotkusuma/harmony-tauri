@@ -7,29 +7,34 @@ const formatCurrency = (val) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val);
 };
 
-const WithdrawalTab = ({ data, loading, onCreateWithdrawal, onDeleteWithdrawal }) => {
+const WithdrawalTab = ({ data, loading, accounts, onCreateWithdrawal, onDeleteWithdrawal }) => {
     const [showModal, setShowModal] = useState(false);
     const [form, setForm] = useState({
         amount: "",
         date: moment().format("YYYY-MM-DD"),
         description: "",
+        id_account: "", 
     });
     const [submitting, setSubmitting] = useState(false);
 
     const toggleModal = () => {
         setShowModal(!showModal);
         if (!showModal) {
-            setForm({ amount: "", date: moment().format("YYYY-MM-DD"), description: "" });
+            setForm({ amount: "", date: moment().format("YYYY-MM-DD"), description: "", id_account: "" });
         }
     };
 
     const handleSubmit = async () => {
-        if (!form.amount || parseFloat(form.amount) <= 0) return;
+        if (!form.amount || parseFloat(form.amount) <= 0 || !form.id_account) {
+            alert("Harap isi jumlah dan pilih sumber dana.");
+            return;
+        }
         setSubmitting(true);
         await onCreateWithdrawal({
             amount: parseFloat(form.amount),
             date: form.date,
             description: form.description || "Penarikan modal pemilik (Prive)",
+            id_account: form.id_account,
         });
         setSubmitting(false);
         toggleModal();
@@ -82,7 +87,8 @@ const WithdrawalTab = ({ data, loading, onCreateWithdrawal, onDeleteWithdrawal }
                     <thead className="thead-light-soft">
                         <tr>
                             <th className="ps-4" style={{ width: '15%' }}>Tanggal</th>
-                            <th style={{ width: '40%' }}>Keterangan</th>
+                            <th style={{ width: '25%' }}>Keterangan</th>
+                            <th style={{ width: '15%' }}>Sumber Dana</th>
                             <th className="text-end" style={{ width: '25%' }}>Jumlah</th>
                             <th className="text-center pe-4" style={{ width: '20%' }}>Aksi</th>
                         </tr>
@@ -111,6 +117,11 @@ const WithdrawalTab = ({ data, loading, onCreateWithdrawal, onDeleteWithdrawal }
                                             <small className="text-muted">ID: {item.id?.slice(0, 8)}...</small>
                                         </div>
                                     </div>
+                                </td>
+                                <td>
+                                    <Badge color="success" outline className="rounded-pill px-2">
+                                        {item.account_name || "Kas Tunai"}
+                                    </Badge>
                                 </td>
                                 <td className="text-end">
                                     <span className="font-weight-900 text-danger" style={{ fontSize: '1rem' }}>
@@ -173,9 +184,35 @@ const WithdrawalTab = ({ data, loading, onCreateWithdrawal, onDeleteWithdrawal }
                     <div className="info-alert p-3 rounded-lg mb-4">
                         <i className="fas fa-info-circle text-info me-2" />
                         <small className="text-muted">
-                            Pencatatan prive otomatis membuat jurnal: <strong>Debit Prive</strong> dan <strong>Kredit Kas Tunai</strong>.
+                            Pencatatan prive otomatis membuat jurnal: <strong>Debit Prive</strong> dan <strong>Kredit akun pilihan Anda</strong>.
                         </small>
                     </div>
+                    <FormGroup>
+                        <Label className="font-weight-bold text-dark small">Sumber Dana (Akun) *</Label>
+                        <Input
+                            type="select"
+                            value={form.id_account}
+                            onChange={(e) => setForm({ ...form, id_account: e.target.value })}
+                            className="rounded-lg shadow-sm"
+                        >
+                            <option value="">-- Pilih Akun (Kas/Bank) --</option>
+                            {(accounts || [])
+                                .filter(acc => acc.account_type === "Assets")
+                                .map(acc => (
+                                    <option key={acc.id} value={acc.id}>
+                                        {acc.nama} ({formatCurrency(acc.balance)})
+                                    </option>
+                                ))}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label className="font-weight-bold text-dark small">Tanggal</Label>
+                        <Input
+                            type="date"
+                            value={form.date}
+                            onChange={(e) => setForm({ ...form, date: e.target.value })}
+                        />
+                    </FormGroup>
                     <FormGroup>
                         <Label className="font-weight-bold text-dark small">Jumlah Penarikan *</Label>
                         <div className="input-group">
@@ -191,14 +228,6 @@ const WithdrawalTab = ({ data, loading, onCreateWithdrawal, onDeleteWithdrawal }
                                 autoFocus
                             />
                         </div>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label className="font-weight-bold text-dark small">Tanggal</Label>
-                        <Input
-                            type="date"
-                            value={form.date}
-                            onChange={(e) => setForm({ ...form, date: e.target.value })}
-                        />
                     </FormGroup>
                     <FormGroup>
                         <Label className="font-weight-bold text-dark small">Keterangan</Label>

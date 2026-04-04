@@ -22,10 +22,11 @@ const AccountTable = ({ title, icon, accounts, total, totalLabel, tone }) => (
             <Table className="align-items-center table-flush table-hover mb-0" size="sm">
                 <thead className="thead-light-soft">
                     <tr>
-                        <th className="ps-4" style={{ width: '40%' }}>Nama Akun</th>
+                        <th className="ps-4" style={{ width: '35%' }}>Nama Akun</th>
+                        <th className="text-end">Saldo Awal</th>
                         <th className="text-end">Debit</th>
                         <th className="text-end">Kredit</th>
-                        <th className="text-end pe-4">Saldo</th>
+                        <th className="text-end pe-4">Saldo Akhir</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +41,7 @@ const AccountTable = ({ title, icon, accounts, total, totalLabel, tone }) => (
                                     </div>
                                 </div>
                             </td>
+                            <td className="text-end text-muted font-weight-bold">{formatCurrency(acc.initial_balance)}</td>
                             <td className="text-end text-muted font-weight-bold">{formatCurrency(acc.total_debit)}</td>
                             <td className="text-end text-muted font-weight-bold">{formatCurrency(acc.total_credit)}</td>
                             <td className="text-end pe-4">
@@ -50,7 +52,7 @@ const AccountTable = ({ title, icon, accounts, total, totalLabel, tone }) => (
                         </tr>
                     )) : (
                         <tr>
-                            <td colSpan="4" className="text-center text-muted py-4">
+                            <td colSpan="5" className="text-center text-muted py-4">
                                 <i className="fas fa-inbox me-2" />Tidak ada data akun
                             </td>
                         </tr>
@@ -58,7 +60,7 @@ const AccountTable = ({ title, icon, accounts, total, totalLabel, tone }) => (
                 </tbody>
                 <tfoot>
                     <tr className="total-row">
-                        <td colSpan="3" className="ps-4 font-weight-900 text-dark text-uppercase" style={{ fontSize: '0.85rem' }}>
+                        <td colSpan="4" className="ps-4 font-weight-900 text-dark text-uppercase" style={{ fontSize: '0.85rem' }}>
                             {totalLabel}
                         </td>
                         <td className="text-end pe-4">

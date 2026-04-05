@@ -44,6 +44,7 @@ const KostTable = ({ filtered, onOpenStatusModal }) => {
             <th className="kost-th">Nama Kost</th>
             <th className="kost-th">Alamat</th>
             <th className="kost-th">Kontak</th>
+            <th className="kost-th text-center">Jarak</th>
             <th className="kost-th text-center">Rating</th>
             <th className="kost-th text-center">Status</th>
             <th className="kost-th text-center">Aksi</th>
@@ -98,6 +99,16 @@ const KostTable = ({ filtered, onOpenStatusModal }) => {
                     </a>
                   ) : (
                     <span className="text-muted">-</span>
+                  )}
+                </td>
+                <td className="px-3 py-3 text-center">
+                  {kost.distance ? (
+                    <div className="font-weight-bold" style={{ color: "#2563eb" }}>
+                      <i className="fas fa-route mr-1" style={{ opacity: 0.6 }} />
+                      {kost.distance.toFixed(1)} km
+                    </div>
+                  ) : (
+                    <span className="text-muted small">-</span>
                   )}
                 </td>
                 <td className="px-3 py-3 text-center">

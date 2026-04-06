@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import desktopBridge from 'services/desktop-bridge';
 
 // Sub-hooks
-import useCart from './useChart';
+import useCart from './useCart';
 import useCategory from './useCategory';
 import useCustomer from './useCustomer';
 import useHotkeys from './useHotKeys';
@@ -23,11 +23,21 @@ export const useOrderManagement = () => {
         Authorization: `Bearer ${authenticated}`,
     }), [authenticated]);
 
-    // Integrate Sub-hooks
-    const { cartItems, estimasi, addCart, updateCart, removeOneCart, clearCart, subTotal } = useCart(authenticated);
-    const { category, searchCategory } = useCategory(authenticated);
-    
     const { nama, setNama, telpon, setTelpon, idPelanggan, pelanggan, selectCustomer, resetCustomer } = useCustomer(authenticated);
+
+    // Integrate Sub-hooks (V2 Cart with Customer Support)
+    const { 
+        cartItems, 
+        estimasi, 
+        addCart, 
+        updateCart, 
+        removeOneCart, 
+        clearCart, 
+        subTotal, 
+        resetCartLocal 
+    } = useCart(authenticated, idPelanggan);
+
+    const { category, searchCategory } = useCategory(authenticated);
 
     // Local State
     const [isLunas, setIsLunas] = useState(false);
@@ -122,7 +132,7 @@ export const useOrderManagement = () => {
             }
 
             // Reset States
-            clearCart();
+            resetCartLocal();
             resetCustomer();
             setValueBayar(0);
             setIsCustomerModalOpen(false);
@@ -146,7 +156,7 @@ export const useOrderManagement = () => {
                 autoClose: 3000
             });
         }
-    }, [idPelanggan, orderCode, nama, telpon, isLunas, subTotal, valueBayar, tipeBayar, antar, headers, clearCart, resetCustomer]);
+    }, [idPelanggan, orderCode, nama, telpon, isLunas, subTotal, valueBayar, tipeBayar, antar, headers, resetCartLocal, resetCustomer]);
 
     const handleOrderSubmission = useCallback(() => {
         if (isLunas) {

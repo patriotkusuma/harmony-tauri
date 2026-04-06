@@ -46,6 +46,7 @@ const AccountingReport = () => {
         periods,
         autoCloseEnabled,
         withdrawals,
+        transfers,
         handleRefresh,
         toggleAutoClose,
         forceClosePeriod,
@@ -158,6 +159,7 @@ const AccountingReport = () => {
                             </TabPane>
                             <TabPane tabId="transfers">
                                 <TransferTab
+                                    data={transfers}
                                     accounts={summary.accounts || []}
                                     loading={loading}
                                     onCreateTransfer={createTransfer}

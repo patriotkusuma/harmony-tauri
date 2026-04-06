@@ -52,6 +52,11 @@ export const useAccountingReport = () => {
         items: [], total_withdrawn: 0, count: 0,
     });
 
+    // ====== Transfers ======
+    const [transfers, setTransfers] = useState({
+        items: [], total_moved: 0, count: 0,
+    });
+
     const buildParams = () => ({
         start_date: filters.startDate,
         end_date: filters.endDate,
@@ -241,12 +246,26 @@ export const useAccountingReport = () => {
     };
 
     // ====== Transfer Functions ======
+    const fetchTransfers = useCallback(async () => {
+        await fetchWithToast(
+            "api/v2/accounting/transfers",
+            setTransfers,
+            "Riwayat Transfer",
+            (data) => ({
+                items: data.items || [],
+                total_moved: data.total_moved || 0,
+                count: data.count || 0,
+            })
+        );
+    }, [filters]);
+
     const createTransfer = async (payload) => {
         const loadingToast = toast.loading("Memindahkan dana...");
         try {
             await axios.post("api/v2/accounting/transfers", payload);
             toast.update(loadingToast, { render: "Pemindahan dana berhasil!", type: "success", isLoading: false, autoClose: 2000 });
-            fetchSummary(); // Refresh summary to see updated balances
+            fetchTransfers(); // Refresh transfer list
+            fetchSummary(); // Also refresh account balances
         } catch (err) {
             toast.update(loadingToast, { render: "Gagal memindahkan dana", type: "error", isLoading: false, autoClose: 3000 });
         }
@@ -282,12 +301,13 @@ export const useAccountingReport = () => {
                 fetchSummary(); // Get accounts for Source of Funds selection
                 break;
             case "transfers":
+                fetchTransfers();
                 fetchSummary(); // Get accounts for transfer selection
                 break;
             default:
                 break;
         }
-    }, [fetchSummary, fetchBalanceSheet, fetchIncomeStatement, fetchCashFlow, fetchEquityChanges, fetchFinancialNotes, fetchPeriods, fetchAutoCloseStatus, fetchWithdrawals]);
+    }, [fetchSummary, fetchBalanceSheet, fetchIncomeStatement, fetchCashFlow, fetchEquityChanges, fetchFinancialNotes, fetchPeriods, fetchAutoCloseStatus, fetchWithdrawals, fetchTransfers]);
 
     // Auto-fetch on tab switch or filter change
     useEffect(() => {
@@ -315,6 +335,7 @@ export const useAccountingReport = () => {
         periods,
         autoCloseEnabled,
         withdrawals,
+        transfers,
 
         // Actions
         handleRefresh,

@@ -49,6 +49,7 @@ import AiChat from "views/pages/AiChat";
 import WebhookLogs from "views/pages/WebhookLogs";
 import IoTDeviceManagement from "views/pages/IoTDeviceManagement";
 import KostManagement from "views/pages/KostManagement";
+import CompetitorLaundry from "views/pages/CompetitorLaundry";
 
 /**
  * sidebarGroup — menentukan di section mana menu ini muncul di SidebarNew:
@@ -187,6 +188,15 @@ var routes = [
     name: "Manajemen Kost",
     icon: "fas fa-building text-teal",
     component: <KostManagement />,
+    layout: "/admin",
+    role: ["admin", "owner"],
+    sidebarGroup: "manajemen",
+  },
+  {
+    path: "/competitor-laundry",
+    name: "Kompetitor Laundry",
+    icon: "fas fa-store-alt text-orange",
+    component: <CompetitorLaundry />,
     layout: "/admin",
     role: ["admin", "owner"],
     sidebarGroup: "manajemen",

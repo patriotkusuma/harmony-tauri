@@ -200,7 +200,7 @@ const TransferTab = ({ data, loading, onCreateTransfer, accounts }) => {
                                 <option value="">Pilih Akun Sumber...</option>
                                 {bankAccounts.map(acc => (
                                     <option key={acc.id_account} value={acc.id_account}>
-                                        {acc.account_name} ({fmt(acc.current_balance)})
+                                        {acc.account_name} ({fmt(acc.balance)})
                                     </option>
                                 ))}
                             </Input>
@@ -218,7 +218,7 @@ const TransferTab = ({ data, loading, onCreateTransfer, accounts }) => {
                                     .filter(acc => acc.id_account !== form.id_source_account)
                                     .map(acc => (
                                         <option key={acc.id_account} value={acc.id_account}>
-                                            {acc.account_name} ({fmt(acc.current_balance)})
+                                            {acc.account_name} ({fmt(acc.balance)})
                                         </option>
                                     ))}
                             </Input>

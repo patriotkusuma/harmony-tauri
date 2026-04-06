@@ -75,6 +75,32 @@ export const useInventory = () => {
         }
     });
 
+    // 6. Update Inventory Mutation
+    const updateInventory = useMutation({
+        mutationFn: ({ uuid, payload }) => axios.put(`api/v2/inventory/${uuid}`, payload),
+        onSuccess: () => {
+            toast.success("Data inventory diperbarui!");
+            queryClient.invalidateQueries({ queryKey: INVENTORY_QUERY_KEY });
+        },
+        onError: (err) => {
+            const msg = err.response?.data?.error || "Gagal memperbarui data.";
+            toast.error(msg);
+        }
+    });
+
+    // 7. Delete Inventory Mutation
+    const deleteInventory = useMutation({
+        mutationFn: (uuid) => axios.delete(`api/v2/inventory/${uuid}`),
+        onSuccess: () => {
+            toast.success("Item inventory berhasil dihapus.");
+            queryClient.invalidateQueries({ queryKey: INVENTORY_QUERY_KEY });
+        },
+        onError: (err) => {
+            const msg = err.response?.data?.error || "Gagal menghapus item.";
+            toast.error(msg);
+        }
+    });
+
     return {
         inventory,
         movements: movements || [], // Default to empty array
@@ -88,7 +114,9 @@ export const useInventory = () => {
         },
         adjustStock: adjustStock.mutate,
         createInventory: createInventory.mutate,
-        isSubmitting: adjustStock.isLoading || createInventory.isLoading,
+        updateInventory: updateInventory.mutate,
+        deleteInventory: deleteInventory.mutateAsync, // use async for delete confirmation logic
+        isSubmitting: adjustStock.isLoading || createInventory.isLoading || updateInventory.isLoading || deleteInventory.isLoading,
         refresh: refetch
     };
 };

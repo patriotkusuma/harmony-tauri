@@ -10,9 +10,11 @@ const InventoryCreateModal = ({
     isOpen, 
     toggle, 
     references,
+    item,
     onSubmit, 
     loading 
 }) => {
+    const isEdit = !!item?.uuid;
     const [form, setForm] = useState({
         nama: '',
         id_unit: '',
@@ -24,16 +26,27 @@ const InventoryCreateModal = ({
 
     useEffect(() => {
         if (isOpen) {
-            setForm({
-                nama: '',
-                id_unit: '',
-                qty: 0,
-                cost_per_unit: 0,
-                purchase_date: moment().format('YYYY-MM-DD'),
-                description: '',
-            });
+            if (item) {
+                setForm({
+                    nama: item.nama || '',
+                    id_unit: item.id_unit || '',
+                    qty: item.current_stock || 0,
+                    cost_per_unit: item.cost_per_unit || 0,
+                    purchase_date: item.purchase_date || moment().format('YYYY-MM-DD'),
+                    description: item.description || '',
+                });
+            } else {
+                setForm({
+                    nama: '',
+                    id_unit: '',
+                    qty: 0,
+                    cost_per_unit: 0,
+                    purchase_date: moment().format('YYYY-MM-DD'),
+                    description: '',
+                });
+            }
         }
-    }, [isOpen]);
+    }, [isOpen, item]);
 
     const formatRupiah = (num) => {
         if (!num && num !== 0) return '';
@@ -57,8 +70,12 @@ const InventoryCreateModal = ({
                         <i className="fas fa-box-open text-primary fa-lg" />
                     </div>
                     <div>
-                        <h3 className="mb-0 font-weight-900 title-text">Tambah Barang Inventory</h3>
-                        <p className="text-muted mb-0 font-weight-bold" style={{ fontSize: '0.85rem' }}>Pendaftaran Stok Manual</p>
+                        <h3 className="mb-0 font-weight-900 title-text">
+                            {isEdit ? 'Ubah Metadata Inventory' : 'Tambah Barang Inventory'}
+                        </h3>
+                        <p className="text-muted mb-0 font-weight-bold" style={{ fontSize: '0.85rem' }}>
+                            {isEdit ? `UUID: ${item.uuid}` : 'Pendaftaran Stok Manual'}
+                        </p>
                     </div>
                 </div>
                 {!loading && (
@@ -70,10 +87,12 @@ const InventoryCreateModal = ({
             
             <form onSubmit={handleSubmit}>
                 <ModalBody className="p-4 bg-modal-body">
-                    <Alert className="alert-soft-warning py-2 px-3 border-0 small font-weight-bold mb-4">
-                        <i className="fas fa-exclamation-triangle me-2" /> 
-                        Gunakan fitur ini hanya untuk stok awal atau barang yang tidak melalui alur Pembelian.
-                    </Alert>
+                    {!isEdit && (
+                        <Alert className="alert-soft-warning py-2 px-3 border-0 small font-weight-bold mb-4">
+                            <i className="fas fa-exclamation-triangle me-2" /> 
+                            Gunakan fitur ini hanya untuk stok awal atau barang yang tidak melalui alur Pembelian.
+                        </Alert>
+                    )}
 
                     <Row>
                         <Col md="8">
@@ -110,15 +129,19 @@ const InventoryCreateModal = ({
                     <Row>
                         <Col md="4">
                             <FormGroup>
-                                <Label className="text-xs font-weight-bold text-muted ms-1 text-uppercase ls-1">Stok Awal (Qty)</Label>
+                                <Label className="text-xs font-weight-bold text-muted ms-1 text-uppercase ls-1">
+                                    {isEdit ? 'Stok Terakhir' : 'Stok Awal (Qty)'}
+                                </Label>
                                 <Input
                                     required
                                     type="number"
                                     step="0.01"
+                                    disabled={isEdit}
                                     value={form.qty}
                                     onChange={(e) => setForm({ ...form, qty: parseFloat(e.target.value) })}
                                     className="custom-input font-weight-bold title-text"
                                 />
+                                {isEdit && <small className="text-muted">Gunakan menu Penyesuaian untuk mengubah stok.</small>}
                             </FormGroup>
                         </Col>
                         <Col md="4">
@@ -165,7 +188,7 @@ const InventoryCreateModal = ({
                         Batal
                     </Button>
                     <Button color="primary" type="submit" disabled={loading} className="px-5 shadow-sm font-weight-bold rounded-pill shadow-hover">
-                        {loading ? <><i className="fas fa-spinner fa-spin me-2" />Menyimpan...</> : "Simpan Barang"}
+                        {loading ? <><i className="fas fa-spinner fa-spin me-2" />Menyimpan...</> : (isEdit ? "Update Metadata" : "Simpan Barang")}
                     </Button>
                 </ModalFooter>
             </form>

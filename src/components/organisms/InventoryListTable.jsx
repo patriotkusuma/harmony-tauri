@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button } from 'reactstrap';
 
-const InventoryListTable = ({ data, onDetail, onAdjust, loading }) => {
+const InventoryListTable = ({ data, onDetail, onAdjust, onEdit, onDelete, loading }) => {
     if (loading) {
         return (
             <div className="text-center py-5">
@@ -104,6 +104,24 @@ const InventoryListTable = ({ data, onDetail, onAdjust, loading }) => {
                                             >
                                                 <i className="fas fa-sliders-h me-2" /> Penyesuaian
                                             </Button>
+
+                                            <Button 
+                                                size="sm" 
+                                                className="btn-action btn-edit rounded-pill d-flex align-items-center justify-content-center border-0 px-2 font-weight-bold"
+                                                onClick={() => onEdit(item)}
+                                                title="Edit Metadata"
+                                            >
+                                                <i className="fas fa-edit" />
+                                            </Button>
+
+                                            <Button 
+                                                size="sm" 
+                                                className="btn-action btn-delete rounded-pill d-flex align-items-center justify-content-center border-0 px-2 font-weight-bold"
+                                                onClick={() => onDelete(item)}
+                                                title="Hapus Item"
+                                            >
+                                                <i className="fas fa-trash text-danger" />
+                                            </Button>
                                         </div>
                                     </td>
                                 </tr>
@@ -180,6 +198,13 @@ const InventoryListTable = ({ data, onDetail, onAdjust, loading }) => {
                 .btn-adjust { color: #11cdef !important; background-color: rgba(17, 205, 239, 0.1) !important; }
                 body.dark-mode .btn-adjust { background-color: rgba(56, 189, 248, 0.15) !important; color: #38bdf8 !important; }
                 .btn-adjust:hover { background-color: #11cdef !important; color: #fff !important; }
+
+                .btn-edit { color: #f5365c !important; background-color: rgba(245, 54, 92, 0.05) !important; color: #8898aa !important; }
+                .btn-edit:hover { background-color: #f8f9fe !important; color: #5e72e4 !important; }
+                
+                .btn-delete { background-color: rgba(245, 54, 92, 0.05) !important; }
+                .btn-delete:hover { background-color: #f5365c !important; }
+                .btn-delete:hover i { color: #fff !important; }
             `}</style>
         </div>
     );

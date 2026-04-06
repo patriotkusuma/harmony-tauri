@@ -271,6 +271,18 @@ export const useAccountingReport = () => {
         }
     };
 
+    const deleteTransfer = async (id) => {
+        const loadingToast = toast.loading("Membatalkan transfer...");
+        try {
+            await axios.delete(`api/v2/accounting/transfers/${id}`);
+            toast.update(loadingToast, { render: "Transfer dibatalkan & saldo dikembalikan!", type: "success", isLoading: false, autoClose: 2000 });
+            fetchTransfers();
+            fetchSummary();
+        } catch (err) {
+            toast.update(loadingToast, { render: "Gagal membatalkan transfer", type: "error", isLoading: false, autoClose: 3000 });
+        }
+    };
+
     // ====== Tab-based auto-fetch ======
     const fetchByTab = useCallback((tab) => {
         switch (tab) {
@@ -344,6 +356,7 @@ export const useAccountingReport = () => {
         createWithdrawal,
         deleteWithdrawal,
         createTransfer,
+        deleteTransfer,
         fetchByTab,
     };
 }

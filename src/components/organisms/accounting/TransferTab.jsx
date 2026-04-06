@@ -9,7 +9,7 @@ import moment from "moment";
 
 const fmt = (n) => `Rp ${Number(n || 0).toLocaleString("id-ID")}`;
 
-const TransferTab = ({ data, loading, onCreateTransfer, accounts }) => {
+const TransferTab = ({ data, loading, onCreateTransfer, onDeleteTransfer, accounts }) => {
     const [modal, setModal] = useState(false);
     const [form, setForm] = useState({
         id_source_account: "",
@@ -32,6 +32,12 @@ const TransferTab = ({ data, loading, onCreateTransfer, accounts }) => {
             date: moment().format("YYYY-MM-DD"),
             description: ""
         });
+    };
+
+    const handleDelete = (id) => {
+        if (window.confirm("Yakin ingin membatalkan transfer ini? Saldo kedua akun akan dikembalikan.")) {
+            onDeleteTransfer(id);
+        }
     };
 
     const bankAccounts = (accounts || []).filter(acc => acc.account_type === "Assets");
@@ -134,6 +140,7 @@ const TransferTab = ({ data, loading, onCreateTransfer, accounts }) => {
                                         <th className="py-3 text-uppercase small text-muted border-0">Ke Akun</th>
                                         <th className="py-3 text-uppercase small text-muted border-0">Keterangan</th>
                                         <th className="py-3 text-uppercase small text-muted border-0 text-right">Nominal</th>
+                                        <th className="py-3 text-uppercase small text-muted border-0 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -171,6 +178,18 @@ const TransferTab = ({ data, loading, onCreateTransfer, accounts }) => {
                                                 <span className="font-weight-bold text-success">
                                                     {fmt(item.amount)}
                                                 </span>
+                                            </td>
+                                            <td className="py-3 text-center">
+                                                <Button
+                                                    color="danger"
+                                                    size="sm"
+                                                    outline
+                                                    className="rounded-pill px-3 font-weight-bold"
+                                                    onClick={() => handleDelete(item.id)}
+                                                    title="Batalkan transfer & kembalikan saldo"
+                                                >
+                                                    <i className="fas fa-undo me-1" /> Revert
+                                                </Button>
                                             </td>
                                         </tr>
                                     ))}

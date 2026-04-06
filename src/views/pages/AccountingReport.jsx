@@ -53,6 +53,7 @@ const AccountingReport = () => {
         createWithdrawal,
         deleteWithdrawal,
         createTransfer,
+        deleteTransfer,
     } = useAccountingReport();
 
     const netIncome = (summary.total_revenue || 0) - (summary.total_expense || 0);
@@ -163,6 +164,7 @@ const AccountingReport = () => {
                                     accounts={summary.accounts || []}
                                     loading={loading}
                                     onCreateTransfer={createTransfer}
+                                    onDeleteTransfer={deleteTransfer}
                                 />
                             </TabPane>
                             <TabPane tabId="periods">

@@ -63,7 +63,7 @@ const SatuanManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {units.map((u) => (
+                        {(units || []).map((u) => (
                             <tr key={u.id}>
                                 <td className="px-4 py-3 font-weight-bold text-muted border-0">{u.id}</td>
                                 <td className="px-4 py-3 font-weight-bold border-0">{u.nama}</td>

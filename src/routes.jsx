@@ -50,6 +50,7 @@ import WebhookLogs from "views/pages/WebhookLogs";
 import IoTDeviceManagement from "views/pages/IoTDeviceManagement";
 import KostManagement from "views/pages/KostManagement";
 import CompetitorLaundry from "views/pages/CompetitorLaundry";
+import ActivityLogs from "views/pages/ActivityLogs";
 
 /**
  * sidebarGroup — menentukan di section mana menu ini muncul di SidebarNew:
@@ -217,6 +218,15 @@ var routes = [
     component: <OrderLogTimelinePage />,
     layout: "/admin",
     sidebarGroup: "manajemen",
+  },
+  {
+    path: "/activities",
+    name: "Log Aktivitas",
+    icon: "fas fa-stream text-primary",
+    component: <ActivityLogs />,
+    layout: "/admin",
+    sidebarGroup: "manajemen",
+    role: ["admin", "owner"],
   },
 
   // ── Pengaturan Sistem ────────────────────────────────────────────

@@ -51,6 +51,7 @@ import IoTDeviceManagement from "views/pages/IoTDeviceManagement";
 import KostManagement from "views/pages/KostManagement";
 import CompetitorLaundry from "views/pages/CompetitorLaundry";
 import ActivityLogs from "views/pages/ActivityLogs";
+import BillingManagement from "views/pages/BillingManagement";
 
 /**
  * sidebarGroup — menentukan di section mana menu ini muncul di SidebarNew:
@@ -68,6 +69,14 @@ var routes = [
     name: "Riwayat Transaksi",
     icon: "fas fa-history text-info",
     component: <RiwayatPesan/>,
+    layout: "/admin",
+    sidebarGroup: "operasional",
+  },
+  {
+    path: "/bills",
+    name: "Tagihan (Billing)",
+    icon: "fas fa-file-invoice text-indigo",
+    component: <BillingManagement />,
     layout: "/admin",
     sidebarGroup: "operasional",
   },
@@ -260,7 +269,7 @@ var routes = [
     path: "/notification-setting",
     name: "Pengaturan Notifikasi",
     icon: "fas fa-bell text-warning",
-    component: <NotificationSetting />,
+    component: null,
     layout: "/admin",
     sidebarGroup: "settings",
   },

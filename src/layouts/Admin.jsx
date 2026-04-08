@@ -205,8 +205,9 @@ const Admin = (props) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         if (prop.role && auth && !prop.role.includes(auth.role)) {
-          return null; // Don't render the route if the role doesn't match
+          return null;
         }
+        if (!prop.component) return null; // skip routes handled inline (e.g. NotificationSetting)
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );

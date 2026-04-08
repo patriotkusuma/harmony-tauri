@@ -15,7 +15,9 @@ const OrderCheckoutSection = ({
     setAntar,
     onEditCustomer,
     onSubmitOrder,
-    isOrderDisabled
+    isOrderDisabled,
+    gabungBill,
+    setGabungBill
 }) => {
     return (
         <Card className="shadow-premium border-0 overflow-hidden mb-4 bg-white">
@@ -78,6 +80,37 @@ const OrderCheckoutSection = ({
                             <input 
                                 type="checkbox" 
                                 checked={antar === 1}
+                                readOnly
+                            />
+                            <span 
+                                className="custom-toggle-slider rounded-circle" 
+                                data-label-off="Tidak" 
+                                data-label-on="Iya" 
+                            />
+                        </label>
+                    </div>
+                </div>
+
+                {/* Gabung Bill Toggle */}
+                <div 
+                    className="d-flex align-items-center justify-content-between mb-4 p-3 border rounded px-4 bg-secondary"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setGabungBill(gabungBill === false ? true : false)}
+                >
+                    <div className="d-flex align-items-center">
+                        <div className={`icon icon-shape icon-sm rounded-circle me-3 text-white ${gabungBill ? 'bg-info' : 'bg-muted'}`} style={{ width: '30px', height: '30px' }}>
+                            <i className="fas fa-object-group" />
+                        </div>
+                        <div className="d-flex flex-column" style={{ userSelect: 'none' }}>
+                            <span className="font-weight-bold text-dark text-sm">Gabung ke Tagihan Aktif</span>
+                            <span className="text-muted" style={{fontSize: '0.65rem'}}>Jika pelanggan sudah punya hutang</span>
+                        </div>
+                    </div>
+                    <div style={{ pointerEvents: 'none' }}>
+                        <label className="custom-toggle custom-toggle-info mb-0">
+                            <input 
+                                type="checkbox" 
+                                checked={gabungBill}
                                 readOnly
                             />
                             <span 

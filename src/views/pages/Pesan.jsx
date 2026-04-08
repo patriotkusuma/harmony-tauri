@@ -39,6 +39,8 @@ const Pesan = () => {
         setTipeBayar,
         antar,
         setAntar,
+        gabungBill,
+        setGabungBill,
         kode_pesan,
         isOrderButtonDisabled,
         
@@ -111,6 +113,8 @@ const Pesan = () => {
                             setIsLunas={setIsLunas}
                             antar={antar}
                             setAntar={setAntar}
+                            gabungBill={gabungBill}
+                            setGabungBill={setGabungBill}
                             onEditCustomer={toggleCustomerModal}
                             onSubmitOrder={handleOrderSubmission}
                             isOrderDisabled={isOrderButtonDisabled}

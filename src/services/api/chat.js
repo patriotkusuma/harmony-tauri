@@ -20,7 +20,16 @@ const getSessions = async () => {
   return res.data.data ?? [];
 };
 
+/**
+ * Get messages for a specific session.
+ */
+const getMessages = async (sessionId) => {
+  const res = await axios.get(`api/v2/chat/sessions/${sessionId}/messages`);
+  return res.data.data ?? res.data.messages ?? [];
+};
+
 export const chatService = {
   sendMessage,
   getSessions,
+  getMessages,
 };

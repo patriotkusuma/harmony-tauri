@@ -8,7 +8,7 @@ const NotifInput = ({ label, type = 'text', name, value, onChange, placeholder, 
       <Input
         type={type}
         name={name}
-        value={value}
+        value={value || ''}
         onChange={onChange}
         placeholder={placeholder}
         className="input-notification"

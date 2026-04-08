@@ -2,14 +2,11 @@ import { create } from 'zustand';
 import { chatService } from '../services/api/chat';
 
 const useChatStore = create((set, get) => ({
-  // List of sessions from server
   sessions: [],
-  // Currently active session ID
   activeSessionId: null,
-  // Messages for the active session
   messages: [],
-  // Loading states
   loadingSessions: false,
+  loadingMessages: false,
   sending: false,
   error: null,
 
@@ -24,14 +21,15 @@ const useChatStore = create((set, get) => ({
     }
   },
 
-  /** Select a session and load its messages (stored in sessions array) */
-  selectSession: (sessionId) => {
-    const { sessions } = get();
-    const session = sessions.find((s) => s.id === sessionId);
-    set({
-      activeSessionId: sessionId,
-      messages: session?.messages ?? [],
-    });
+  /** Select a session and FETCH its messages from API */
+  selectSession: async (sessionId) => {
+    set({ activeSessionId: sessionId, loadingMessages: true, messages: [] });
+    try {
+      const messages = await chatService.getMessages(sessionId);
+      set({ messages, loadingMessages: false });
+    } catch (err) {
+      set({ error: err?.response?.data?.error ?? 'Gagal memuat pesan', loadingMessages: false });
+    }
   },
 
   /** Start a brand-new session */
@@ -58,16 +56,22 @@ const useChatStore = create((set, get) => ({
       const result = await chatService.sendMessage(activeSessionId, content);
       const newMessages = result.messages ?? [];
       const newSessionId = result.session_id;
+      const updatedSession = result.session;
 
-      // Update sessions list: prepend if new, or update title in existing
       set((state) => {
         const exists = state.sessions.find((s) => s.id === newSessionId);
         const updatedSessions = exists
           ? state.sessions.map((s) =>
-              s.id === newSessionId ? { ...s, updated_at: new Date().toISOString(), messages: newMessages } : s
+              s.id === newSessionId
+                ? { ...s, title: updatedSession?.title ?? s.title, updated_at: new Date().toISOString() }
+                : s
             )
           : [
-              { id: newSessionId, title: content.slice(0, 40), updated_at: new Date().toISOString(), messages: newMessages },
+              {
+                id: newSessionId,
+                title: updatedSession?.title ?? content.slice(0, 40),
+                updated_at: new Date().toISOString(),
+              },
               ...state.sessions,
             ];
 
@@ -79,7 +83,6 @@ const useChatStore = create((set, get) => ({
         };
       });
     } catch (err) {
-      // Remove optimistic message on failure
       set((state) => ({
         messages: state.messages.filter((m) => m.id !== tempUserMsg.id),
         error: err?.response?.data?.error ?? 'Gagal mengirim pesan',

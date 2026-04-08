@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Container } from 'reactstrap';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import useChatStore from '../../store/chatStore';
 import '../../assets/css/ai-chat.css';
 
@@ -45,7 +47,36 @@ const MessageBubble = ({ msg }) => {
         </div>
       )}
       <div className={`ai-bubble ${isUser ? 'ai-bubble-user' : 'ai-bubble-assistant'}`}>
-        <p className="ai-bubble-text">{msg.content}</p>
+        {isUser ? (
+          <p className="ai-bubble-text">{msg.content}</p>
+        ) : (
+          <div className="ai-bubble-md">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                p: ({ children }) => <p className="ai-md-p">{children}</p>,
+                h1: ({ children }) => <h4 className="ai-md-h">{children}</h4>,
+                h2: ({ children }) => <h5 className="ai-md-h">{children}</h5>,
+                h3: ({ children }) => <h6 className="ai-md-h">{children}</h6>,
+                ul: ({ children }) => <ul className="ai-md-ul">{children}</ul>,
+                ol: ({ children }) => <ol className="ai-md-ol">{children}</ol>,
+                li: ({ children }) => <li className="ai-md-li">{children}</li>,
+                code: ({ inline, children }) =>
+                  inline
+                    ? <code className="ai-md-code-inline">{children}</code>
+                    : <pre className="ai-md-pre"><code>{children}</code></pre>,
+                strong: ({ children }) => <strong className="ai-md-strong">{children}</strong>,
+                table: ({ children }) => <div className="ai-md-table-wrap"><table className="ai-md-table">{children}</table></div>,
+                th: ({ children }) => <th className="ai-md-th">{children}</th>,
+                td: ({ children }) => <td className="ai-md-td">{children}</td>,
+                blockquote: ({ children }) => <blockquote className="ai-md-blockquote">{children}</blockquote>,
+                a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer" className="ai-md-link">{children}</a>,
+              }}
+            >
+              {msg.content}
+            </ReactMarkdown>
+          </div>
+        )}
         <span className="ai-bubble-time">{fmtTime(msg.created_at)}</span>
       </div>
     </div>
@@ -151,7 +182,7 @@ const AiChat = () => {
                   <p className="ai-chat-name">Harmony AI</p>
                   <p className="ai-chat-status">
                     <span className="ai-status-dot" />
-                    Siap membantu • Gemini AI
+                    Siap membantu • LiteLLM
                   </p>
                 </div>
               </div>

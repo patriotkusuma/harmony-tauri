@@ -59,9 +59,9 @@ const useCart = (authenticated, idCustomer = 0) => {
         timerRef.current = setTimeout(async () => {
             try {              
                 await axios.patch(`api/v2/cart`, {
-                    id_jenis_cuci: id, 
-                    qty: value,
-                    id_customer: idCustomer || 0
+                    id_jenis_cuci: parseInt(id), 
+                    qty: parseFloat(value) || 0,
+                    id_customer: parseInt(idCustomer) || 0
                 }, { headers });
                 getCart();
             } catch (err) {    

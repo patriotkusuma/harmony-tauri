@@ -59,6 +59,7 @@ const Pesan = () => {
         toggleCustomerModal,
         togglePaymentModal,
         toggleRFIDAttach,
+        sendConfirmationWA,
     } = useOrderManagement();
 
     return (
@@ -118,6 +119,7 @@ const Pesan = () => {
                             onEditCustomer={toggleCustomerModal}
                             onSubmitOrder={handleOrderSubmission}
                             isOrderDisabled={isOrderButtonDisabled}
+                            onSendConfirmation={sendConfirmationWA}
                         />
                     </Col>
                 </Row>

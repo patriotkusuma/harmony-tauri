@@ -14,13 +14,13 @@ const ServiceRevenueManagement = () => {
     services,
     revenueAccounts,
     selectedCategoryId,
-    selectedServiceUuid,
+    selectedServiceId,
     viewMode,
     isDetailView,
     errorMessage,
     isLoading,
     setSelectedCategoryId,
-    setSelectedServiceUuid,
+    setSelectedServiceId,
     setViewMode,
     setDetailView,
     fetchCategories,
@@ -45,8 +45,8 @@ const ServiceRevenueManagement = () => {
     fetchServices();
   }, []);
 
-  const openDetail = (uuid) => {
-    setSelectedServiceUuid(uuid);
+  const openDetail = (id) => {
+    setSelectedServiceId(id);
     setDetailView(true);
   };
 
@@ -149,9 +149,9 @@ const ServiceRevenueManagement = () => {
                 services={services}
                 revenueAccounts={revenueAccounts}
                 selectedCategoryId={viewMode === "category" ? selectedCategoryId : null}
-                selectedServiceUuid={selectedServiceUuid}
+                selectedServiceId={selectedServiceId}
                 resolveRevenueAccount={resolveRevenueAccount}
-                onSelectService={setSelectedServiceUuid}
+                onSelectService={setSelectedServiceId}
                 onAddService={addService}
                 onDeleteService={deleteService}
                 onOpenDetail={openDetail}

@@ -127,10 +127,19 @@ const BillingDetailModal = ({ billId, isOpen, toggle, onPaymentSuccess }) => {
                                 </Col>
                                 <Col>
                                     <h5 className="mb-0 font-weight-bold">{detail.customer?.nama}</h5>
-                                    <small className="text-muted">
-                                        <i className="fab fa-whatsapp text-success me-1" />
-                                        {detail.customer?.telpon || "Tidak ada nomor"}
-                                    </small>
+                                    <div className="d-flex flex-column mt-1">
+                                        <small className="text-muted">
+                                            <i className="fab fa-whatsapp text-success me-1" />
+                                            {detail.customer?.telpon || "Tidak ada nomor"}
+                                        </small>
+                                        {detail.customer?.keterangan && (
+                                            <div className="cust-note-modal mt-2 shadow-sm">
+                                                <i className="fas fa-sticky-note me-2 text-warning" />
+                                                <strong>Catatan Customer:</strong> &nbsp;
+                                                <span className="font-italic">{detail.customer?.keterangan}</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </Col>
                                 <Col xs="auto" className="text-end">
                                     <small className="text-muted d-block">Dibuat</small>
@@ -195,7 +204,15 @@ const BillingDetailModal = ({ billId, isOpen, toggle, onPaymentSuccess }) => {
                                             return (
                                                 <tr key={o.order_id}>
                                                     <td>
-                                                        <code className="text-primary small">{o.kode_pesan}</code>
+                                                        <div className="d-flex flex-column">
+                                                            <code className="text-primary small">{o.kode_pesan}</code>
+                                                            {o.keterangan && (
+                                                                <small className="text-muted font-italic x-small mt-1">
+                                                                    <i className="fas fa-edit me-1" />
+                                                                    Note: {o.keterangan}
+                                                                </small>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                     <td className="text-end font-weight-bold">{formatRupiah(o.total_harga)}</td>
                                                     <td className="text-end text-success">{formatRupiah(o.paid)}</td>
@@ -322,6 +339,17 @@ const BillingDetailModal = ({ billId, isOpen, toggle, onPaymentSuccess }) => {
                 }
                 .summary-card--danger { border-color: rgba(245,54,92,0.3); background: rgba(245,54,92,0.04); }
                 .summary-card--success { border-color: rgba(45,206,137,0.3); background: rgba(45,206,137,0.04); }
+                
+                .cust-note-modal {
+                    background: #fff8e1;
+                    color: #b08900;
+                    font-size: 0.85rem;
+                    padding: 8px 15px;
+                    border-radius: 8px;
+                    border-left: 5px solid #ffca28;
+                }
+                .x-small { font-size: 0.7rem; }
+
                 .gap-2 { gap: 0.5rem !important; }
                 .gap-3 { gap: 0.75rem !important; }
                 .ms-2 { margin-left: 0.5rem !important; }

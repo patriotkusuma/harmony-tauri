@@ -96,6 +96,24 @@ const useCart = (authenticated, idCustomer = 0) => {
         }
     }, [headers, getParams]);
 
+    // Send Cart Confirmation WA
+    const sendConfirmationWA = useCallback(async (totalWeightGrams) => {
+        if (!idCustomer) {
+            console.warn("[useCart] sendConfirmation ignores empty customer ID");
+            return false;
+        }
+        try {
+            await axios.post('api/v2/cart/send-confirmation', { 
+                id_customer: parseInt(idCustomer),
+                qty: parseFloat(totalWeightGrams)
+            }, { headers });
+            return true;
+        } catch (err) {
+            console.error(`[useCart] Error sending confirmation:`, err);
+            throw err;
+        }
+    }, [headers, idCustomer]);
+
     // Force local clear (without API call, e.g. after order success)
     const resetCartLocal = useCallback(() => {
         setCartItems(null);
@@ -119,7 +137,8 @@ const useCart = (authenticated, idCustomer = 0) => {
         removeOneCart,
         clearCart,
         getCart,
-        resetCartLocal
+        resetCartLocal,
+        sendConfirmationWA
     };
 };
 

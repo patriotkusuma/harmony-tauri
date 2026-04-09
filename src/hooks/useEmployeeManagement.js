@@ -69,8 +69,8 @@ export const useEmployeeManagement = () => {
 
   const fetchOutlets = useCallback(async () => {
     try {
-      const res = await axios.get("api/outlet/get-outlet");
-      setOutlets(res.data.outlets || []);
+      const res = await axios.get("api/v2/outlets");
+      setOutlets(res.data.data || []);
     } catch (err) {
       console.error("Error fetching outlets:", err);
     }

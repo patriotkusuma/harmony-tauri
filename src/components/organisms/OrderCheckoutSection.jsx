@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardBody, CardHeader, Row, Col, Button, Input, Badge } from 'reactstrap';
 import moment from 'moment';
 import RupiahFormater from 'utils/RupiahFormater';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
 
 const OrderCheckoutSection = ({
     kodePesan,
@@ -17,8 +19,39 @@ const OrderCheckoutSection = ({
     onSubmitOrder,
     isOrderDisabled,
     gabungBill,
-    setGabungBill
+    setGabungBill,
+    onSendConfirmation
 }) => {
+    const handleSendConfirmation = async () => {
+        if (!telpon) {
+            toast.warning("Nomor WhatsApp pelanggan belum diisi!");
+            return;
+        }
+        
+        const { value: weight } = await Swal.fire({
+            title: 'Kirim Konfirmasi Tagihan',
+            input: 'number',
+            inputLabel: 'Berat Timbangan (Kg)',
+            inputPlaceholder: 'Misal: 2.5',
+            inputAttributes: { step: '0.1', min: '0' },
+            showCancelButton: true,
+            confirmButtonText: 'Kirim WA',
+            cancelButtonText: 'Batal',
+            html: '<p class="small text-muted">Akan mengirim WA berisi estimasi harga Express vs Reguler ke pelanggan berdasarkan berat timbangan (hanya berlaku jika ada tagihan belum lunas!).</p>'
+        });
+
+        if (weight) {
+            try {
+                // Konversi dari Kg ke Gram untuk Backend
+                const weightInGrams = parseFloat(weight) * 1000;
+                await onSendConfirmation(weightInGrams);
+                toast.success("Pesan konfirmasi WA berhasil dikirim!");
+            } catch (error) {
+                toast.error("Gagal mengirim pesan WA");
+            }
+        }
+    };
+
     return (
         <Card className="shadow-premium border-0 overflow-hidden mb-4 bg-white">
             <CardHeader className="bg-gradient-secondary py-3 border-bottom">
@@ -45,7 +78,14 @@ const OrderCheckoutSection = ({
                     <div className="d-flex align-items-center">
                         <i className="fab fa-whatsapp text-muted me-2" />
                         <span className="small text-muted font-weight-bold uppercase ls-1">WhatsApp:</span>
-                        <span className="ms-auto font-weight-900 text-dark text-end">{telpon || '-'}</span>
+                        <span className="ms-auto font-weight-900 text-dark text-end">
+                            {telpon || '-'}
+                            {telpon && (
+                                <Button color="success" size="sm" className="ms-3 rounded-pill py-1 px-2" onClick={handleSendConfirmation}>
+                                    <i className="fas fa-paper-plane me-1" /> Konfirmasi
+                                </Button>
+                            )}
+                        </span>
                     </div>
                 </div>
 

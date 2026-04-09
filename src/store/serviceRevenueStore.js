@@ -20,7 +20,7 @@ export const useServiceRevenueStore = create((set, get) => ({
   isLoading: false,
   errorMessage: "",
   selectedCategoryId: null,
-  selectedServiceUuid: null,
+  selectedServiceId: null,
   
   viewMode: "category", // "category" or "list"
   isDetailView: false,
@@ -60,7 +60,7 @@ export const useServiceRevenueStore = create((set, get) => ({
     set({ selectedCategoryId: id });
   },
 
-  setSelectedServiceUuid: (uuid) => set({ selectedServiceUuid: uuid }),
+  setSelectedServiceId: (id) => set({ selectedServiceId: id }),
 
   addCategory: async (payload) => {
     try {
@@ -96,60 +96,67 @@ export const useServiceRevenueStore = create((set, get) => ({
   },
 
   addService: async (data, imageFile) => {
-    const formData = new FormData();
-    Object.keys(data).forEach(key => {
-      formData.append(key, data[key]);
-    });
-    if (imageFile) {
-      formData.append("gambar", imageFile);
-    }
-    // Ensure numeric types
-    formData.set("id_category_paket", Number(data.id_category_paket));
-    formData.set("harga", Number(data.harga));
-    if (!data.id_revenue_account) {
-       formData.set("id_revenue_account", DEFAULT_REVENUE_ACCOUNT_ID);
-    }
+    // Send JSON for create (backend uses ShouldBindJSON)
+    const payload = {
+      ...data,
+      id_category_paket: Number(data.id_category_paket),
+      harga: Number(data.harga),
+      id_revenue_account: data.id_revenue_account || DEFAULT_REVENUE_ACCOUNT_ID,
+    };
 
     try {
-      await axios.post("/api/v2/jenis-cuci", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      const res = await axios.post("/api/v2/jenis-cuci", payload);
+      const created = res.data.data;
+
+      // Upload image separately if provided
+      if (imageFile && created?.id) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        await axios.put(`/api/v2/jenis-cuci/${created.id}/gambar`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        }).catch(() => {}); // non-fatal
+      }
+
       get().fetchServices();
       return true;
     } catch (err) {
-      set({ errorMessage: err.response?.data?.message || "Gagal menambah jenis cuci" });
+      set({ errorMessage: err.response?.data?.errors || err.response?.data?.message || "Gagal menambah jenis cuci" });
       return false;
     }
   },
 
   updateService: async (id, data, imageFile) => {
-    // If it's standard JSON update (without image), we can still use FormData or logic to switch
-    const formData = new FormData();
+    // Send JSON for update (backend uses ShouldBindJSON)
+    const payload = {};
     Object.keys(data).forEach(key => {
-      if (data[key] !== null && data[key] !== undefined) {
-         formData.append(key, data[key]);
+      if (data[key] !== null && data[key] !== undefined && data[key] !== "") {
+        payload[key] = data[key];
       }
     });
-    
-    if (imageFile) {
-      formData.append("gambar", imageFile);
+    if (payload.id_category_paket !== undefined) {
+      payload.id_category_paket = Number(payload.id_category_paket);
     }
-    
-    // Ensure numeric types
-    formData.set("id_category_paket", Number(data.id_category_paket));
-    formData.set("harga", Number(data.harga));
+    if (payload.harga !== undefined) {
+      payload.harga = Number(payload.harga);
+    }
 
     try {
-      // NOTE: Some backends require POST with _method=PUT for multipart updates
-      // We'll try standard PUT first, common in modern APIs
-      await axios.put(`/api/v2/jenis-cuci/${id}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      await axios.put(`/api/v2/jenis-cuci/${id}`, payload);
+
+      // Upload image separately if provided
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        await axios.put(`/api/v2/jenis-cuci/${id}/gambar`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        }).catch(() => {}); // non-fatal
+      }
+
       get().fetchServices();
       get().fetchPriceHistory(id);
       return true;
     } catch (err) {
-      set({ errorMessage: err.response?.data?.message || "Gagal update jenis cuci" });
+      set({ errorMessage: err.response?.data?.errors || err.response?.data?.message || "Gagal update jenis cuci" });
       return false;
     }
   },
@@ -216,8 +223,8 @@ export const useServiceRevenueStore = create((set, get) => ({
   },
 
   getSelectedService: () => {
-    const { services, selectedServiceUuid } = get();
-    return services.find(s => s.uuid_jenis_cuci === selectedServiceUuid);
+    const { services, selectedServiceId } = get();
+    return services.find(s => s.id === selectedServiceId);
   }
 }));
 

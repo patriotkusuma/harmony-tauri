@@ -34,7 +34,8 @@ export const useOrderManagement = () => {
         removeOneCart, 
         clearCart, 
         subTotal, 
-        resetCartLocal 
+        resetCartLocal,
+        sendConfirmationWA
     } = useCart(authenticated, idPelanggan);
 
     const { category, searchCategory } = useCategory(authenticated);
@@ -233,6 +234,7 @@ export const useOrderManagement = () => {
         toggleCustomerModal,
         togglePaymentModal,
         toggleRFIDAttach,
+        sendConfirmationWA,
     }), [
         cartItems, estimasi, subTotal, category, nama, telpon, pelanggan, 
         idPelanggan, isLunas, isCustomerModalOpen, isPaymentModalOpen, 
@@ -240,6 +242,6 @@ export const useOrderManagement = () => {
         addCart, updateCart, removeOneCart, clearCart, searchCategory,
         selectCustomer, resetCustomer, handlePrintNama, fetchAndPrintLastOrder,
         submitOrder, handleOrderSubmission, toggleCustomerModal, togglePaymentModal,
-        toggleRFIDAttach
+        toggleRFIDAttach, sendConfirmationWA
     ]);
 };

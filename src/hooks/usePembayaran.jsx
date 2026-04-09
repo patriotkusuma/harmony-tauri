@@ -45,10 +45,37 @@ export const usePembayaran = () => {
         if (!authenticated) return;
         setLoading(true);
         try {
-            const res = await axios.get(`api/customer/customer-has-bill?search=${search}`, {
-                headers: { 'Authorization': `Bearer ${authenticated}` }
+            const res = await axios.get(`api/v2/customer/has-bill?search=${search}`);
+            const mapped = res.data.items.map(item => {
+                const flatOrders = item.bills.reduce((acc, bill) => {
+                    if (bill.orders && Array.isArray(bill.orders)) {
+                        const mappedOrders = bill.orders.map(o => ({
+                            id: o.order_id,
+                            kode_pesan: o.kode_pesan,
+                            keterangan: o.keterangan,
+                            total_harga: o.total_harga,
+                            paid: o.paid,
+                            status_pembayaran: o.status_pembayaran,
+                            detail_pesanans: o.detail_pesanans || []
+                        }));
+                        return [...acc, ...mappedOrders];
+                    }
+                    return acc;
+                }, []);
+                
+                return {
+                    id: item.customer.id,
+                    nama: item.customer.nama,
+                    telpon: item.customer.telpon,
+                    keterangan: item.customer.keterangan,
+                    total_sisa: item.total_sisa,
+                    total_bayar: item.total_tagihan,
+                    telah_bayar: item.total_paid,
+                    bills: item.bills,
+                    pesanans: flatOrders
+                };
             });
-            setDataCustomer(res.data.customers);
+            setDataCustomer(mapped);
         } catch (err) {
             console.error("[usePembayaran] Error fetching customers:", err);
             toast.error("Gagal memuat data tagihan");
@@ -69,10 +96,8 @@ export const usePembayaran = () => {
     }, []);
 
     const calculateCustomerBill = useCallback((customer) => {
-        if (!customer || !customer.pesanans) return 0;
-        return customer.pesanans.reduce((acc, p) => {
-            return acc + (Number(p.paid || 0) - Number(p.total_harga || 0));
-        }, 0);
+        if (!customer) return 0;
+        return customer.total_sisa || 0;
     }, []);
 
     const handleOpenModal = useCallback(() => {
@@ -101,17 +126,43 @@ export const usePembayaran = () => {
     }, [bukti]);
 
     const submitPayment = useCallback(async () => {
-        if (!filtered) return;
-        const loadingSubmitToast = toast.loading("Sedang menyimpan data pembayaran...");
-        try {
-            const dataToSend = new FormData();
-            dataToSend.append("tipe_bayar", tipeBayar);
-            dataToSend.append("value_bayar", valueBayar);
-            if (bukti && (tipeBayar === 'tf' || tipeBayar === 'qris')) {
-                dataToSend.append("bukti", bukti);
-            }
+        if (!filtered || !filtered.bills || filtered.bills.length === 0) {
+            toast.error("Tidak ada tagihan yang bisa dibayar");
+            return;
+        }
 
-            await axios.post(`api/pembayaran/bill-pay/${filtered.id}`, dataToSend, { headers });
+        const loadingSubmitToast = toast.loading("Sedang menyimpan data pembayaran...");
+
+        // Map Tipe Bayar to Accounting ID
+        const accountMapping = {
+            'cash': '9f28d5df-c1eb-49b9-adc9-d7d945baf9b6', // Kas Tunai
+            'tf': 'a97e3541-16d0-404e-9825-0690775e4ddd',   // BCA
+            'qris': '9f28d6c7-0436-4f86-af45-b1d246e325b3'  // QRIS
+        };
+
+        try {
+            let remaining = parseFloat(valueBayar);
+
+            for (const bill of filtered.bills) {
+                if (remaining <= 0) break;
+
+                let payForThisBill = remaining;
+                // If the bill has lower outstanding than remaining money, map the difference
+                if (bill.outstanding && payForThisBill > bill.outstanding) {
+                    payForThisBill = bill.outstanding;
+                }
+
+                if (payForThisBill <= 0) continue;
+
+                const payload = {
+                    nominal: payForThisBill,
+                    payment_method: tipeBayar,
+                    id_account: accountMapping[tipeBayar]
+                };
+
+                await axios.post(`api/v2/bills/${bill.bill_id}/pay`, payload);
+                remaining -= payForThisBill;
+            }
 
             await getCustomer();
             setFiltered(null);
@@ -128,13 +179,13 @@ export const usePembayaran = () => {
             });
         } catch (err) {
             toast.update(loadingSubmitToast, {
-                render: err.response?.data?.message || "Terjadi kesalahan saat menyimpan pembayaran",
+                render: err.response?.data?.error || err.response?.data?.message || "Terjadi kesalahan saat menyimpan pembayaran",
                 type: "error",
                 isLoading: false,
                 autoClose: 3000
             });
         }
-    }, [filtered, tipeBayar, valueBayar, bukti, headers, getCustomer]);
+    }, [filtered, tipeBayar, valueBayar, authenticated, getCustomer]);
 
     const updateStatus = useCallback(async (customer, currStatus) => {
         const target = customer || filtered;
@@ -146,7 +197,7 @@ export const usePembayaran = () => {
                 return axios.post(`/order/${pesanan.kode_pesan}`, {
                     status: currStatus,
                     _method: 'patch'
-                }, { headers: { 'Authorization': `Bearer ${authenticated}` } });
+                });
             });
 
             await Promise.all(updatePromises);
@@ -191,12 +242,7 @@ export const usePembayaran = () => {
 
         const loadingToast = toast.loading("Mengirim QRIS dinamis...");
         try {
-            await axios.post("/api/qris-dinamis", { amount, phone }, {
-                headers: {
-                    Authorization: `Bearer ${authenticated}`,
-                    "Content-Type": "application/json"
-                }
-            });
+            await axios.post("/api/qris-dinamis", { amount, phone });
 
             toast.update(loadingToast, {
                 render: "QRIS berhasil dikirim ke customer",

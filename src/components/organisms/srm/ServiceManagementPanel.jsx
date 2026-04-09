@@ -21,7 +21,7 @@ const ServiceManagementPanel = ({
   services = [],
   revenueAccounts = [],
   selectedCategoryId,
-  selectedServiceUuid,
+  selectedServiceId,
   resolveRevenueAccount,
   onSelectService,
   onAddService,
@@ -124,13 +124,13 @@ const ServiceManagementPanel = ({
             <div className="service-grid-container pe-2" style={{ maxHeight: 'calc(100vh - 350px)', overflowY: "auto" }}>
               <Row>
                 {filteredServices.map((service) => (
-                  <Col xl="4" md="6" key={service.uuid_jenis_cuci} className="mb-3">
+                  <Col xl="4" md="6" key={service.id} className="mb-3">
                     <ServiceItemCard
                       service={service}
-                      isActive={selectedServiceUuid === service.uuid_jenis_cuci}
+                      isActive={selectedServiceId === service.id}
                       resolvedAccount={resolveRevenueAccount(service.uuid_jenis_cuci)}
-                      onClick={() => onSelectService(service.uuid_jenis_cuci)}
-                      onEdit={() => onOpenDetail(service.uuid_jenis_cuci)}
+                      onClick={() => onSelectService(service.id)}
+                      onEdit={() => onOpenDetail(service.id)}
                       onDelete={() => handleDelete(service.id)}
                     />
                   </Col>

@@ -97,12 +97,20 @@ const BillingListTable = ({
                     )}
                     <div className="d-flex flex-column ml-1">
                         <span className={`${isMember ? 'text-muted' : 'font-weight-bold text-dark'} mb-0`}>{b.customer.nama}</span>
-                        {!isMember && (
-                            <small className="text-muted">
-                                <i className="fab fa-whatsapp text-success mr-1" />
-                                {b.customer.telpon || 'No Phone'}
-                            </small>
-                        )}
+                        <div className="d-flex flex-column mt-1">
+                            {!isMember && (
+                                <small className="text-muted">
+                                    <i className="fab fa-whatsapp text-success mr-1" />
+                                    {b.customer.telpon || 'No Phone'}
+                                </small>
+                            )}
+                            {b.customer.keterangan && (
+                                <div className={`cust-note-bubble mt-1 ${isMember ? 'scaled-70' : ''}`}>
+                                    <i className="fas fa-sticky-note mr-1 text-warning" />
+                                    {b.customer.keterangan}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </td>
@@ -209,7 +217,15 @@ const BillingListTable = ({
                                                 </div>
                                                 <div className="d-flex flex-column">
                                                     <span className="font-weight-bold text-dark mb-0">{item.root.customer.nama}</span>
-                                                    <small className="text-muted">Grup Pelanggan Utama</small>
+                                                    <div className="d-flex flex-column">
+                                                        <small className="text-muted">Grup Pelanggan Utama</small>
+                                                        {item.root.customer.keterangan && (
+                                                            <small className="text-info font-italic mt-1">
+                                                                <i className="fas fa-info-circle mr-1" />
+                                                                {item.root.customer.keterangan}
+                                                            </small>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
@@ -286,6 +302,23 @@ const BillingListTable = ({
                 .group-header-row:hover { background-color: #f1f3f9 !important; }
                 .group-header-row.expanded { background-color: #edf0ff !important; border-left: 4px solid #5e72e4; }
                 
+                .cust-note-bubble {
+                    background: #fff8e1;
+                    color: #b08900;
+                    font-size: 0.72rem;
+                    padding: 2px 8px;
+                    border-radius: 6px;
+                    display: inline-block;
+                    font-style: italic;
+                    border-left: 3px solid #ffca28;
+                    width: fit-content;
+                    max-width: 250px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .cust-note-bubble.scaled-70 { transform: scale(0.85); transform-origin: left top; margin-bottom: -5px; }
+
                 .action-btn { transition: all 0.2s ease; opacity: 0.7; }
                 .action-btn:hover { opacity: 1; transform: scale(1.2); }
                 .btn-wa:hover { color: #2dce89 !important; }

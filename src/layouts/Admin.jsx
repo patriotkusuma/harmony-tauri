@@ -137,18 +137,26 @@ const Admin = (props) => {
 
 
   const checkUser = async () => {
-      await axios.get('api/me', {headers})
-      .then((res) => {
-        setAuth(res.data)
-        Cookies.set('user', JSON.stringify(res.data))
-        localStorage.setItem('user', JSON.stringify(res.data.user))
-        getOutlet()
-      })
-      .catch((err)=>{
-          console.log(err)
-          localStorage.removeItem("token");
-          navigate('/auth/login');
-      })
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth/login');
+      return;
+    }
+    try {
+      const res = await axios.get('api/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const userData = res.data.user || res.data;
+      setAuth(userData);
+      Cookies.set('user', JSON.stringify(userData));
+      localStorage.setItem('user', JSON.stringify(userData));
+      // getOutlet akan dipanggil otomatis oleh useEffect setelah auth di-set
+    } catch (err) {
+      console.error('[Admin] checkUser error:', err);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/auth/login');
+    }
   }
 
   const waToast = (msg) => {
@@ -159,33 +167,47 @@ const Admin = (props) => {
   }
 
   const getOutlet = async () => {
-    await axios.get('api/outlet/get-outlet', {
-      headers
-    }).then(res=>{
-      console.log(res)
-      localStorage.setItem('outlet', JSON.stringify(res.data.outlets))
-    })
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await axios.get('api/v2/outlets', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const outletData = res.data.data;
+      localStorage.setItem('outlet', JSON.stringify(outletData));
+      setOutlets(outletData ?? []);
+    } catch (err) {
+      console.error('[Admin] getOutlet error:', err);
+      // Set ke array kosong agar tidak loop terus
+      setOutlets([]);
+    }
   }
   useEffect(()=>{
-   if(auth === null && authenticated !== null){
-    checkUser();
-    // getOutlet()
-   }
-   
-   if(outlets === null){
-    getOutlet()
-   }
+    // Jika tidak ada token sama sekali → redirect ke login
     if(authenticated == null){
-      navigate('/auth/login')
+      navigate('/auth/login');
+      return;
     }
+
+    // Jika token ada tapi data user belum ada di state → fetch
+    if(auth === null){
+      checkUser();
+      return;
+    }
+
+    // Jika data outlet belum ada di state → fetch
+    if(outlets === null){
+      getOutlet();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[authenticated, auth, outlets]);
 
   const selectCabang = async (id) => {
-    await axios.post('api/outlet/set-selected-outlet', {
+    await axios.post('api/v2/outlets/set-active', {
       id_outlet:id
     }, {headers}).then(res => {
-      localStorage.setItem('selected-outlet', JSON.stringify(res.data.outlet));
-      setSelectedOutlet(res.data.outlet);
+      localStorage.setItem('selected-outlet', JSON.stringify(res.data.data));
+      setSelectedOutlet(res.data.data);
       // Force reload to refresh all data and reset states for the new outlet
       window.location.reload();
     })

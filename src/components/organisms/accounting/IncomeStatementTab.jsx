@@ -1,5 +1,6 @@
 import React from "react";
 import { Table, Spinner, Badge } from "reactstrap";
+import ExpenseBreakdownChart from "components/molecules/accounting/ExpenseBreakdownChart";
 
 const formatCurrency = (val) => {
     if (val === undefined || val === null) return "Rp 0";
@@ -20,38 +21,46 @@ const IncomeStatementTab = ({ data, loading }) => {
 
     return (
         <div className="income-statement-tab">
-            {/* Net Income Highlight Card */}
-            <div className={`net-income-card p-4 rounded-xl mb-5 ${isProfit ? 'profit' : 'loss'}`}>
-                <div className="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 className="text-uppercase font-weight-bold mb-1" style={{ fontSize: '0.75rem', letterSpacing: '1px', opacity: 0.8 }}>
-                            {isProfit ? '🎉 Laba Bersih' : '⚠️ Rugi Bersih'}
-                        </h6>
-                        <h2 className="mb-0 font-weight-900" style={{ fontSize: '2rem' }}>
-                            {formatCurrency(Math.abs(data.net_income))}
-                        </h2>
-                    </div>
-                    <div className="text-end">
-                        <div className={`icon-circle ${isProfit ? 'bg-success-glow' : 'bg-danger-glow'}`}>
-                            <i className={`fas ${isProfit ? 'fa-arrow-up' : 'fa-arrow-down'} fs-4`} />
+            {/* Top Analysis Section */}
+            <div className="row mb-4">
+                <div className="col-xl-7">
+                    {/* Net Income Highlight Card */}
+                    <div className={`net-income-card p-4 rounded-xl h-100 ${isProfit ? 'profit' : 'loss'}`}>
+                        <div className="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 className="text-uppercase font-weight-bold mb-1" style={{ fontSize: '0.75rem', letterSpacing: '1px', opacity: 0.8 }}>
+                                    {isProfit ? '🎉 Laba Bersih' : '⚠️ Rugi Bersih'}
+                                </h6>
+                                <h2 className="mb-0 font-weight-900 text-white" style={{ fontSize: '2rem' }}>
+                                    {formatCurrency(Math.abs(data.net_income))}
+                                </h2>
+                            </div>
+                            <div className="text-end">
+                                <div className={`icon-circle ${isProfit ? 'bg-success-glow' : 'bg-danger-glow'}`}>
+                                    <i className={`fas ${isProfit ? 'fa-arrow-up' : 'fa-arrow-down'} fs-4 text-white`} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="d-flex mt-3 gap-4 text-white">
+                            <div>
+                                <small className="d-block text-white-50">Total Pendapatan</small>
+                                <strong>{formatCurrency(data.total_revenue)}</strong>
+                            </div>
+                            <div>
+                                <small className="d-block text-white-50">Total Beban</small>
+                                <strong>{formatCurrency(data.total_expense)}</strong>
+                            </div>
+                            {data.total_revenue > 0 && (
+                                <div>
+                                    <small className="d-block text-white-50">Margin</small>
+                                    <strong>{((data.net_income / data.total_revenue) * 100).toFixed(1)}%</strong>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
-                <div className="d-flex mt-3 gap-4">
-                    <div>
-                        <small className="d-block" style={{ opacity: 0.7 }}>Total Pendapatan</small>
-                        <strong>{formatCurrency(data.total_revenue)}</strong>
-                    </div>
-                    <div>
-                        <small className="d-block" style={{ opacity: 0.7 }}>Total Beban</small>
-                        <strong>{formatCurrency(data.total_expense)}</strong>
-                    </div>
-                    {data.total_revenue > 0 && (
-                        <div>
-                            <small className="d-block" style={{ opacity: 0.7 }}>Margin</small>
-                            <strong>{((data.net_income / data.total_revenue) * 100).toFixed(1)}%</strong>
-                        </div>
-                    )}
+                <div className="col-xl-5 mt-4 mt-xl-0">
+                    <ExpenseBreakdownChart expenses={data.expense} />
                 </div>
             </div>
 

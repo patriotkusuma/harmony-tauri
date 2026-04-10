@@ -2,7 +2,7 @@ import React from "react";
 import { Table, Badge, Button, Spinner } from "reactstrap";
 import { useKostStore, STATUS_CONFIG } from "../../../store/kostStore";
 
-const KostTable = ({ filtered, onOpenStatusModal }) => {
+const KostTable = ({ filtered, onOpenStatusModal, onOpenChat }) => {
   const { loading, dataLoaded } = useKostStore();
 
   if (loading) {
@@ -36,18 +36,18 @@ const KostTable = ({ filtered, onOpenStatusModal }) => {
   }
 
   return (
-    <div style={{ overflowX: "auto" }}>
-      <Table hover responsive className="mb-0" style={{ fontSize: "0.875rem" }}>
-        <thead style={{ background: "#f8fafc", borderBottom: "2px solid #e2e8f0" }}>
+    <div className="table-responsive" style={{ borderRadius: "0 0 16px 16px" }}>
+      <Table hover className="align-items-center table-flush mb-0" style={{ tableLayout: "fixed", width: "100%", minWidth: "1000px" }}>
+        <thead className="thead-light">
           <tr>
-            <th className="kost-th" style={{ width: "40px" }}>#</th>
-            <th className="kost-th">Nama Kost</th>
-            <th className="kost-th">Alamat</th>
-            <th className="kost-th">Kontak</th>
-            <th className="kost-th text-center">Jarak</th>
-            <th className="kost-th text-center">Rating</th>
-            <th className="kost-th text-center">Status</th>
-            <th className="kost-th text-center">Aksi</th>
+            <th className="kost-th" style={{ width: "50px" }}>#</th>
+            <th className="kost-th" style={{ width: "200px" }}>Nama Kost</th>
+            <th className="kost-th" style={{ width: "250px" }}>Alamat</th>
+            <th className="kost-th" style={{ width: "150px" }}>Kontak</th>
+            <th className="kost-th text-center" style={{ width: "90px" }}>Jarak</th>
+            <th className="kost-th text-center" style={{ width: "110px" }}>Rating</th>
+            <th className="kost-th text-center" style={{ width: "130px" }}>Status</th>
+            <th className="kost-th text-center" style={{ width: "180px" }}>Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -56,21 +56,20 @@ const KostTable = ({ filtered, onOpenStatusModal }) => {
             return (
               <tr key={kost.id} style={{ transition: "background 0.15s" }}>
                 <td className="px-4 py-3 text-muted">{idx + 1}</td>
-                <td className="px-3 py-3">
-                  <div className="font-weight-bold text-dark" style={{ maxWidth: "220px" }}>
+                <td className="px-3 py-3" onClick={() => onOpenChat(kost)} style={{ cursor: "pointer" }}>
+                  <div className="text-truncate font-weight-bold text-dark" style={{ maxWidth: "180px" }}>
                     {kost.name}
                   </div>
-                  <div className="text-muted small">{kost.category}</div>
+                  <div className="text-muted small text-truncate" style={{ maxWidth: "180px" }}>{kost.category}</div>
                 </td>
                 <td className="px-3 py-3">
                   <div
+                    className="text-truncate"
                     style={{
-                      maxWidth: "250px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      maxWidth: "230px",
                       color: "#64748b",
                     }}
+                    title={kost.address}
                   >
                     {kost.address || "-"}
                   </div>
@@ -130,20 +129,37 @@ const KostTable = ({ filtered, onOpenStatusModal }) => {
                   </Badge>
                 </td>
                 <td className="px-3 py-3 text-center">
-                  <Button
-                    color="light"
-                    size="sm"
-                    onClick={() => onOpenStatusModal(kost)}
-                    style={{
-                      borderRadius: "8px",
-                      border: "1px solid #e2e8f0",
-                      fontSize: "0.78rem",
-                      padding: "5px 12px",
-                    }}
-                  >
-                    <i className="fas fa-edit mr-1" />
-                    Status
-                  </Button>
+                  <div className="d-flex justify-content-center">
+                    <Button
+                      color="light"
+                      size="sm"
+                      onClick={() => onOpenStatusModal(kost)}
+                      style={{
+                        borderRadius: "8px",
+                        border: "1px solid #e2e8f0",
+                        fontSize: "0.78rem",
+                        padding: "5px 12px",
+                      }}
+                    >
+                      <i className="fas fa-edit mr-1" />
+                      Status
+                    </Button>
+                    <Button
+                      color="success"
+                      size="sm"
+                      outline
+                      onClick={() => onOpenChat(kost)}
+                      className="ml-2"
+                      style={{
+                        borderRadius: "8px",
+                        fontSize: "0.78rem",
+                        padding: "5px 12px",
+                      }}
+                    >
+                      <i className="fab fa-whatsapp mr-1" />
+                      WA
+                    </Button>
+                  </div>
                 </td>
               </tr>
             );

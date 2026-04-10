@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Container, Card, CardHeader, CardBody, Row, Col, Input, Button } from "reactstrap";
 import { useKostStore, STATUS_CONFIG, STATUS_FLOW } from "../../store/kostStore";
 import KostHeader from "../../components/organisms/kost/KostHeader";
 import KostTable from "../../components/organisms/kost/KostTable";
 import KostStatusModal from "../../components/organisms/kost/KostStatusModal";
+import KostChatSidebar from "../../components/organisms/kost/KostChatSidebar";
+import _ from "lodash"; // Assuming lodash is available, or use a simple debounce
 
 const KostManagement = () => {
   const { kosts, meta, dataLoaded, fetchKosts } = useKostStore();
@@ -11,19 +13,31 @@ const KostManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [statusModal, setStatusModal] = useState({ open: false, kost: null });
+  const [chatSidebar, setChatSidebar] = useState({ open: false, kost: null });
 
-  // Filter data lokal dari store
-  const filtered = kosts.filter((k) => {
-    const matchSearch =
-      !searchTerm ||
-      k.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      k.address?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchStatus = filterStatus === "all" || k.status === filterStatus;
-    return matchSearch && matchStatus;
-  });
+  // Debounced search function
+  const debouncedFetch = useCallback(
+    _.debounce((q, s) => {
+      fetchKosts(1, q, s);
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    debouncedFetch(searchTerm, filterStatus);
+    // Cleanup debounce on unmount
+    return () => debouncedFetch.cancel();
+  }, [searchTerm, filterStatus, debouncedFetch]);
 
   const openStatusModal = (kost) => setStatusModal({ open: true, kost });
   const closeStatusModal = () => setStatusModal({ open: false, kost: null });
+
+  const openChatSidebar = (kost) => setChatSidebar({ open: true, kost });
+  const closeChatSidebar = () => setChatSidebar({ open: false, kost: null });
+
+  const handlePageChange = (newPage) => {
+    fetchKosts(newPage, searchTerm, filterStatus);
+  };
 
   return (
     <>
@@ -69,14 +83,14 @@ const KostManagement = () => {
               </Col>
               <Col md="4" className="text-right mt-2 mt-md-0">
                 <span className="text-muted small">
-                  {filtered.length} dari {kosts.length} data
+                   Menampilkan {kosts.length} dari {meta.total} data
                 </span>
                 {dataLoaded && (
                   <Button
                     color="light"
                     size="sm"
                     className="ml-3"
-                    onClick={() => fetchKosts(meta.page)}
+                    onClick={() => fetchKosts(meta.page, searchTerm, filterStatus)}
                   >
                     <i className="fas fa-sync" />
                   </Button>
@@ -86,7 +100,11 @@ const KostManagement = () => {
           </CardHeader>
 
           <CardBody className="p-0">
-            <KostTable filtered={filtered} onOpenStatusModal={openStatusModal} />
+            <KostTable 
+              filtered={kosts} 
+              onOpenStatusModal={openStatusModal} 
+              onOpenChat={openChatSidebar}
+            />
           </CardBody>
 
           {/* Pagination */}
@@ -101,7 +119,7 @@ const KostManagement = () => {
                   color="light"
                   size="sm"
                   disabled={meta.page <= 1}
-                  onClick={() => fetchKosts(meta.page - 1)}
+                  onClick={() => handlePageChange(meta.page - 1)}
                   className="mr-2"
                 >
                   <i className="fas fa-chevron-left" />
@@ -111,7 +129,7 @@ const KostManagement = () => {
                   color="light"
                   size="sm"
                   disabled={meta.page * meta.limit >= meta.total}
-                  onClick={() => fetchKosts(meta.page + 1)}
+                  onClick={() => handlePageChange(meta.page + 1)}
                 >
                   <i className="fas fa-chevron-right" />
                 </Button>
@@ -125,6 +143,12 @@ const KostManagement = () => {
         isOpen={statusModal.open}
         kost={statusModal.kost}
         onClose={closeStatusModal}
+      />
+
+      <KostChatSidebar
+        isOpen={chatSidebar.open}
+        kost={chatSidebar.kost}
+        onClose={closeChatSidebar}
       />
 
       <style>{`

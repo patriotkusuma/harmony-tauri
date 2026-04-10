@@ -25,10 +25,14 @@ export const useKostStore = create((set, get) => ({
   importLoading: false,
   dataLoaded: false,
 
-  fetchKosts: async (page = 1) => {
+  fetchKosts: async (page = 1, search = "", status = "") => {
     set({ loading: true });
     try {
-      const res = await axios.get(`/api/v2/kosts?page=${page}&limit=20`);
+      let url = `/api/v2/kosts?page=${page}&limit=20`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+      if (status && status !== "all") url += `&status=${encodeURIComponent(status)}`;
+      
+      const res = await axios.get(url);
       set({
         kosts: res.data.data ?? [],
         meta: res.data.meta ?? { total: 0, page, limit: 20 },
@@ -74,6 +78,20 @@ export const useKostStore = create((set, get) => ({
       return true;
     } catch (err) {
       toast.error(err?.response?.data?.error ?? "Gagal mengubah status.");
+      return false;
+    }
+  },
+
+  updateNotes: async (id, notes) => {
+    try {
+      await axios.put(`/api/v2/kosts/${id}/notes`, { notes });
+      toast.success("Catatan disimpan.");
+      set((state) => ({
+        kosts: state.kosts.map((k) => (k.id === id ? { ...k, internal_notes: notes } : k)),
+      }));
+      return true;
+    } catch (err) {
+      toast.error(err?.response?.data?.error ?? "Gagal menyimpan catatan.");
       return false;
     }
   },

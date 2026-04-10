@@ -1,5 +1,6 @@
 import React from "react";
 import { Table, Spinner, Badge } from "reactstrap";
+import AccountingCharts from "components/molecules/accounting/AccountingCharts";
 
 const formatCurrency = (val) => {
     if (val === undefined || val === null) return "Rp 0";
@@ -59,6 +60,11 @@ const AccountingSummaryTab = ({ data, loading }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Charts Section */}
+            {data.accounts && data.accounts.length > 0 && (
+                <AccountingCharts data={data} />
+            )}
 
             {/* Account Groups */}
             {Object.keys(grouped).map((type) => {

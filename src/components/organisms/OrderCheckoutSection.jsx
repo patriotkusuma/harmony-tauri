@@ -20,6 +20,8 @@ const OrderCheckoutSection = ({
     isOrderDisabled,
     gabungBill,
     setGabungBill,
+    keterangan,
+    setKeterangan,
     onSendConfirmation
 }) => {
     const handleSendConfirmation = async () => {
@@ -160,6 +162,22 @@ const OrderCheckoutSection = ({
                             />
                         </label>
                     </div>
+                </div>
+
+                {/* Informasi Tambahan */}
+                <div className="mb-4">
+                    <span className="small text-muted font-weight-bold uppercase ls-1 d-flex align-items-center mb-2">
+                        <i className="fas fa-sticky-note me-2" /> Informasi Tambahan / Catatan:
+                    </span>
+                    <Input 
+                        type="textarea" 
+                        rows="2" 
+                        placeholder="Misal: Pakaian luntur, titip jemput jam 5, dll..."
+                        className="form-control-alternative rounded-lg border-light"
+                        style={{ fontSize: '0.85rem' }}
+                        value={keterangan}
+                        onChange={(e) => setKeterangan(e.target.value)}
+                    />
                 </div>
 
                 {/* Status Pembayaran */}

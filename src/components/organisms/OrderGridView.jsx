@@ -14,7 +14,8 @@ const OrderGridView = () => {
     printInvoice,
     sendInvoice,
     sendNotification,
-    updateStatus
+    updateStatus,
+    toggleInvoicePreviewModal
   } = useOrder();
 
   return (
@@ -36,6 +37,7 @@ const OrderGridView = () => {
               onSendNotification={() => sendNotification(pesan.kode_pesan)}
               onUpdateStatus={updateStatus}
               onGoToDetail={() => navigate(`/admin/riwayat/${pesan.kode_pesan}`)}
+              onPreviewInvoice={() => toggleInvoicePreviewModal(pesan)}
             />
           </Col>
         ))}

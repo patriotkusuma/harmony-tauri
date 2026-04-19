@@ -27,7 +27,8 @@ const OrderTableView = () => {
     printName, 
     printInvoice,
     sendInvoice,
-    sendNotification 
+    sendNotification,
+    toggleInvoicePreviewModal
   } = useOrder();
   
   const navigate = useNavigate();
@@ -294,37 +295,48 @@ const OrderTableView = () => {
             </td>
             <td>{checkStatus(pesan)}</td>
 
-            <td style={{ width: "10%" }}>
-              <Row style={{ "gap-y": "12px" }}>
-                <Col xs="12">
-                  <Button
-                    color="warning"
-                    size="sm"
-                    block
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleDetailModal(pesan);
-                    }}
-                  >
-                    <i className="fa-regular fa-pen-to-square"></i>
-                    <span>Detail</span>
-                  </Button>
-                </Col>
-                <Col xs="12">
-                  <Button
-                    color="default"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      printInvoice(pesan);
-                    }}
-                    block
-                  >
-                    <i className="fa-solid fa-print"></i>
-                    <span>Print</span>
-                  </Button>
-                </Col>
-              </Row>
+            <td style={{ width: "12%" }}>
+              <div className="d-flex flex-column gap-2">
+                <Button
+                  color="warning"
+                  size="sm"
+                  className="w-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleDetailModal(pesan);
+                  }}
+                >
+                  <i className="fa-regular fa-pen-to-square me-1"></i>
+                  <span>Detail</span>
+                </Button>
+                
+                <Button
+                  color="info"
+                  size="sm"
+                  outline
+                  className="w-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleInvoicePreviewModal(pesan);
+                  }}
+                >
+                  <i className="fa-solid fa-file-invoice me-1"></i>
+                  <span>Nota</span>
+                </Button>
+
+                <Button
+                  color="default"
+                  size="sm"
+                  className="w-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    printInvoice(pesan);
+                  }}
+                >
+                  <i className="fa-solid fa-print me-1"></i>
+                  <span>Print</span>
+                </Button>
+              </div>
             </td>
             </tr>
           );

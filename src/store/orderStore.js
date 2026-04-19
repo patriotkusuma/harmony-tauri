@@ -18,6 +18,8 @@ export const useOrderStore = create(
       filters: initialFilters,
       selectedOrder: null,
       isDetailModalOpen: false,
+      isScannerModalOpen: false,
+      isInvoicePreviewOpen: false,
 
       // Actions
       setViewMode: (mode) => set((state) => {
@@ -40,6 +42,15 @@ export const useOrderStore = create(
       toggleDetailModal: (order = null) => set((state) => ({
         selectedOrder: order !== null ? order : state.selectedOrder,
         isDetailModalOpen: !state.isDetailModalOpen
+      })),
+      
+      toggleScannerModal: () => set((state) => ({
+        isScannerModalOpen: !state.isScannerModalOpen
+      })),
+
+      toggleInvoicePreviewModal: (order = null) => set((state) => ({
+        selectedOrder: order !== null ? order : state.selectedOrder,
+        isInvoicePreviewOpen: !state.isInvoicePreviewOpen
       })),
     }),
     {

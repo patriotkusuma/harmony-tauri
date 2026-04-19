@@ -49,6 +49,7 @@ export const useOrderManagement = () => {
     const [tipeBayar, setTipeBayar] = useState("cash");
     const [antar, setAntar] = useState(0);
     const [gabungBill, setGabungBill] = useState(true);
+    const [keterangan, setKeterangan] = useState("");
 
     const handlePrintNama = useCallback(async () => {
         if (!desktopBridge.hasNativePrint()) {
@@ -97,7 +98,8 @@ export const useOrderManagement = () => {
                 total_bayar: valueBayar !== 0 ? valueBayar : 0,
                 antar: antar,
                 metode_pembayaran: isLunas ? tipeBayar : "cash",
-                gabung_bill: gabungBill
+                gabung_bill: gabungBill,
+                keterangan: keterangan || null
             }, { 
                 headers,
                 // Handle cases where backend might send multiple JSON objects concatenated
@@ -143,6 +145,7 @@ export const useOrderManagement = () => {
             setAntar(0);
             setTipeBayar("cash");
             setGabungBill(true);
+            setKeterangan("");
             setOrderCode(generateOrderCode()); // New code for next order
             
             toast.update(loadingToast, {
@@ -160,7 +163,7 @@ export const useOrderManagement = () => {
                 autoClose: 3000
             });
         }
-    }, [idPelanggan, orderCode, nama, telpon, isLunas, subTotal, valueBayar, tipeBayar, antar, gabungBill, headers, resetCartLocal, resetCustomer]);
+    }, [idPelanggan, orderCode, nama, telpon, isLunas, subTotal, valueBayar, tipeBayar, antar, gabungBill, keterangan, headers, resetCartLocal, resetCustomer]);
 
     const handleOrderSubmission = useCallback(() => {
         if (isLunas) {
@@ -218,6 +221,8 @@ export const useOrderManagement = () => {
         setAntar,
         gabungBill,
         setGabungBill,
+        keterangan,
+        setKeterangan,
         kode_pesan: orderCode,
         isOrderButtonDisabled,
         addCart,
@@ -238,7 +243,7 @@ export const useOrderManagement = () => {
     }), [
         cartItems, estimasi, subTotal, category, nama, telpon, pelanggan, 
         idPelanggan, isLunas, isCustomerModalOpen, isPaymentModalOpen, 
-        isRFIDAttachOpen, valueBayar, tipeBayar, antar, gabungBill, orderCode, isOrderButtonDisabled,
+        isRFIDAttachOpen, valueBayar, tipeBayar, antar, gabungBill, keterangan, orderCode, isOrderButtonDisabled,
         addCart, updateCart, removeOneCart, clearCart, searchCategory,
         selectCustomer, resetCustomer, handlePrintNama, fetchAndPrintLastOrder,
         submitOrder, handleOrderSubmission, toggleCustomerModal, togglePaymentModal,

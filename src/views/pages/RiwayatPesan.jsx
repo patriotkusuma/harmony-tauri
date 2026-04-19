@@ -6,6 +6,8 @@ import OrderFilter from "components/organisms/OrderFilter";
 import OrderTableView from "components/organisms/OrderTableView";
 import OrderGridView from "components/organisms/OrderGridView";
 import OrderDetailsModal from "components/organisms/OrderDetailsModal";
+import OrderScannerModal from "components/organisms/OrderScannerModal";
+import OrderInvoicePreviewModal from "components/organisms/OrderInvoicePreviewModal";
 import { useOrder } from "hooks/useOrder";
 import { useOrderStream } from "hooks/useOrderStream";
 
@@ -17,7 +19,8 @@ export const RiwayatPesan = () => {
     filters, 
     setFilters,
     isFetching,
-    refreshData
+    refreshData,
+    toggleScannerModal
   } = useOrder();
 
   // Initialize real-time order stream for automatic data refresh
@@ -48,6 +51,12 @@ export const RiwayatPesan = () => {
         e.preventDefault();
         const searchInput = document.getElementById('search-input');
         if (searchInput) searchInput.focus();
+      }
+
+      // Open Scanner with Alt + S
+      if (e.altKey && e.key === 's') {
+        e.preventDefault();
+        toggleScannerModal();
       }
     };
 
@@ -87,6 +96,15 @@ export const RiwayatPesan = () => {
                   >
                     <i className={`fas fa-sync-alt ${isFetching ? 'fa-spin' : ''} me-1`} />
                     Refresh
+                  </Button>
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onClick={toggleScannerModal}
+                    className="px-3"
+                  >
+                    <i className="fas fa-barcode me-1" />
+                    Scan Ambil
                   </Button>
                   <div className="btn-group">
                     <Button
@@ -129,6 +147,8 @@ export const RiwayatPesan = () => {
       </Container>
 
       <OrderDetailsModal />
+      <OrderScannerModal />
+      <OrderInvoicePreviewModal />
 
       <style>{`
         .pulse-live {

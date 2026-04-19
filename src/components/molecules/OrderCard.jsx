@@ -13,7 +13,8 @@ const OrderCard = ({
   onSendInvoice, 
   onSendNotification,
   onUpdateStatus,
-  onGoToDetail
+  onGoToDetail,
+  onPreviewInvoice
 }) => {
   const isBatalOrDiambil = ["batal", "diambil"].includes(pesan.status);
 
@@ -190,15 +191,25 @@ const OrderCard = ({
                <small className={isBatalOrDiambil ? "text-white-50" : "text-muted"}>{moment(pesan.tanggal_pesan).format('DD/MM/YY')}</small>
              </div>
              <div className="d-flex" style={{ gap: '4px' }}>
-               <Button 
-                 color="info" 
-                 size="sm" 
-                 className="p-1 px-2 shadow-none border" 
-                 onClick={(e) => { e.stopPropagation(); onGoToDetail(); }}
-                 title="Detail"
-               >
-                 <i className="fas fa-eye" />
-               </Button>
+                <Button 
+                  color="info" 
+                  size="sm" 
+                  outline
+                  className="p-1 px-2 shadow-none border" 
+                  onClick={(e) => { e.stopPropagation(); onPreviewInvoice(); }}
+                  title="Preview Nota"
+                >
+                  <i className="fas fa-file-invoice" />
+                </Button>
+                <Button 
+                  color="info" 
+                  size="sm" 
+                  className="p-1 px-2 shadow-none border" 
+                  onClick={(e) => { e.stopPropagation(); onGoToDetail(); }}
+                  title="Edit Detail"
+                >
+                  <i className="fas fa-edit" />
+                </Button>
                {pesan.status !== "batal" && (
                  <>
                    <Button 

@@ -116,6 +116,8 @@ const Pesan = () => {
                             setAntar={setAntar}
                             gabungBill={gabungBill}
                             setGabungBill={setGabungBill}
+                            keterangan={keterangan}
+                            setKeterangan={setKeterangan}
                             onEditCustomer={toggleCustomerModal}
                             onSubmitOrder={handleOrderSubmission}
                             isOrderDisabled={isOrderButtonDisabled}

@@ -39,6 +39,10 @@ export const useOrder = () => {
   const selectedOrder = useOrderStore((state) => state.selectedOrder);
   const isDetailModalOpen = useOrderStore((state) => state.isDetailModalOpen);
   const toggleDetailModal = useOrderStore((state) => state.toggleDetailModal);
+  const isScannerModalOpen = useOrderStore((state) => state.isScannerModalOpen);
+  const toggleScannerModal = useOrderStore((state) => state.toggleScannerModal);
+  const isInvoicePreviewOpen = useOrderStore((state) => state.isInvoicePreviewOpen);
+  const toggleInvoicePreviewModal = useOrderStore((state) => state.toggleInvoicePreviewModal);
 
   const authToken = localStorage.getItem("token");
   const headers = useMemo(() => ({ Authorization: `Bearer ${authToken}` }), [authToken]);
@@ -61,6 +65,18 @@ export const useOrder = () => {
       toast.success(`Status updated to ${status}`);
     } catch (err) {
       toast.error('Failed to update status');
+    }
+  }, [headers, refreshData]);
+
+  const pickupByBarcode = useCallback(async (kode_pesan) => {
+    try {
+      const res = await axios.post(`api/v2/pesanan/pickup/${kode_pesan}`, {}, { headers });
+      toast.success(res.data.message || "Cucian diambil!");
+      refreshData();
+      return true;
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Gagal proses pickup");
+      return false;
     }
   }, [headers, refreshData]);
 
@@ -145,7 +161,12 @@ export const useOrder = () => {
     selectedOrder,
     isDetailModalOpen,
     toggleDetailModal,
+    isScannerModalOpen,
+    toggleScannerModal,
+    isInvoicePreviewOpen,
+    toggleInvoicePreviewModal,
     updateStatus,
+    pickupByBarcode,
     printName,
     printInvoice,
     sendInvoice,
@@ -153,7 +174,8 @@ export const useOrder = () => {
     refreshData
   }), [
     pesanan, isLoading, isFetching, filters, setFilters, viewMode, setViewMode,
-    selectedOrder, isDetailModalOpen, toggleDetailModal, updateStatus,
-    printName, printInvoice, sendInvoice, sendNotification, refreshData
+    selectedOrder, isDetailModalOpen, toggleDetailModal, isScannerModalOpen, toggleScannerModal,
+    isInvoicePreviewOpen, toggleInvoicePreviewModal, updateStatus,
+    pickupByBarcode, printName, printInvoice, sendInvoice, sendNotification, refreshData
   ]);
 };

@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
@@ -55,8 +55,9 @@ const Auth = (props) => {
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/auth") {
+        const Component = prop.component;
         return (
-          <Route path={prop.path} element={prop.component} key={key} exact />
+          <Route path={prop.path} element={<Component />} key={key} exact />
         );
       } else {
         return null;
@@ -100,10 +101,12 @@ const Auth = (props) => {
         {/* Page content */}
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
-            <Routes>
-              {getRoutes(routes)}
-              <Route path="*" element={<Navigate to="/auth/login" replace />} />
-            </Routes>
+            <Suspense fallback={<div className="route-loading">Memuat…</div>}>
+              <Routes>
+                {getRoutes(routes)}
+                <Route path="*" element={<Navigate to="/auth/login" replace />} />
+              </Routes>
+            </Suspense>
           </Row>
         </Container>
       </div>

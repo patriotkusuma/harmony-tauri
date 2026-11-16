@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Spinner, Badge, Button } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 
 const AccountingPeriodsTab = ({ periods, autoCloseEnabled, loading, onToggleAutoClose, onClosePeriod }) => {
     if (loading) {
@@ -68,14 +68,14 @@ const AccountingPeriodsTab = ({ periods, autoCloseEnabled, loading, onToggleAuto
                                 <td className="ps-4">
                                     <div className="d-flex align-items-center">
                                         <div className={`dot ${period.status === 'OPEN' ? 'bg-success' : 'bg-secondary'} me-3`} />
-                                        <strong className="text-dark">{period.name || `Periode ${moment(period.start_date).format('MMMM YYYY')}`}</strong>
+                                        <strong className="text-dark">{period.name || `Periode ${dayjs(period.start_date).format('MMMM YYYY')}`}</strong>
                                     </div>
                                 </td>
-                                <td className="text-muted">{moment(period.start_date).format('DD MMM YYYY')}</td>
-                                <td className="text-muted">{moment(period.end_date).format('DD MMM YYYY')}</td>
+                                <td className="text-muted">{dayjs(period.start_date).format('DD MMM YYYY')}</td>
+                                <td className="text-muted">{dayjs(period.end_date).format('DD MMM YYYY')}</td>
                                 <td>{statusBadge(period.status)}</td>
                                 <td className="text-muted">
-                                    {period.closed_at ? moment(period.closed_at).format('DD MMM YYYY HH:mm') : '-'}
+                                    {period.closed_at ? dayjs(period.closed_at).format('DD MMM YYYY HH:mm') : '-'}
                                 </td>
                                 <td className="text-center pe-4">
                                     {period.status === "OPEN" && (
@@ -84,7 +84,7 @@ const AccountingPeriodsTab = ({ periods, autoCloseEnabled, loading, onToggleAuto
                                             size="sm"
                                             className="rounded-pill px-3 font-weight-bold"
                                             onClick={() => {
-                                                if (window.confirm(`Yakin ingin menutup periode ${period.name || moment(period.start_date).format('MMMM YYYY')}?`)) {
+                                                if (window.confirm(`Yakin ingin menutup periode ${period.name || dayjs(period.start_date).format('MMMM YYYY')}?`)) {
                                                     onClosePeriod(period.id);
                                                 }
                                             }}

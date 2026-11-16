@@ -10,8 +10,9 @@ const OrderGridView = () => {
     pesanan, 
     isLoading, 
     toggleDetailModal, 
-    printName, 
-    printInvoice,
+    printName,
+    printStrukFinal,
+    printStrukCustomer,
     sendInvoice,
     sendNotification,
     updateStatus,
@@ -32,7 +33,8 @@ const OrderGridView = () => {
               pesan={pesan}
               onClick={() => toggleDetailModal(pesan)}
               onPrintName={() => printName(pesan)}
-              onPrintInvoice={() => printInvoice(pesan)}
+              onPrintStrukFinal={() => printStrukFinal(pesan)}
+              onPrintStrukCustomer={() => printStrukCustomer(pesan)}
               onSendInvoice={() => sendInvoice(pesan.kode_pesan)}
               onSendNotification={() => sendNotification(pesan.kode_pesan)}
               onUpdateStatus={updateStatus}

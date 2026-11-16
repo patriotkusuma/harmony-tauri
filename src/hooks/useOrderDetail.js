@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from '../services/axios-instance';
 import { toast } from 'react-toastify';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const fetchDetailPesanan = async ({ queryKey }) => {
   const [, kodePesan] = queryKey;
@@ -97,8 +97,8 @@ export const useOrderDetail = () => {
     const loadingToast = toast.loading("Memperbarui tanggal...");
     try {
       await axios.patch(`api/pesanan/${kodePesan}/tanggal`, {
-        tanggal_pesan: moment(tanggalPesan).format("YYYY-MM-DD HH:mm:ss"),
-        tanggal_selesai: moment(tanggalSelesai).format("YYYY-MM-DD HH:mm:ss"),
+        tanggal_pesan: dayjs(tanggalPesan).format("YYYY-MM-DD HH:mm:ss"),
+        tanggal_selesai: dayjs(tanggalSelesai).format("YYYY-MM-DD HH:mm:ss"),
       }, { headers });
       toast.update(loadingToast, { render: "Berhasil update tanggal!", type: "success", isLoading: false, autoClose: 3000 });
       refreshDetail();

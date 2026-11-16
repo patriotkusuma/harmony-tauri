@@ -19,6 +19,7 @@ export const useDeposit = () => {
     const [topUpData, setTopUpData] = useState({
         id_customer: "",
         amount: "",
+        payment_method: "cash",
         keterangan: ""
     });
 
@@ -63,6 +64,7 @@ export const useDeposit = () => {
             await axios.post("api/v2/deposit", {
                 id_customer: Number(topUpData.id_customer),
                 amount: Number(topUpData.amount),
+                payment_method: topUpData.payment_method || "cash",
                 keterangan: topUpData.keterangan || "Top up via Kasir"
             });
             toast.success("Top up berhasil diproses");
@@ -85,6 +87,7 @@ export const useDeposit = () => {
                 id_customer: customer.id_customer,
                 customer_name: customer.customer_name,
                 amount: "",
+                payment_method: "cash",
                 keterangan: "",
                 fixedCustomer: true
             });
@@ -93,6 +96,7 @@ export const useDeposit = () => {
                 id_customer: "",
                 customer_name: "",
                 amount: "",
+                payment_method: "cash",
                 keterangan: "",
                 fixedCustomer: false
             });

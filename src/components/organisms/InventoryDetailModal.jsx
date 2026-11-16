@@ -3,7 +3,7 @@ import {
     Modal, ModalBody, ModalFooter, 
     Button, Table, Row, Col
 } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const InventoryDetailModal = ({ 
     isOpen, 
@@ -51,7 +51,7 @@ const InventoryDetailModal = ({
                         <Col md="3" className="text-center">
                             <h6 className="text-uppercase text-muted font-weight-800 ls-1 mb-2" style={{ fontSize: '0.65rem' }}>Tgl Perolehan</h6>
                             <h3 className="mb-0 font-weight-bold stat-text mt-1" style={{ fontSize: '1rem' }}>
-                                {item?.purchase_date ? moment(item.purchase_date).format('DD/MM/YYYY') : '-'}
+                                {item?.purchase_date ? dayjs(item.purchase_date).format('DD/MM/YYYY') : '-'}
                             </h3>
                         </Col>
                     </Row>
@@ -92,7 +92,7 @@ const InventoryDetailModal = ({
                                 Array.isArray(movements) && movements.map((m) => (
                                     <tr key={m.id} className="timeline-row">
                                         <td className="font-weight-bold py-3 border-bottom-custom stat-text">
-                                            {moment(m.movement_date).format('DD MMM YYYY')}
+                                            {dayjs(m.movement_date).format('DD MMM YYYY')}
                                         </td>
                                         <td className="border-bottom-custom">
                                             <div className={`d-inline-flex align-items-center rounded-pill font-weight-bold px-3 py-1 ${

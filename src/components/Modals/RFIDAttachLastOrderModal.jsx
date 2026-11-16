@@ -99,7 +99,7 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
         </small>
       </ModalHeader>
 
-      <ModalBody style={{ padding: '24px 28px' }}>
+      <ModalBody className="rfid-modal__body" style={{ padding: '24px 28px' }}>
         {loading ? (
           <div className="text-center py-5">
             <Spinner color="primary" style={{ width: 36, height: 36 }} />
@@ -113,7 +113,7 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
         ) : (
           <>
             {/* Order info card */}
-            <div style={{
+            <div className="rfid-order-card" style={{
               background: '#f8f9fe',
               borderRadius: 12,
               padding: '16px 18px',
@@ -121,10 +121,10 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
               marginBottom: 20,
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <span style={{ fontWeight: 700, fontSize: 16, color: '#32325d' }}>{lastOrder.kode_pesan}</span>
+                <span className="rfid-order-card__code" style={{ fontWeight: 700, fontSize: 16, color: '#32325d' }}>{lastOrder.kode_pesan}</span>
                 <Badge color="success" pill>{lastOrder.status || 'baru'}</Badge>
               </div>
-              <div style={{ fontSize: 13, color: '#6b7a99', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div className="rfid-order-card__meta" style={{ fontSize: 13, color: '#6b7a99', display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <span><i className="fas fa-user me-2" />{customerName}</span>
                 {lastOrder.telpon && <span><i className="fas fa-phone me-2" />{lastOrder.telpon}</span>}
                 {lastOrder.sub_total && (
@@ -137,6 +137,7 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
 
             {/* RFID scan area */}
             <div
+              className={`rfid-scan ${mqttConnected ? 'is-connected' : ''}`}
               style={{
                 borderRadius: 12,
                 border: `2px dashed ${mqttConnected ? '#2dce89' : '#dee2e6'}`,
@@ -157,12 +158,12 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
                   <div style={{ fontSize: 36, marginBottom: 8 }}>
                     {mqttConnected ? '🏷️' : '📵'}
                   </div>
-                  <p style={{ fontWeight: 600, color: mqttConnected ? '#1a9e6a' : '#aaa', marginBottom: 4, fontSize: 14 }}>
+                  <p className="rfid-scan__title" style={{ fontWeight: 600, color: mqttConnected ? '#1a9e6a' : '#aaa', marginBottom: 4, fontSize: 14 }}>
                     {mqttConnected
                       ? 'Tempelkan kartu RFID ke reader'
                       : 'Reader RFID tidak terhubung'}
                   </p>
-                  <p style={{ fontSize: 11, color: '#aaa', margin: 0 }}>
+                  <p className="rfid-scan__hint" style={{ fontSize: 11, color: '#aaa', margin: 0 }}>
                     {mqttConnected
                       ? 'Attach otomatis saat kartu terdeteksi'
                       : 'Pastikan perangkat RFID menyala'}
@@ -174,12 +175,12 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
             {/* Attached list */}
             {attachedRFIDs.length > 0 && (
               <div>
-                <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: '#8898aa', marginBottom: 8 }}>
+                <p className="rfid-attached__label" style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: '#8898aa', marginBottom: 8 }}>
                   RFID Terpasang ({attachedRFIDs.length})
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {attachedRFIDs.map(rfid => (
-                    <div key={rfid} style={{
+                    <div key={rfid} className="rfid-attached__row" style={{
                       display: 'flex', alignItems: 'center', gap: 10,
                       background: 'rgba(45,206,137,0.08)',
                       border: '1px solid rgba(45,206,137,0.25)',
@@ -197,7 +198,7 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
         )}
       </ModalBody>
 
-      <ModalFooter style={{ borderTop: '1px solid #f0f0f5', padding: '12px 20px' }}>
+      <ModalFooter className="rfid-modal__footer" style={{ borderTop: '1px solid #f0f0f5', padding: '12px 20px' }}>
         <small className="text-muted me-auto">
           {attachedRFIDs.length > 0 && `${attachedRFIDs.length} RFID terpasang`}
         </small>
@@ -205,6 +206,36 @@ const RFIDAttachLastOrderModal = ({ isOpen, toggle }) => {
           <i className="fas fa-times me-1" />Tutup (ESC)
         </Button>
       </ModalFooter>
+
+      <style>{`
+        body.dark-mode .rfid-modal__body { background: #161b22; }
+        body.dark-mode .rfid-order-card {
+          background: #1e293b !important;
+          border-color: rgba(255, 255, 255, .08) !important;
+        }
+        body.dark-mode .rfid-order-card__code { color: #f1f5f9 !important; }
+        body.dark-mode .rfid-order-card__meta { color: #94a3b8 !important; }
+        body.dark-mode .rfid-scan {
+          background: #0f172a !important;
+          border-color: rgba(255, 255, 255, .14) !important;
+        }
+        body.dark-mode .rfid-scan.is-connected {
+          background: rgba(45, 206, 137, .1) !important;
+          border-color: #2dce89 !important;
+        }
+        body.dark-mode .rfid-scan__title { color: #94a3b8 !important; }
+        body.dark-mode .rfid-scan.is-connected .rfid-scan__title { color: #4ade80 !important; }
+        body.dark-mode .rfid-scan__hint { color: #64748b !important; }
+        body.dark-mode .rfid-attached__label { color: #94a3b8 !important; }
+        body.dark-mode .rfid-attached__row {
+          background: rgba(45, 206, 137, .12) !important;
+          border-color: rgba(45, 206, 137, .3) !important;
+        }
+        body.dark-mode .rfid-modal__footer {
+          background: #161b22;
+          border-top-color: rgba(255, 255, 255, .08) !important;
+        }
+      `}</style>
     </Modal>
   );
 };

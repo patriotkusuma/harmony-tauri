@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, ModalHeader, ModalBody, Row, Col, Badge, Table, Button } from 'reactstrap';
 import RupiahFormater from 'utils/RupiahFormater';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 import CustomerAvatar from 'components/atoms/CustomerAvatar';
 import axios from 'services/axios-instance';
 
@@ -82,7 +84,7 @@ const PaymentDetailModal = ({ isOpen, toggle, paymentId }) => {
                                 </div>
                                 <h6 className="text-muted mb-0 font-weight-bold">
                                     <i className="far fa-calendar-alt me-2" />
-                                    {moment(detail.created_at).format('DD MMMM YYYY, HH:mm')}
+                                    {dayjs(detail.created_at).format('DD MMMM YYYY, HH:mm')}
                                 </h6>
                             </Col>
                         </Row>

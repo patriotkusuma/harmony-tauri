@@ -93,10 +93,17 @@ const Pagination = ({ page, total, limit, setPage }) => {
 
 /* ── Main organism ─────────────────────────────────────────────── */
 const CustomerList = () => {
-  const {
-    customers, loading, error, page, total, limit, search,
-    setPage, openEdit, openDetail, deleteCustomer,
-  } = useCustomerStore();
+  const customers = useCustomerStore(s => s.customers);
+  const loading = useCustomerStore(s => s.loading);
+  const error = useCustomerStore(s => s.error);
+  const page = useCustomerStore(s => s.page);
+  const total = useCustomerStore(s => s.total);
+  const limit = useCustomerStore(s => s.limit);
+  const search = useCustomerStore(s => s.search);
+  const setPage = useCustomerStore(s => s.setPage);
+  const openEdit = useCustomerStore(s => s.openEdit);
+  const openDetail = useCustomerStore(s => s.openDetail);
+  const deleteCustomer = useCustomerStore(s => s.deleteCustomer);
 
   const handleDelete = async (customer) => {
     const result = await Swal.fire({

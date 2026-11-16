@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import notificationSound from '../assets/sound/notification_sound.mp3';
 
 const RawWebSocketContext = createContext(null);
@@ -17,9 +17,10 @@ export const RawWebSocketProvider = ({ children }) => {
         }
     });
     const [unreadCount, setUnreadCount] = useState(0);
-    const [currentDeviceId, setCurrentDeviceId] = useState(null);
     const wsRef = useRef(null);
     const subscribersRef = useRef([]);
+    const reconnectTimeoutRef = useRef(null);
+    const audioRef = useRef(null);
 
     // Persist notifications to localStorage whenever they change
     useEffect(() => {
@@ -33,13 +34,25 @@ export const RawWebSocketProvider = ({ children }) => {
         };
     }, []);
 
-    const playNotificationSound = () => {
-        const audio = new Audio(notificationSound);
-        audio.play().catch(e => console.warn("[Audio] Autoplay blocked or error:", e));
-    };
+    const playNotificationSound = useCallback(() => {
+        try {
+            if (!audioRef.current) {
+                audioRef.current = new Audio(notificationSound);
+            }
+            audioRef.current.currentTime = 0;
+            audioRef.current.play().catch(e => console.warn("[Audio] Autoplay blocked or error:", e));
+        } catch (e) {
+            // ignore audio error
+        }
+    }, []);
 
     const connect = useCallback((deviceId) => {
         if (!deviceId) return;
+
+        if (reconnectTimeoutRef.current) {
+            clearTimeout(reconnectTimeoutRef.current);
+            reconnectTimeoutRef.current = null;
+        }
 
         if (wsRef.current) {
             wsRef.current.onclose = null;
@@ -89,8 +102,8 @@ export const RawWebSocketProvider = ({ children }) => {
         ws.onclose = () => {
             console.log(`[Global WebSocket] Disconnected`);
             setWsConnected(false);
-            // Simple reconnect logic after 5 seconds if still the same device
-            setTimeout(() => {
+            if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+            reconnectTimeoutRef.current = setTimeout(() => {
                 const currentStoredOutlet = JSON.parse(localStorage.getItem("selected-outlet")) || null;
                 const currentStoredPhone = currentStoredOutlet?.telpon;
                 const currentStoredNormalized = currentStoredPhone?.startsWith('0') ? '62' + currentStoredPhone.substring(1) : currentStoredPhone;
@@ -106,7 +119,7 @@ export const RawWebSocketProvider = ({ children }) => {
             console.error(`[Global WebSocket] Error:`, err);
             ws.close();
         };
-    }, []);
+    }, [playNotificationSound]);
 
     useEffect(() => {
         const selectedOutlet = JSON.parse(localStorage.getItem("selected-outlet")) || null;
@@ -114,11 +127,14 @@ export const RawWebSocketProvider = ({ children }) => {
             const phone = selectedOutlet.telpon;
             const normalizedPhone = phone.startsWith('0') ? '62' + phone.substring(1) : phone;
             const deviceId = `${normalizedPhone}@s.whatsapp.net`;
-            setCurrentDeviceId(deviceId);
             connect(deviceId);
         }
 
         return () => {
+            if (reconnectTimeoutRef.current) {
+                clearTimeout(reconnectTimeoutRef.current);
+                reconnectTimeoutRef.current = null;
+            }
             if (wsRef.current) {
                 wsRef.current.onclose = null;
                 wsRef.current.close();
@@ -126,36 +142,37 @@ export const RawWebSocketProvider = ({ children }) => {
         };
     }, [connect]);
 
-    const markAsRead = () => {
+    const markAsRead = useCallback(() => {
         setUnreadCount(0);
-    };
+    }, []);
 
-    const clearNotifications = () => {
+    const clearNotifications = useCallback(() => {
         setNotifications([]);
         localStorage.removeItem(STORAGE_KEY);
-    };
+    }, []);
 
-    const reconnect = () => {
+    const reconnect = useCallback(() => {
         const selectedOutlet = JSON.parse(localStorage.getItem("selected-outlet")) || null;
         if (selectedOutlet?.telpon) {
             const phone = selectedOutlet.telpon;
             const normalizedPhone = phone.startsWith('0') ? '62' + phone.substring(1) : phone;
             const deviceId = `${normalizedPhone}@s.whatsapp.net`;
-            setCurrentDeviceId(deviceId);
             connect(deviceId);
         }
-    };
+    }, [connect]);
+
+    const contextValue = useMemo(() => ({
+        wsConnected, 
+        notifications, 
+        unreadCount, 
+        markAsRead,
+        clearNotifications,
+        reconnect,
+        subscribe
+    }), [wsConnected, notifications, unreadCount, markAsRead, clearNotifications, reconnect, subscribe]);
 
     return (
-        <RawWebSocketContext.Provider value={{ 
-            wsConnected, 
-            notifications, 
-            unreadCount, 
-            markAsRead,
-            clearNotifications,
-            reconnect,
-            subscribe 
-        }}>
+        <RawWebSocketContext.Provider value={contextValue}>
             {children}
         </RawWebSocketContext.Provider>
     );

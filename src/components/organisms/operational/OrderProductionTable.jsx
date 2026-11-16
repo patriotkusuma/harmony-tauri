@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Spinner } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 
 const OrderProductionTable = ({ data, loading }) => {
     if (loading) return (
@@ -37,7 +37,7 @@ const OrderProductionTable = ({ data, loading }) => {
                             <tr key={idx} className="op-row">
                                 <td className="px-4 py-3 border-bottom-custom">
                                     <span className="font-weight-900 item-title d-block" style={{ fontSize: '0.95rem' }}>{item.kode_pesan}</span>
-                                    <small className="d-block text-muted ls-1" style={{ fontSize: '0.7rem' }}>MASUK: {moment(item.tanggal_pesan).format("DD MMM, HH:mm")}</small>
+                                    <small className="d-block text-muted ls-1" style={{ fontSize: '0.7rem' }}>MASUK: {dayjs(item.tanggal_pesan).format("DD MMM, HH:mm")}</small>
                                 </td>
                                 
                                 <td className="px-4 border-bottom-custom">
@@ -57,7 +57,7 @@ const OrderProductionTable = ({ data, loading }) => {
                                 
                                 <td className="px-4 border-bottom-custom">
                                     <div className="d-flex align-items-center">
-                                        <span className="font-weight-600 stat-text me-2">{moment(item.tanggal_selesai).format("DD MMM YYYY, HH:mm")}</span>
+                                        <span className="font-weight-600 stat-text me-2">{dayjs(item.tanggal_selesai).format("DD MMM YYYY, HH:mm")}</span>
                                         {item.is_overdue && (
                                             <div className="d-inline-flex align-items-center rounded-pill font-weight-bold px-2 py-1 badge-soft-danger" style={{ fontSize: '0.65rem' }}>
                                                 <i className="fas fa-exclamation-triangle me-1"></i> Overdue

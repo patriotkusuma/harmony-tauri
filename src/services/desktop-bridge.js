@@ -65,7 +65,25 @@ const desktopBridge = {
 
   async printOrder(data) {
     if (isElectronRuntime()) return window.electron.printOrder(data);
-    if (isTauriRuntime()) return invokeTauri("print_order", { order: data });
+    if (isTauriRuntime()) return invokeTauri("print_struk_final", { order: data });
+    throw new Error("Desktop print tidak tersedia");
+  },
+
+  /** Struk final — ditempel ke packing laundry. Ada pembulatan, tanpa QR. */
+  async printStrukFinal(data) {
+    if (isElectronRuntime() && window.electron?.printStrukFinal) {
+      return window.electron.printStrukFinal(data);
+    }
+    if (isTauriRuntime()) return invokeTauri("print_struk_final", { order: data });
+    throw new Error("Desktop print tidak tersedia");
+  },
+
+  /** Struk customer — sama seperti halaman Pesan, plus pembulatan & QR. */
+  async printStrukCustomer(data) {
+    if (isElectronRuntime() && window.electron?.printStrukCustomer) {
+      return window.electron.printStrukCustomer(data);
+    }
+    if (isTauriRuntime()) return invokeTauri("print_last_order", { order: data });
     throw new Error("Desktop print tidak tersedia");
   },
 
@@ -81,9 +99,18 @@ const desktopBridge = {
     throw new Error("Desktop print tidak tersedia");
   },
 
+  /** Label nama untuk proses pencucian — tanpa Sub Total / Pembulatan. */
   async printName(data) {
     if (isElectronRuntime()) return window.electron.printName(data);
     if (isTauriRuntime()) return invokeTauri("print_name", { order: data });
+    throw new Error("Desktop print tidak tersedia");
+  },
+
+  async printSticker(data) {
+    if (isElectronRuntime() && window.electron?.printSticker) {
+      return window.electron.printSticker(data);
+    }
+    if (isTauriRuntime()) return invokeTauri("print_sticker", { order: data });
     throw new Error("Desktop print tidak tersedia");
   },
 

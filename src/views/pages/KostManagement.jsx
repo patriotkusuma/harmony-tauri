@@ -5,7 +5,7 @@ import KostHeader from "../../components/organisms/kost/KostHeader";
 import KostTable from "../../components/organisms/kost/KostTable";
 import KostStatusModal from "../../components/organisms/kost/KostStatusModal";
 import KostChatSidebar from "../../components/organisms/kost/KostChatSidebar";
-import _ from "lodash"; // Assuming lodash is available, or use a simple debounce
+import debounce from "lodash/debounce";
 
 const KostManagement = () => {
   const { kosts, meta, dataLoaded, fetchKosts } = useKostStore();
@@ -17,7 +17,7 @@ const KostManagement = () => {
 
   // Debounced search function
   const debouncedFetch = useCallback(
-    _.debounce((q, s) => {
+    debounce((q, s) => {
       fetchKosts(1, q, s);
     }, 500),
     []

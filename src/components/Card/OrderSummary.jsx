@@ -1,4 +1,6 @@
-import moment from "moment"
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 import { Button, Card, CardBody, CardHeader, Col, Input, Row } from "reactstrap"
 import RupiahFormater from "utils/RupiahFormater"
 import { isDesktopRuntime } from "services/runtime"
@@ -72,7 +74,7 @@ const OrderSummary = ({
                             <h4>Tanggal Masuk</h4>
                         </Col>
                         <Col md="7" className="text-end">
-                            <h4>{moment().format('HH:mm, DD MMMM YYYY')}</h4>
+                            <h4>{dayjs().format('HH:mm, DD MMMM YYYY')}</h4>
                         </Col>
                     </Row>
                     <Row>
@@ -80,7 +82,7 @@ const OrderSummary = ({
                             <h4>Tanggal Selesai</h4>
                         </Col>
                         <Col md="7" className="text-end">
-                            <h4>{moment(estimasi).format('HH:mm, DD MMMM YYYY')}</h4>
+                            <h4>{dayjs(estimasi).format('HH:mm, DD MMMM YYYY')}</h4>
                         </Col>
                     </Row>
                     <Row>

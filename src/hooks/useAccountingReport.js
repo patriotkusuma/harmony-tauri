@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "../services/axios-instance";
-import moment from "moment";
+import dayjs from 'dayjs';
 import { toast } from "react-toastify";
 import { useAccountingStore } from "../store/accountingStore";
 

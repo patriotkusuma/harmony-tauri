@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Button, Card, CardBody } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 // Hooks
 import { useDashboard } from 'hooks/useDashboard';
@@ -32,7 +32,7 @@ const Dashboard = () => {
                 </h6>
                 <nav aria-label="breadcrumb" className="d-none d-md-inline-block ms-md-4">
                    <div className="text-white opacity-8 h1 mb-0 border-left ps-4" style={{ fontWeight: 300 }}>
-                      {moment().format("HH:mm")}
+                      {dayjs().format("HH:mm")}
                    </div>
                 </nav>
               </Col>
@@ -87,7 +87,7 @@ const Dashboard = () => {
         {/* Footer info/legend if needed */}
         <div className="text-end pb-4 px-2">
             <small className="text-muted italic opacity-5 font-weight-bold">
-               Refreshed at {moment().format("HH:mm:ss")}
+               Refreshed at {dayjs().format("HH:mm:ss")}
             </small>
         </div>
       </Container>

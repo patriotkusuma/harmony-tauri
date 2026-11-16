@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Badge, Row, Col } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const TodayWorkBoard = ({ urutanKerja }) => {
   return (
@@ -65,10 +65,10 @@ const TodayWorkBoard = ({ urutanKerja }) => {
 
                 <div className="text-end">
                    <div className={`font-weight-bold h5 mb-0 ${isTop ? 'text-primary' : 'text-dark'}`}>
-                     {moment(urutan.tanggal_selesai).format("HH:mm")}
+                     {dayjs(urutan.tanggal_selesai).format("HH:mm")}
                    </div>
                     <div className="text-dark font-weight-bold text-xs text-uppercase">
-                     {moment(urutan.tanggal_selesai).isSame(moment(), 'day') ? 'Hari Ini' : moment(urutan.tanggal_selesai).format("DD MMM")}
+                     {dayjs(urutan.tanggal_selesai).isSame(dayjs(), 'day') ? 'Hari Ini' : dayjs(urutan.tanggal_selesai).format("DD MMM")}
                    </div>
                 </div>
               </div>

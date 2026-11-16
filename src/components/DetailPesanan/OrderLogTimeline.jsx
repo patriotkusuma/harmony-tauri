@@ -1,5 +1,7 @@
 import React from "react";
-import moment from "moment";
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 import { Badge } from "reactstrap";
 
 const PROCESS_META = {
@@ -11,9 +13,10 @@ const PROCESS_META = {
 
 const formatDuration = (start, end) => {
     if (!start || !end) return null;
-    const duration = moment.duration(moment(end).diff(moment(start)));
-    const minutes = duration.minutes();
-    const seconds = duration.seconds();
+    const durationMs = dayjs(end).diff(dayjs(start));
+    const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
     let result = "";
     if (minutes > 0) result += `${minutes}m `;
     result += `${seconds}s`;
@@ -75,8 +78,8 @@ const OrderLogTimeline = ({ logs = [] }) => {
                     </h6>
                     <small className="text-muted font-weight-bold">
                         <i className="far fa-clock me-1" />
-                        {moment(log.started_at).format("HH:mm")}
-                        {log.finished_at && <span className="mx-1">→ {moment(log.finished_at).format("HH:mm")}</span>}
+                        {dayjs(log.started_at).format("HH:mm")}
+                        {log.finished_at && <span className="mx-1">→ {dayjs(log.finished_at).format("HH:mm")}</span>}
                     </small>
                 </div>
                 <div className="text-end">

@@ -4,7 +4,7 @@ import {
     Button, Row, Col, FormGroup, Label, Input,
     Alert
 } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const InventoryCreateModal = ({ 
     isOpen, 
@@ -20,7 +20,7 @@ const InventoryCreateModal = ({
         id_unit: '',
         qty: 0,
         cost_per_unit: 0,
-        purchase_date: moment().format('YYYY-MM-DD'),
+        purchase_date: dayjs().format('YYYY-MM-DD'),
         description: '',
     });
 
@@ -32,7 +32,7 @@ const InventoryCreateModal = ({
                     id_unit: item.id_unit || '',
                     qty: item.current_stock || 0,
                     cost_per_unit: item.cost_per_unit || 0,
-                    purchase_date: item.purchase_date || moment().format('YYYY-MM-DD'),
+                    purchase_date: item.purchase_date || dayjs().format('YYYY-MM-DD'),
                     description: item.description || '',
                 });
             } else {
@@ -41,7 +41,7 @@ const InventoryCreateModal = ({
                     id_unit: '',
                     qty: 0,
                     cost_per_unit: 0,
-                    purchase_date: moment().format('YYYY-MM-DD'),
+                    purchase_date: dayjs().format('YYYY-MM-DD'),
                     description: '',
                 });
             }

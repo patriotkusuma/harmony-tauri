@@ -23,8 +23,8 @@ export const useInventoryAudit = () => {
         },
         onSuccess: (data) => {
             toast.success(`Stock opname berhasil dicatat! Selisih: ${data.difference}`);
-            queryClient.invalidateQueries(['inventory-audits']);
-            queryClient.invalidateQueries(['inventory']); // Refresh stock in main list
+            queryClient.invalidateQueries({ queryKey: ['inventory-audits'] });
+            queryClient.invalidateQueries({ queryKey: ['inventory'] }); // Refresh stock in main list
         },
         onError: (error) => {
             toast.error(error.response?.data?.error || 'Gagal mencatat stock opname');

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, Row, Col, Card, CardBody, Badge, Spinner } from 'reactstrap';
 import RupiahFormater from '../../../utils/RupiahFormater';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const DepositDetail = ({ customer, loading, onBack, onTopUp }) => {
     if (loading && !customer) {
@@ -85,7 +85,7 @@ const DepositDetail = ({ customer, loading, onBack, onTopUp }) => {
                             return (
                                 <tr key={history.id}>
                                     <td className="px-4 text-muted font-weight-500">
-                                        {moment(history.tanggal_deposit).format('DD MMM YYYY, HH:mm')}
+                                        {dayjs(history.tanggal_deposit).format('DD MMM YYYY, HH:mm')}
                                     </td>
                                     <td className="text-muted">
                                         <RupiahFormater value={history.last_deposit_amount} />

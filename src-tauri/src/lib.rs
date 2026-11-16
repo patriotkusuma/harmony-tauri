@@ -15,10 +15,11 @@ pub fn run() {
     })
     .manage(mqtt::MqttState::default())
     .invoke_handler(tauri::generate_handler![
-      printer::print_order,
+      printer::print_struk_final,
       printer::print_raw,
       printer::print_last_order,
       printer::print_name,
+      printer::print_sticker,
       mqtt::mqtt_get_status
     ])
     .setup(|app| {

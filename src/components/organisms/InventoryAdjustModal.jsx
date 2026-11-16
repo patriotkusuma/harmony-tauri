@@ -4,7 +4,7 @@ import {
     Button, Row, Col, FormGroup, Label, Input,
     Alert
 } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const InventoryAdjustModal = ({ 
     isOpen, 
@@ -16,7 +16,7 @@ const InventoryAdjustModal = ({
     const [form, setForm] = useState({
         movement_type: 'out',
         quantity: 1,
-        movement_date: moment().format('YYYY-MM-DD'),
+        movement_date: dayjs().format('YYYY-MM-DD'),
         reference_type: 'penggunaan',
         description: '',
     });
@@ -26,7 +26,7 @@ const InventoryAdjustModal = ({
             setForm({
                 movement_type: 'out',
                 quantity: 1,
-                movement_date: moment().format('YYYY-MM-DD'),
+                movement_date: dayjs().format('YYYY-MM-DD'),
                 reference_type: 'penggunaan',
                 description: '',
             });

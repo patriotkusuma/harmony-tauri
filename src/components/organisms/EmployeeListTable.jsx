@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Table, Badge, Button, CardBody, CardFooter } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const ROLE_META = {
     admin: { color: "primary", label: "Admin" },
@@ -12,6 +12,115 @@ const STATUS_META = {
     active: { color: "success", label: "Aktif" },
     inactive: { color: "secondary", label: "Nonaktif" },
 };
+
+/**
+ * Satu baris tabel pegawai. Di-memo agar perubahan state di level halaman
+ * (mis. input pencarian, buka/tutup modal) tidak me-render ulang semua baris.
+ */
+const EmployeeRow = memo(({ emp, onEdit, onDelete, onRfid }) => (
+    <tr className="transition-all">
+        <td className="py-4 border-0">
+            <div className="d-flex align-items-center">
+                <div className="avatar rounded-circle me-3 bg-primary text-white shadow-sm d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
+                    <i className="fas fa-user" />
+                </div>
+                <div>
+                    <span className="mb-0 text-sm font-weight-900 d-block text-dark" style={{ color: '#000' }}>
+                        {emp.nama}
+                    </span>
+                    <small className="text-muted font-weight-bold">Bergabung: {dayjs(emp.tanggal_masuk).format("DD MMM YYYY")}</small>
+                </div>
+            </div>
+        </td>
+        <td className="py-4 border-0">
+            {emp.user ? (
+                <>
+                    <span className="text-sm d-block font-weight-bold text-dark mb-1">{emp.user.email}</span>
+                    <Badge color={ROLE_META[emp.user.role]?.color || "secondary"} pill className="px-3 font-weight-bold">
+                        {ROLE_META[emp.user.role]?.label || emp.user.role}
+                    </Badge>
+                </>
+            ) : (
+                <Badge color="warning" outline className="font-weight-bold">
+                    <i className="fas fa-exclamation-triangle me-1" />
+                    Akun Belum Siap
+                </Badge>
+            )}
+        </td>
+        <td className="py-4 border-0">
+            <div style={{ maxWidth: "180px", gap: '4px' }} className="d-flex flex-wrap">
+                {emp.outlets && emp.outlets.length > 0 ? (
+                    emp.outlets.map((o) => (
+                        <Badge key={o.id} color="neutral" className="border text-primary shadow-none font-weight-bold px-2 py-1">
+                            {o.nama_outlet}
+                        </Badge>
+                    ))
+                ) : (
+                    <span className="text-muted text-xs italic opacity-5">Belum ada akses</span>
+                )}
+            </div>
+        </td>
+        <td className="py-4 border-0">
+            <div className="text-sm">
+                <div className="mb-1 text-dark font-weight-bold">
+                    <i className="fas fa-phone me-2 text-primary opacity-5" /> {emp.telpon || "-"}
+                </div>
+                <div className="text-success font-weight-bold">
+                    <i className="fab fa-whatsapp me-2 opacity-7" /> {emp.no_wa || "-"}
+                </div>
+            </div>
+        </td>
+        <td className="py-4 border-0">
+            <span className="text-dark font-weight-900 h5" style={{ color: '#000' }}>
+                Rp {new Intl.NumberFormat("id-ID").format(emp.gaji)}
+            </span>
+        </td>
+        <td className="py-4 border-0">
+            <Badge color={STATUS_META[emp.status]?.color || "secondary"} className="px-3 py-1 font-weight-bold">
+                {STATUS_META[emp.status]?.label || emp.status}
+            </Badge>
+            {emp.rfid_code && (
+                <div className="mt-2">
+                    <Badge color="default" outline className="border shadow-none font-weight-900 text-dark px-2">
+                        <i className="fas fa-id-card me-1 text-primary" /> {emp.rfid_code}
+                    </Badge>
+                </div>
+            )}
+        </td>
+        <td className="py-4 border-0 text-end">
+            <div className="d-flex justify-content-end" style={{ gap: '6px' }}>
+                <Button
+                    color="success"
+                    size="sm"
+                    className="rounded-circle btn-icon-only shadow-sm"
+                    onClick={() => onRfid(emp)}
+                    title="Tautkan RFID"
+                    outline={!emp.rfid_code}
+                >
+                    <i className="fas fa-id-card" />
+                </Button>
+                <Button
+                    color="info"
+                    size="sm"
+                    className="rounded-circle btn-icon-only shadow-sm"
+                    onClick={() => onEdit(emp)}
+                    title="Edit Data"
+                >
+                    <i className="fas fa-edit" />
+                </Button>
+                <Button
+                    color="danger"
+                    size="sm"
+                    className="rounded-circle btn-icon-only shadow-sm"
+                    onClick={() => onDelete(emp.id)}
+                    title="Hapus Pegawai"
+                >
+                    <i className="fas fa-trash" />
+                </Button>
+            </div>
+        </td>
+    </tr>
+));
 
 const EmployeeListTable = ({ 
     employees, 
@@ -55,108 +164,13 @@ const EmployeeListTable = ({
                             </thead>
                             <tbody>
                                 {employees.map((emp) => (
-                                    <tr key={emp.id} className="transition-all">
-                                        <td className="py-4 border-0">
-                                            <div className="d-flex align-items-center">
-                                                <div className="avatar rounded-circle me-3 bg-primary text-white shadow-sm d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px' }}>
-                                                    <i className="fas fa-user" />
-                                                </div>
-                                                <div>
-                                                    <span className="mb-0 text-sm font-weight-900 d-block text-dark" style={{ color: '#000' }}>
-                                                        {emp.nama}
-                                                    </span>
-                                                    <small className="text-muted font-weight-bold">Bergabung: {moment(emp.tanggal_masuk).format("DD MMM YYYY")}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 border-0">
-                                            {emp.user ? (
-                                                <>
-                                                    <span className="text-sm d-block font-weight-bold text-dark mb-1">{emp.user.email}</span>
-                                                    <Badge color={ROLE_META[emp.user.role]?.color || "secondary"} pill className="px-3 font-weight-bold">
-                                                        {ROLE_META[emp.user.role]?.label || emp.user.role}
-                                                    </Badge>
-                                                </>
-                                            ) : (
-                                                <Badge color="warning" outline className="font-weight-bold">
-                                                    <i className="fas fa-exclamation-triangle me-1" />
-                                                    Akun Belum Siap
-                                                </Badge>
-                                            )}
-                                        </td>
-                                        <td className="py-4 border-0">
-                                            <div style={{ maxWidth: "180px" }} className="d-flex flex-wrap" style={{ gap: '4px' }}>
-                                                {emp.outlets && emp.outlets.length > 0 ? (
-                                                    emp.outlets.map((o) => (
-                                                        <Badge key={o.id} color="neutral" className="border text-primary shadow-none font-weight-bold px-2 py-1">
-                                                            {o.nama_outlet}
-                                                        </Badge>
-                                                    ))
-                                                ) : (
-                                                    <span className="text-muted text-xs italic opacity-5">Belum ada akses</span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="py-4 border-0">
-                                            <div className="text-sm">
-                                                <div className="mb-1 text-dark font-weight-bold">
-                                                    <i className="fas fa-phone me-2 text-primary opacity-5" /> {emp.telpon || "-"}
-                                                </div>
-                                                <div className="text-success font-weight-bold">
-                                                    <i className="fab fa-whatsapp me-2 opacity-7" /> {emp.no_wa || "-"}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 border-0">
-                                            <span className="text-dark font-weight-900 h5" style={{ color: '#000' }}>
-                                                Rp {new Intl.NumberFormat("id-ID").format(emp.gaji)}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 border-0">
-                                            <Badge color={STATUS_META[emp.status]?.color || "secondary"} className="px-3 py-1 font-weight-bold">
-                                                {STATUS_META[emp.status]?.label || emp.status}
-                                            </Badge>
-                                            {emp.rfid_code && (
-                                                <div className="mt-2">
-                                                    <Badge color="default" outline className="border shadow-none font-weight-900 text-dark px-2">
-                                                        <i className="fas fa-id-card me-1 text-primary" /> {emp.rfid_code}
-                                                    </Badge>
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="py-4 border-0 text-end">
-                                            <div className="d-flex justify-content-end" style={{ gap: '6px' }}>
-                                                <Button 
-                                                    color="success" 
-                                                    size="sm" 
-                                                    className="rounded-circle btn-icon-only shadow-sm"
-                                                    onClick={() => onRfid(emp)}
-                                                    title="Tautkan RFID"
-                                                    outline={!emp.rfid_code}
-                                                >
-                                                    <i className="fas fa-id-card" />
-                                                </Button>
-                                                <Button 
-                                                    color="info" 
-                                                    size="sm" 
-                                                    className="rounded-circle btn-icon-only shadow-sm"
-                                                    onClick={() => onEdit(emp)}
-                                                    title="Edit Data"
-                                                >
-                                                    <i className="fas fa-edit" />
-                                                </Button>
-                                                <Button 
-                                                    color="danger" 
-                                                    size="sm" 
-                                                    className="rounded-circle btn-icon-only shadow-sm"
-                                                    onClick={() => onDelete(emp.id)}
-                                                    title="Hapus Pegawai"
-                                                >
-                                                    <i className="fas fa-trash" />
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <EmployeeRow
+                                        key={emp.id}
+                                        emp={emp}
+                                        onEdit={onEdit}
+                                        onDelete={onDelete}
+                                        onRfid={onRfid}
+                                    />
                                 ))}
                             </tbody>
                         </Table>

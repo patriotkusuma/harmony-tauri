@@ -1,7 +1,7 @@
 import React from 'react';
 import { CardBody, CardFooter, Table, Badge } from 'reactstrap';
 import RupiahFormater from 'utils/RupiahFormater';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import Pagination from '../Pagination/Pagination';
 
 const PaymentListTable = ({ 
@@ -96,7 +96,7 @@ const PaymentListTable = ({
                                         </td>
                                         <td className="py-4 border-0 text-dark font-weight-bold text-sm">
                                             <i className="far fa-calendar-alt me-2 opacity-5" />
-                                            {moment(py.created_at).format('D MMMM YYYY')}
+                                            {dayjs(py.created_at).format('D MMMM YYYY')}
                                         </td>
                                     </tr>
                                 ))}

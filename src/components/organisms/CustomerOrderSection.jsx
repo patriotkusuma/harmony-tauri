@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardBody, CardHeader, CardImg, Col, FormGroup, Label, Row, Badge, Button, Input } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import RupiahFormater from 'utils/RupiahFormater';
 import StatusBadge from "components/atoms/StatusBadge";
 import { formatImageUrl } from 'utils/formatImageUrl';
@@ -60,7 +60,7 @@ const CustomerOrderSection = ({
                   <Input
                     type="datetime-local"
                     className="form-control-alternative font-weight-bold text-primary"
-                    value={tanggalPesan ? moment(tanggalPesan).format("YYYY-MM-DDTHH:mm") : ""}
+                    value={tanggalPesan ? dayjs(tanggalPesan).format("YYYY-MM-DDTHH:mm") : ""}
                     onChange={(e) => setTanggalPesan(e.target.value)}
                   />
                 </FormGroup>
@@ -71,7 +71,7 @@ const CustomerOrderSection = ({
                   <Input
                     type="datetime-local"
                     className="form-control-alternative font-weight-bold text-success"
-                    value={tanggalSelesai ? moment(tanggalSelesai).format("YYYY-MM-DDTHH:mm") : ""}
+                    value={tanggalSelesai ? dayjs(tanggalSelesai).format("YYYY-MM-DDTHH:mm") : ""}
                     onChange={(e) => setTanggalSelesai(e.target.value)}
                   />
                 </FormGroup>

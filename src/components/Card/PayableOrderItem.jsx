@@ -14,26 +14,37 @@ const PayableOrderItem = ({ pesanan }) => {
       </div>
       
       <div className="py-2">
-        {pesanan.detail_pesanans.map((detailPesan) => (
-          <div key={detailPesan.id || detailPesan.jenis_cuci.id} className="px-3 py-2">
-            <Row className="align-items-center">
-              <Col xs="7" sm="8">
-                <div className="d-flex flex-column">
-                  <span className="font-weight-bold text-dark text-sm">{detailPesan.jenis_cuci.nama}</span>
-                  <small className="text-muted font-weight-bold text-xs">
-                    {detailPesan.qty}
-                    {detailPesan.jenis_cuci.satuan === 'Kg' ? ' Kg' : (detailPesan.jenis_cuci.satuan === 'Pcs' ? ' Pcs' : ` ${detailPesan.jenis_cuci.satuan}`)}
-                    {' x '}
-                    <RupiahFormater value={detailPesan.harga} />
-                  </small>
-                </div>
-              </Col>
-              <Col xs="5" sm="4" className="text-end">
-                <span className="font-weight-bolder text-dark text-sm"><RupiahFormater value={detailPesan.total_harga} /></span>
-              </Col>
-            </Row>
-          </div>
-        ))}
+        {pesanan.detail_pesanans.map((detailPesan, idx) => {
+          const serviceName = typeof detailPesan.jenis_cuci === 'object'
+            ? detailPesan.jenis_cuci?.nama
+            : (detailPesan.jenis_cuci || 'Layanan');
+          const satuan = typeof detailPesan.jenis_cuci === 'object'
+            ? detailPesan.jenis_cuci?.satuan
+            : (detailPesan.satuan || '');
+          const qtyDisplay = satuan === 'Kg'
+            ? `${(Number(detailPesan.qty) / 1000).toFixed(2)} Kg`
+            : `${detailPesan.qty} ${satuan || 'item'}`;
+
+          return (
+            <div key={detailPesan.id || idx} className="px-3 py-2">
+              <Row className="align-items-center">
+                <Col xs="7" sm="8">
+                  <div className="d-flex flex-column">
+                    <span className="font-weight-bold text-dark text-sm">{serviceName}</span>
+                    <small className="text-muted font-weight-bold text-xs">
+                      {qtyDisplay}
+                      {' x '}
+                      <RupiahFormater value={detailPesan.harga} />
+                    </small>
+                  </div>
+                </Col>
+                <Col xs="5" sm="4" className="text-end">
+                  <span className="font-weight-bolder text-dark text-sm"><RupiahFormater value={detailPesan.total_harga} /></span>
+                </Col>
+              </Row>
+            </div>
+          );
+        })}
       </div>
       
       <div className="px-3 py-3" style={{ background: 'linear-gradient(87deg, #11cdef 0, #1171ef 100%)' }}>
@@ -59,6 +70,26 @@ const PayableOrderItem = ({ pesanan }) => {
           </div>
         )}
       </div>
+      <style>{`
+        /* ── Dark Mode ─────────────────────────────────────────── */
+        body.dark-mode .payment-order-card {
+          background: #0f172a !important;
+          border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+        body.dark-mode .payment-order-header {
+          background: #1e293b !important;
+          border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        body.dark-mode .payment-order-header span {
+          color: #f8fafc !important;
+        }
+        body.dark-mode .payment-order-card span.text-dark {
+          color: #f8fafc !important;
+        }
+        body.dark-mode .payment-order-card small.text-muted {
+          color: #94a3b8 !important;
+        }
+      `}</style>
     </div>
   );
 };

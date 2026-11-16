@@ -29,17 +29,13 @@ export const usePembayaran = () => {
 
     const [viewMode, setViewMode] = useState(() => {
         const saved = localStorage.getItem(VIEW_MODE_KEY);
-        return saved === "legacy" ? "legacy" : "modern";
+        if (saved === "list" || saved === "legacy") return "list";
+        return "card";
     });
 
     useEffect(() => {
         localStorage.setItem(VIEW_MODE_KEY, viewMode);
     }, [viewMode, VIEW_MODE_KEY]);
-
-    const headers = useMemo(() => ({
-        'Authorization': `Bearer ${authenticated}`,
-        'Content-Type': 'multipart/form-data'
-    }), [authenticated]);
 
     const getCustomer = useCallback(async (search = '') => {
         if (!authenticated) return;
@@ -56,7 +52,8 @@ export const usePembayaran = () => {
                             total_harga: o.total_harga,
                             paid: o.paid,
                             status_pembayaran: o.status_pembayaran,
-                            detail_pesanans: o.detail_pesanans || []
+                            detail_pesanans: o.detail_pesanans || [],
+                            created_at: o.created_at
                         }));
                         return [...acc, ...mappedOrders];
                     }

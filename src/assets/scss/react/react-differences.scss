@@ -3,8 +3,8 @@
 // bootstrap
 @import "bootstrap/scss/spinners";
 // react plugins
-@import "plugins/plugin-react-datetime";
-// core components
+// (plugin-react-datetime dihapus: react-datetime sudah tidak dipakai,
+//  StockOpnameModal kini memakai <input type="date"> native)
 @import "buttons";
 @import "mixins";
 @import "navbar-dropdown";

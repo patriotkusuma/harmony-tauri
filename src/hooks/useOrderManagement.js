@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import axios from 'services/axios-instance';
 import { toast } from 'react-toastify';
 import desktopBridge from 'services/desktop-bridge';
@@ -13,7 +13,7 @@ import useHotkeys from './useHotKeys';
 // Utils
 import { calculateGrandTotal } from 'utils/laundryCalc';
 
-const generateOrderCode = () => `HRMN-${moment().unix()}`;
+const generateOrderCode = () => `HRMN-${dayjs().unix()}`;
 
 export const useOrderManagement = () => {
     const authenticated = localStorage.getItem('token') || null;
@@ -23,7 +23,10 @@ export const useOrderManagement = () => {
         Authorization: `Bearer ${authenticated}`,
     }), [authenticated]);
 
-    const { nama, setNama, telpon, setTelpon, idPelanggan, pelanggan, selectCustomer, resetCustomer } = useCustomer(authenticated);
+    const {
+        nama, setNama, telpon, setTelpon, idPelanggan, pelanggan, customerInsights,
+        isSearchingCustomers, searchCustomers, selectCustomer, selectNewCustomer, resetCustomer,
+    } = useCustomer(authenticated);
 
     // Integrate Sub-hooks (V2 Cart with Customer Support)
     const { 
@@ -140,6 +143,7 @@ export const useOrderManagement = () => {
             resetCartLocal();
             resetCustomer();
             setValueBayar(0);
+            setIsLunas(false);
             setIsCustomerModalOpen(false);
             setIsPaymentModalOpen(false);
             setAntar(0);
@@ -183,6 +187,11 @@ export const useOrderManagement = () => {
         printLastOrder:    { keyCode: 114, handler: fetchAndPrintLastOrder, preventDefault: true }, // F3
         rfidAttachModal:   { keyCode: 115, handler: () => setIsRFIDAttachOpen(true), preventDefault: true }, // F4
         printNama:         { keyCode: 116, handler: handlePrintNama, preventDefault: true },         // F5
+        submitOrderHotkey: { keyCode: 119, handler: () => {                                          // F8
+            if (nama && cartItems && Object.keys(cartItems).length > 0) {
+                handleOrderSubmission();
+            }
+        }, preventDefault: true },
         closeModals: { keyCode: 27, handler: () => {
             setIsCustomerModalOpen(false);
             setIsPaymentModalOpen(false);
@@ -205,6 +214,8 @@ export const useOrderManagement = () => {
         setTelpon,
         pelanggan,
         idPelanggan,
+        customerInsights,
+        isSearchingCustomers,
         isLunas,
         setIsLunas,
         isCustomerModalOpen,
@@ -230,7 +241,9 @@ export const useOrderManagement = () => {
         removeOneCart,
         clearCart,
         searchCategory,
+        searchCustomers,
         selectCustomer,
+        selectNewCustomer,
         resetCustomer,
         handlePrintNama,
         fetchAndPrintLastOrder,
@@ -242,10 +255,10 @@ export const useOrderManagement = () => {
         sendConfirmationWA,
     }), [
         cartItems, estimasi, subTotal, category, nama, telpon, pelanggan, 
-        idPelanggan, isLunas, isCustomerModalOpen, isPaymentModalOpen, 
+        idPelanggan, customerInsights, isSearchingCustomers, isLunas, isCustomerModalOpen, isPaymentModalOpen, 
         isRFIDAttachOpen, valueBayar, tipeBayar, antar, gabungBill, keterangan, orderCode, isOrderButtonDisabled,
         addCart, updateCart, removeOneCart, clearCart, searchCategory,
-        selectCustomer, resetCustomer, handlePrintNama, fetchAndPrintLastOrder,
+        searchCustomers, selectCustomer, selectNewCustomer, resetCustomer, handlePrintNama, fetchAndPrintLastOrder,
         submitOrder, handleOrderSubmission, toggleCustomerModal, togglePaymentModal,
         toggleRFIDAttach, sendConfirmationWA
     ]);

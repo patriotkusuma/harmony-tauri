@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import moment from "moment";
+import dayjs from 'dayjs';
 import axios from "../services/axios-instance";
 
 export const useMachineLog = () => {
-    const [date, setDate] = useState(moment().format("YYYY-MM-DD"));
+    const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
     const [searchTerm, setSearchTerm] = useState("");
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(false);

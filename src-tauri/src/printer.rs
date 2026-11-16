@@ -24,36 +24,54 @@ pub struct PrintResult {
 
 #[derive(Clone, Copy)]
 enum TicketKind {
-  Order,
-  LastOrder,
-  Name,
+  /// Struk final — ditempel ke packing laundry. Ada Sub Total + Pembulatan.
+  StrukFinal,
+  /// Struk untuk customer — WAJIB sama dengan yang dicetak halaman Pesan
+  /// (build_last_order_buffer). Ada Sub Total + Pembulatan + QR.
+  Customer,
+  /// Label proses pencucian — TANPA Sub Total & Pembulatan.
+  Nama,
+  /// Label tempel / sticker.
+  Sticker,
 }
 
+/// Struk final untuk ditempel ke packing laundry.
 #[tauri::command]
-pub fn print_order(order: Value) -> Result<PrintResult, String> {
-  print_ticket(order, TicketKind::Order)
+pub fn print_struk_final(order: Value) -> Result<PrintResult, String> {
+  print_ticket(order, TicketKind::StrukFinal)
 }
 
+/// Struk untuk customer. Layout identik dengan halaman Pesan (last order),
+/// ditambah QR berisi kode pesanan.
 #[tauri::command]
 pub fn print_raw(order: Value) -> Result<PrintResult, String> {
-  print_ticket(order, TicketKind::Order)
+  print_ticket(order, TicketKind::Customer)
 }
 
+/// Alias lama — halaman Pesan memanggil ini. Menghasilkan struk customer.
 #[tauri::command]
 pub fn print_last_order(order: Value) -> Result<PrintResult, String> {
-  print_ticket(order, TicketKind::LastOrder)
+  print_ticket(order, TicketKind::Customer)
 }
 
+/// Label nama untuk proses pencucian — tanpa pembulatan.
 #[tauri::command]
 pub fn print_name(order: Value) -> Result<PrintResult, String> {
-  print_ticket(order, TicketKind::Name)
+  print_ticket(order, TicketKind::Nama)
+}
+
+/// Label tempel untuk pesanan.
+#[tauri::command]
+pub fn print_sticker(order: Value) -> Result<PrintResult, String> {
+  print_ticket(order, TicketKind::Sticker)
 }
 
 fn print_ticket(order: Value, kind: TicketKind) -> Result<PrintResult, String> {
   let payload = match kind {
-    TicketKind::Order => build_order_buffer(&order),
-    TicketKind::LastOrder => build_last_order_buffer(&order),
-    TicketKind::Name => build_name_buffer(&order),
+    TicketKind::StrukFinal => build_order_buffer(&order),
+    TicketKind::Customer => build_last_order_buffer(&order),
+    TicketKind::Nama => build_name_buffer(&order),
+    TicketKind::Sticker => build_name_buffer(&order),
   };
   write_to_printer(&payload)?;
   Ok(PrintResult {
@@ -300,12 +318,11 @@ fn build_last_order_buffer(order: &Value) -> Vec<u8> {
       &format!("Rp {}", fmt_rupiah(sub_total.round())),
     ),
   );
-  if pembulatan.abs() > f64::EPSILON {
-    push_text(
-      &mut out,
-      &pad_cols("Pembulatan :", &format!("Rp {}", fmt_rupiah(pembulatan))),
-    );
-  }
+  // Pembulatan selalu dicetak (walau 0) sesuai aturan semua struk.
+  push_text(
+    &mut out,
+    &pad_cols("Pembulatan :", &format!("Rp {}", fmt_rupiah(pembulatan))),
+  );
   out.extend_from_slice(&cmd_bold_on());
   push_text(
     &mut out,
@@ -342,6 +359,17 @@ fn build_last_order_buffer(order: &Value) -> Vec<u8> {
   out.extend_from_slice(&cmd_align_center());
   push_text(&mut out, "Terima kasih sudah percaya");
   push_text(&mut out, "kepada Harmony Laundry :)");
+
+  // QR hanya untuk struk customer — isinya kode pesanan (bukan URL).
+  if let Some(kode) = get_string(order, &["kode_pesan"]) {
+    if !kode.trim().is_empty() {
+      out.extend_from_slice(&cmd_feed_lines(1));
+      out.extend_from_slice(&build_qr_buffer(&kode, 4));
+      out.extend_from_slice(&cmd_align_center());
+      push_text(&mut out, &kode);
+    }
+  }
+
   out.extend_from_slice(&cmd_feed_lines(11));
   out
 }
@@ -667,6 +695,60 @@ fn fmt_time_only(raw: Option<String>) -> String {
   format!("{:02}:{:02}", dt.hour(), dt.minute())
 }
 
+/// Render QR code menjadi raster ESC/POS (GS v 0).
+/// `module_px` = jumlah pixel per modul QR; 4 aman untuk printer 58mm.
+fn build_qr_buffer(content: &str, module_px: u32) -> Vec<u8> {
+  let code = match qrcode::QrCode::new(content.as_bytes()) {
+    Ok(c) => c,
+    Err(_) => return Vec::new(),
+  };
+  let modules = code.to_colors();
+  let dim = code.width() as u32;
+  if dim == 0 || module_px == 0 {
+    return Vec::new();
+  }
+
+  // Quiet zone 2 modul di tiap sisi (standar minimal QR = 4, tapi 2 cukup
+  // untuk scan jarak dekat dan menghemat kertas thermal).
+  const QUIET: u32 = 2;
+  let total_modules = dim + QUIET * 2;
+  let width = total_modules * module_px;
+  let height = total_modules * module_px;
+  let width_bytes = width.div_ceil(8) as usize;
+
+  let mut img_data = vec![0u8; width_bytes * height as usize];
+  for my in 0..dim {
+    for mx in 0..dim {
+      let dark = modules[(my * dim + mx) as usize] == qrcode::types::Color::Dark;
+      if !dark {
+        continue;
+      }
+      let px0 = (mx + QUIET) * module_px;
+      let py0 = (my + QUIET) * module_px;
+      for y in py0..py0 + module_px {
+        for x in px0..px0 + module_px {
+          let idx = y as usize * width_bytes + (x as usize / 8);
+          img_data[idx] |= 1 << (7 - (x as usize % 8));
+        }
+      }
+    }
+  }
+
+  let mut out = Vec::with_capacity(8 + img_data.len());
+  out.extend_from_slice(&[
+    GS,
+    0x76,
+    0x30,
+    0x00,
+    (width_bytes & 0xff) as u8,
+    ((width_bytes >> 8) & 0xff) as u8,
+    (height & 0xff) as u8,
+    ((height >> 8) & 0xff) as u8,
+  ]);
+  out.extend_from_slice(&img_data);
+  out
+}
+
 fn build_logo_buffer(target_width: u32) -> Vec<u8> {
   let cache = LOGO_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
   if let Ok(guard) = cache.lock() {
@@ -756,4 +838,122 @@ fn rasterize_logo(img: DynamicImage, target_width: u32) -> Vec<u8> {
   ]);
   out.extend_from_slice(cropped_data);
   out
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use serde_json::json;
+
+  fn order_fixture() -> Value {
+    json!({
+      "kode_pesan": "HRMN-1794295312",
+      "total_harga": 55000,
+      "customer": { "nama": "desti", "telpon": "6282135365293" },
+      "tanggal_pesan": "2026-04-09 17:39:19",
+      "tanggal_selesai": "2026-04-11 17:39:19",
+      "status_pembayaran": "Belum Lunas",
+      "detail_pesanans": [
+        {
+          "qty": 7875,
+          "harga": 7000,
+          "total_harga": 55125,
+          "jenis_cuci": { "nama": "Reguler (Cuci Setrika)", "tipe": "per_kilo" }
+        }
+      ]
+    })
+  }
+
+  /// Buffer ESC/POS berisi byte biner; ubah ke teks agar mudah diperiksa.
+  fn buffer_to_text(buf: &[u8]) -> String {
+    String::from_utf8_lossy(buf).to_string()
+  }
+
+  /// Cari raster QR di buffer.
+  ///
+  /// Catatan: logo DAN QR sama-sama memakai perintah GS v 0, jadi signature
+  /// 4-byte saja tidak cukup untuk membedakan. QR dikenali dari ukurannya:
+  /// 25 modul (21 + quiet 2 sisi) x 4 px = 100 px -> width_bytes 13, height 100.
+  fn has_qr_raster(buf: &[u8]) -> bool {
+    buf.windows(8).any(|w| {
+      w[0] == GS
+        && w[1] == 0x76
+        && w[2] == 0x30
+        && w[3] == 0x00
+        && u16::from_le_bytes([w[4], w[5]]) == 13
+        && u16::from_le_bytes([w[6], w[7]]) == 100
+    })
+  }
+
+  #[test]
+  fn struk_final_ada_pembulatan_tanpa_qr() {
+    // Struk final = ditempel ke packing. Ada pembulatan, TANPA QR.
+    let buf = build_order_buffer(&order_fixture());
+    let text = buffer_to_text(&buf);
+    assert!(text.contains("Sub Total :"), "struk final harus ada Sub Total");
+    assert!(
+      text.contains("Pembulatan :"),
+      "struk final harus ada Pembulatan"
+    );
+    assert!(
+      !has_qr_raster(&buf),
+      "struk final (packing) tidak boleh ada QR"
+    );
+  }
+
+  #[test]
+  fn struk_customer_ada_pembulatan_dan_qr() {
+    // Struk customer = sama seperti halaman Pesan, plus QR.
+    let buf = build_last_order_buffer(&order_fixture());
+    let text = buffer_to_text(&buf);
+    assert!(
+      text.contains("Sub Total :"),
+      "struk customer harus ada Sub Total"
+    );
+    assert!(
+      text.contains("Pembulatan :"),
+      "struk customer harus ada Pembulatan"
+    );
+    assert!(
+      text.contains("Estimasi Selesai"),
+      "struk customer harus ada Estimasi"
+    );
+    assert!(has_qr_raster(&buf), "struk customer harus ada QR");
+    assert!(
+      text.contains("HRMN-1794295312"),
+      "kode pesanan harus tercetak"
+    );
+  }
+
+  #[test]
+  fn print_nama_tanpa_pembulatan() {
+    // Aturan: SEMUA struk ada pembulatan KECUALI print nama.
+    let text = buffer_to_text(&build_name_buffer(&order_fixture()));
+    assert!(!text.contains("Sub Total"), "print nama tidak boleh ada Sub Total");
+    assert!(!text.contains("Pembulatan"), "print nama tidak boleh ada Pembulatan");
+  }
+
+  #[test]
+  fn pembulatan_nol_tetap_dicetak_di_struk_customer() {
+    let mut order = order_fixture();
+    order["total_harga"] = json!(55125);
+    let text = buffer_to_text(&build_last_order_buffer(&order));
+    assert!(text.contains("Pembulatan :"));
+    assert!(text.contains("Rp 0"), "pembulatan nol harus tercetak 0");
+  }
+
+  #[test]
+  fn qr_buffer_kosong_untuk_input_kosong_aman() {
+    let buf = build_qr_buffer("", 4);
+    assert!(!buf.is_empty());
+  }
+
+  #[test]
+  fn nilai_sub_total_pembulatan_total_benar() {
+    let text = buffer_to_text(&build_order_buffer(&order_fixture()));
+    // sub total 55125 ; total 55000 ; pembulatan -125
+    assert!(text.contains("55.125"), "sub total salah, buffer:\n{}", text);
+    assert!(text.contains("-125"), "pembulatan salah, buffer:\n{}", text);
+    assert!(text.contains("55.000"), "total salah, buffer:\n{}", text);
+  }
 }

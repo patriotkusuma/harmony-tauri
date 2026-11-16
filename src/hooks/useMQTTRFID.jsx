@@ -4,7 +4,8 @@
  * Strategi dual-mode:
  *   ① TAURI/ELECTRON (desktop) → main process buka koneksi native TCP mqtt://
  *                                 dan kirim ke renderer via IPC / bridge.
- *   ② TAURI browser runtime    → WebSocket fallback via mqtt.js (window.mqtt)
+ *   ② TAURI browser runtime    → WebSocket fallback via mqtt.js (bundle lokal,
+ *                                 dynamic import — tetap jalan saat offline)
  *   ③ BROWSER BIASA (web)      → DISABLED — tidak ada koneksi dibuka.
  *
  * Rule: MQTT hanya aktif ketika isTauriRuntime() === true (Tauri) atau
@@ -166,12 +167,6 @@ export function MQTTRFIDProvider({ children }) {
       return;
     }
 
-    const mqttLib = typeof window !== 'undefined' ? window.mqtt : null;
-    if (!mqttLib) {
-      setError('mqtt.js CDN tidak tersedia. Tambahkan <script> di public/index.html');
-      return;
-    }
-
     setMode('websocket');
     setConnecting(true);
     setError(null);
@@ -181,72 +176,86 @@ export function MQTTRFIDProvider({ children }) {
     console.info('[MQTT-WS] Connecting to', brokerUrl);
 
     let client;
-    try {
-      client = mqttLib.connect(brokerUrl, {
-        clientId       : BROKER.clientId,
-        username       : BROKER.username,
-        password       : BROKER.password,
-        keepalive      : 60,
-        reconnectPeriod: 3000,
-        connectTimeout : 10_000,
-      });
-    } catch (e) {
-      const message = e?.message || String(e);
-      setError(`MQTT connect gagal: ${message}`);
-      setConnected(false);
-      setConnecting(false);
-      console.error('[MQTT-WS] Connect init failed:', message);
-      return;
-    }
+    let cancelled = false;
 
-    wsClientRef.current = client;
+    // mqtt.js di-bundle lokal (dynamic import → chunk terpisah), bukan CDN.
+    // Penting untuk POS: koneksi RFID tetap jalan saat internet mati.
+    (async () => {
+      try {
+        const mod = await import('mqtt');
+        const mqttLib = mod.default?.connect ? mod.default : mod;
 
-    client.on('connect', () => {
-      setConnected(true); setConnecting(false); setError(null);
-      console.info('[MQTT-WS] Connected');
-      client.subscribe(BROKER.topics, { qos: 0 }, (err) => {
-        if (err) {
-          console.error('[MQTT-WS] Subscribe error:', err.message);
-          setError(`Subscribe gagal: ${err.message}`);
-        } else {
-          console.info('[MQTT-WS] Subscribed to:', BROKER.topics);
-        }
-      });
-    });
+        if (cancelled) return;
 
-    client.on('message', (topic, payload) => {
-      const raw = payload.toString().trim();
-      console.log(`[MQTT-WS] ← ${topic}: ${raw}`);
-
-      // status
-      if (/^harmony\/rfid\/.+\/status$/.test(topic)) {
-        const device_id = topic.split('/')[2];
-        handleDeviceStatus({ device_id, status: raw });
+        client = mqttLib.connect(brokerUrl, {
+          clientId       : BROKER.clientId,
+          username       : BROKER.username,
+          password       : BROKER.password,
+          keepalive      : 60,
+          reconnectPeriod: 3000,
+          connectTimeout : 10_000,
+        });
+      } catch (e) {
+        const message = e?.message || String(e);
+        setError(`MQTT connect gagal: ${message}`);
+        setConnected(false);
+        setConnecting(false);
+        console.error('[MQTT-WS] Connect init failed:', message);
         return;
       }
 
-      // events
-      try {
-        const data = JSON.parse(raw);
-        if (data.schema === 'rfid.v1' && data.event === 'scan' && data.uid) {
-          handleUID(data.uid, {
-            device_id: data.device_id,
-            uid_len  : data.uid_len,
-            ts_ms    : data.ts_ms,
-          });
-        }
-      } catch (e) {
-        // ignore parse error logs to prevent spam
-      }
-    });
+      if (cancelled) { client?.end(true); return; }
 
-    client.on('reconnect', () => { setConnecting(true); setConnected(false); });
-    client.on('offline',   () => { setConnected(false); setConnecting(false); });
-    client.on('error',     (err) => { setError(err.message); setConnected(false); setConnecting(false); });
-    client.on('btn-close', () => { setConnected(false); });
+      wsClientRef.current = client;
+
+      client.on('connect', () => {
+        setConnected(true); setConnecting(false); setError(null);
+        console.info('[MQTT-WS] Connected');
+        client.subscribe(BROKER.topics, { qos: 0 }, (err) => {
+          if (err) {
+            console.error('[MQTT-WS] Subscribe error:', err.message);
+            setError(`Subscribe gagal: ${err.message}`);
+          } else {
+            console.info('[MQTT-WS] Subscribed to:', BROKER.topics);
+          }
+        });
+      });
+
+      client.on('message', (topic, payload) => {
+        const raw = payload.toString().trim();
+        console.log(`[MQTT-WS] ← ${topic}: ${raw}`);
+
+        // status
+        if (/^harmony\/rfid\/.+\/status$/.test(topic)) {
+          const device_id = topic.split('/')[2];
+          handleDeviceStatus({ device_id, status: raw });
+          return;
+        }
+
+        // events
+        try {
+          const data = JSON.parse(raw);
+          if (data.schema === 'rfid.v1' && data.event === 'scan' && data.uid) {
+            handleUID(data.uid, {
+              device_id: data.device_id,
+              uid_len  : data.uid_len,
+              ts_ms    : data.ts_ms,
+            });
+          }
+        } catch (e) {
+          // ignore parse error logs to prevent spam
+        }
+      });
+
+      client.on('reconnect', () => { setConnecting(true); setConnected(false); });
+      client.on('offline',   () => { setConnected(false); setConnecting(false); });
+      client.on('error',     (err) => { setError(err.message); setConnected(false); setConnecting(false); });
+      client.on('btn-close', () => { setConnected(false); });
+    })();
 
     return () => {
-      client.end(true);
+      cancelled = true;
+      client?.end(true);
       wsClientRef.current = null;
       setConnected(false);
       setConnecting(false);

@@ -38,7 +38,10 @@ const InfoRow = ({ icon, label, value }) => (
 );
 
 const CustomerDetailView = () => {
-  const { selected, detailLoading, detailError, fetchDetail } = useCustomerStore();
+  const selected = useCustomerStore(s => s.selected);
+  const detailLoading = useCustomerStore(s => s.detailLoading);
+  const detailError = useCustomerStore(s => s.detailError);
+  const fetchDetail = useCustomerStore(s => s.fetchDetail);
 
   // Re-fetch fresh detail saat modal dibuka
   useEffect(() => {

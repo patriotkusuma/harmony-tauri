@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, ModalBody, ModalFooter, Row, Col, Badge, Button } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 import CustomerAvatar from "components/atoms/CustomerAvatar";
 import RupiahFormater from "utils/RupiahFormater";
 import { useOrder } from "hooks/useOrder";
@@ -12,7 +12,8 @@ const OrderDetailsModal = () => {
     toggleDetailModal, 
     selectedOrder, 
     printName, 
-    printInvoice 
+    printStrukFinal,
+    printStrukCustomer 
   } = useOrder();
   
   const navigate = useNavigate();
@@ -67,13 +68,13 @@ const OrderDetailsModal = () => {
               <div className="d-flex justify-content-between mb-2">
                 <span>Masuk</span>
                 <span className="font-weight-bold">
-                  {moment(selectedOrder.tanggal_pesan).format("DD/MM/YYYY, HH:mm")}
+                  {dayjs(selectedOrder.tanggal_pesan).format("DD/MM/YYYY, HH:mm")}
                 </span>
               </div>
               <div className="d-flex justify-content-between">
                 <span>Estimasi</span>
                 <span className="font-weight-bold text-success-light">
-                  {moment(selectedOrder.tanggal_selesai).format("DD/MM/YYYY, HH:mm")}
+                  {dayjs(selectedOrder.tanggal_selesai).format("DD/MM/YYYY, HH:mm")}
                 </span>
               </div>
             </div>
@@ -122,11 +123,14 @@ const OrderDetailsModal = () => {
       </ModalBody>
       <ModalFooter className="border-0 bg-transparent justify-content-between">
         <div className="d-flex" style={{ gap: "8px" }}>
-          <Button color="success" size="sm" onClick={() => printName(selectedOrder)}>
-            <i className="fas fa-print me-1" /> Nama
+          <Button color="success" size="sm" onClick={() => printName(selectedOrder)} title="Label nama proses pencucian (tanpa pembulatan)">
+            <i className="fas fa-user-tag me-1" /> Nama
           </Button>
-          <Button color="default" size="sm" onClick={() => printInvoice(selectedOrder)}>
-            <i className="fas fa-file-invoice me-1" /> Invoice
+          <Button color="secondary" size="sm" outline onClick={() => printStrukFinal(selectedOrder)} title="Struk final untuk ditempel ke packing">
+            <i className="fas fa-box-archive me-1" /> Packing
+          </Button>
+          <Button color="info" size="sm" onClick={() => printStrukCustomer(selectedOrder)} title="Struk untuk customer (dengan QR)">
+            <i className="fas fa-receipt me-1" /> Customer
           </Button>
         </div>
         <div>

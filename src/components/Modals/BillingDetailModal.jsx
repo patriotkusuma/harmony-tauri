@@ -7,7 +7,9 @@ import {
 import axios from "services/axios-instance";
 import { toast } from "react-toastify";
 import RupiahFormater from "utils/RupiahFormater";
-import moment from "moment";
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 
 const STATUS_MAP = {
     PAID:    { color: "success", label: "LUNAS" },
@@ -143,7 +145,7 @@ const BillingDetailModal = ({ billId, isOpen, toggle, onPaymentSuccess }) => {
                                 </Col>
                                 <Col xs="auto" className="text-end">
                                     <small className="text-muted d-block">Dibuat</small>
-                                    <strong>{moment(detail.created_at).format("DD MMM YYYY, HH:mm")}</strong>
+                                    <strong>{dayjs(detail.created_at).format("DD MMM YYYY, HH:mm")}</strong>
                                 </Col>
                             </Row>
                         </div>

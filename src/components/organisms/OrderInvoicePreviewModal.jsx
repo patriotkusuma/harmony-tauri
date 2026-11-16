@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { Modal, ModalBody, ModalFooter, Button, Row, Col } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 import RupiahFormater from "utils/RupiahFormater";
+import { ringkasanStruk, qrValueStruk } from "utils/struk";
 import { useOrder } from "hooks/useOrder";
 import QRCode from "react-qr-code";
 
@@ -10,7 +11,7 @@ const OrderInvoicePreviewModal = () => {
     isInvoicePreviewOpen, 
     toggleInvoicePreviewModal, 
     selectedOrder, 
-    printInvoice 
+    printStrukCustomer 
   } = useOrder();
   
   const componentRef = useRef();
@@ -18,6 +19,10 @@ const OrderInvoicePreviewModal = () => {
   if (!selectedOrder) return null;
 
   const publicLink = `https://harmonylaundry.my.id/display/order/${selectedOrder.kode_pesan}`;
+
+  // Satu sumber kebenaran: angka di sini identik dengan yang dicetak printer.
+  const { subTotal, pembulatan, total } = ringkasanStruk(selectedOrder);
+  const qrValue = qrValueStruk(selectedOrder);
 
   return (
     <Modal
@@ -38,9 +43,9 @@ const OrderInvoicePreviewModal = () => {
       </div>
       <ModalBody>
         <div 
-          className="receipt-preview shadow-sm mx-auto bg-white p-4" 
+          className="receipt-preview shadow-sm mx-auto p-4" 
           ref={componentRef}
-          style={{ maxWidth: "400px", color: "#333", fontFamily: "'Courier New', Courier, monospace" }}
+          style={{ maxWidth: "400px", fontFamily: "'Courier New', Courier, monospace" }}
         >
           {/* Header */}
           <div className="text-center mb-3">
@@ -64,7 +69,7 @@ const OrderInvoicePreviewModal = () => {
             </Row>
             <Row className="mb-1">
               <Col xs="4">Tanggal</Col>
-              <Col xs="8">: {moment(selectedOrder.tanggal_pesan).format("DD/MM/YY HH:mm")}</Col>
+              <Col xs="8">: {dayjs(selectedOrder.tanggal_pesan).format("DD/MM/YY HH:mm")}</Col>
             </Row>
             <Row>
               <Col xs="4">Status</Col>
@@ -91,20 +96,34 @@ const OrderInvoicePreviewModal = () => {
 
           <div className="border-top mb-2" style={{ borderStyle: "dashed" }}></div>
 
-          {/* Total */}
-          <div className="d-flex justify-content-between h5 font-weight-bold mb-3">
-            <span>TOTAL</span>
-            <span><RupiahFormater value={selectedOrder.total_harga} /></span>
+          {/* Total — urutan & label sama dengan struk tercetak */}
+          <div className="text-xs mb-1">
+            <div className="d-flex justify-content-between">
+              <span>Sub Total</span>
+              <span><RupiahFormater value={subTotal} /></span>
+            </div>
+            <div className="d-flex justify-content-between">
+              <span>Pembulatan</span>
+              <span><RupiahFormater value={pembulatan} /></span>
+            </div>
           </div>
 
-          {/* Footer / QR */}
+          <div className="border-top mb-2" style={{ borderStyle: "dashed" }}></div>
+
+          <div className="d-flex justify-content-between h5 font-weight-bold mb-3">
+            <span>TOTAL</span>
+            <span><RupiahFormater value={total} /></span>
+          </div>
+
+          {/* Footer / QR — isi QR = kode pesanan, sama seperti yang dicetak */}
           <div className="text-center mt-4">
             <div className="mb-2 d-flex justify-content-center">
               <div style={{ background: 'white', padding: '8px', border: '1px solid #eee' }}>
-                <QRCode value={publicLink} size={80} />
+                <QRCode value={qrValue} size={80} />
               </div>
             </div>
-            <p className="text-xs mb-1">Pindai untuk cek status pesanan</p>
+            <p className="text-xs fw-bold mb-1">{selectedOrder.kode_pesan}</p>
+            <p className="text-xs mb-1">Scan untuk cek pesanan</p>
             <p className="text-xs fw-bold mb-0">Terima Kasih</p>
           </div>
         </div>
@@ -120,7 +139,7 @@ const OrderInvoicePreviewModal = () => {
           Link Publik
         </Button>
         <div className="d-flex gap-2">
-          <Button color="success" size="sm" onClick={() => printInvoice(selectedOrder)}>
+          <Button color="success" size="sm" onClick={() => printStrukCustomer(selectedOrder)}>
             <i className="fas fa-print me-1" />
             Cetak
           </Button>
@@ -131,9 +150,20 @@ const OrderInvoicePreviewModal = () => {
       </ModalFooter>
 
       <style>{`
+        /* Pratinjau struk sengaja tetap "kertas putih" di tema terang
+           maupun gelap, karena tujuannya meniru hasil cetak thermal.
+           Karena itu warna teks di-set eksplisit, tidak ikut tema. */
         .receipt-preview {
-          background-color: #fdfdfd;
+          background-color: #fdfdfd !important;
+          color: #333 !important;
           border-radius: 2px;
+        }
+        .receipt-preview,
+        .receipt-preview * {
+          color: #333 !important;
+        }
+        .receipt-preview .receipt-muted {
+          color: #6b7280 !important;
         }
         .border-bottom-white-05 {
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);

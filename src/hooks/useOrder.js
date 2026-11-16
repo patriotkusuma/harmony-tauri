@@ -80,6 +80,10 @@ export const useOrder = () => {
     }
   }, [headers, refreshData]);
 
+  /**
+   * LABEL NAMA untuk proses pencucian.
+   * TANPA Sub Total / Pembulatan — ini bukan struk.
+   */
   const printName = useCallback(async (order) => {
     if (desktopBridge.hasNativePrint()) {
       try {
@@ -103,13 +107,17 @@ export const useOrder = () => {
     }
   }, []);
 
-  const printInvoice = useCallback(async (order) => {
+  /**
+   * STRUK FINAL untuk ditempel ke packing laundry.
+   * Ada Sub Total + Pembulatan, TANPA QR.
+   */
+  const printStrukFinal = useCallback(async (order) => {
     if (desktopBridge.hasNativePrint()) {
       try {
-        await desktopBridge.printRaw(order);
-        toast.success("Ngeprint Berhasil");
+        await desktopBridge.printStrukFinal(order);
+        toast.success("Struk final berhasil dicetak");
       } catch (err) {
-        toast.error("Gagal Ngeprint");
+        toast.error("Gagal mencetak struk final");
       }
     } else {
       await toast.promise(
@@ -125,6 +133,41 @@ export const useOrder = () => {
       );
     }
   }, []);
+
+  /**
+   * STRUK CUSTOMER — diberikan ke pelanggan.
+   * Layout sama seperti halaman Pesan (last order) + Sub Total + Pembulatan + QR.
+   */
+  const printStrukCustomer = useCallback(async (order) => {
+    if (desktopBridge.hasNativePrint()) {
+      try {
+        await desktopBridge.printStrukCustomer(order);
+        toast.success("Struk customer berhasil dicetak");
+      } catch (err) {
+        toast.error("Gagal mencetak struk customer");
+      }
+    } else {
+      await toast.promise(
+        fetch("https://printer.test/last_order.php", {
+          method: "POST",
+          body: JSON.stringify({ data: JSON.stringify(order) })
+        }),
+        {
+          pending: "Sabar, otw ngeprint bosss.....",
+          error: "gagal ngeprint bosss...",
+          success: "Ngeprint sukses "
+        }
+      );
+    }
+  }, []);
+
+  /**
+   * Struk lengkap (dipakai modal Nota & modal Detail).
+   * Sama dengan struk customer agar preview = hasil cetak.
+   */
+  const printInvoice = useCallback(async (order) => {
+    await printStrukCustomer(order);
+  }, [printStrukCustomer]);
 
   const sendInvoice = useCallback(async (kode_pesan) => {
     const id = toast.loading("Sedang Mengirim Invoice...");
@@ -168,6 +211,8 @@ export const useOrder = () => {
     updateStatus,
     pickupByBarcode,
     printName,
+    printStrukFinal,
+    printStrukCustomer,
     printInvoice,
     sendInvoice,
     sendNotification,
@@ -176,6 +221,7 @@ export const useOrder = () => {
     pesanan, isLoading, isFetching, filters, setFilters, viewMode, setViewMode,
     selectedOrder, isDetailModalOpen, toggleDetailModal, isScannerModalOpen, toggleScannerModal,
     isInvoicePreviewOpen, toggleInvoicePreviewModal, updateStatus,
-    pickupByBarcode, printName, printInvoice, sendInvoice, sendNotification, refreshData
+    pickupByBarcode, printName, printStrukFinal, printStrukCustomer, printInvoice,
+    sendInvoice, sendNotification, refreshData
   ]);
 };

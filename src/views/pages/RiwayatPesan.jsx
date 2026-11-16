@@ -70,66 +70,70 @@ export const RiwayatPesan = () => {
       <div className="header bg-gradient-info pb-6 pt-5 pt-md-6" />
 
       <Container className="mt--6" fluid>
-        <Card className="shadow-sm border-0">
-          <CardHeader className="bg-white py-3 border-bottom">
-            <Row className="align-items-center">
-              <div className="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                  <h6 className="text-uppercase text-muted ls-1 mb-1 small">Harmony Laundry</h6>
-                  <div className="d-flex align-items-center gap-2">
-                    <h2 className="mb-0 text-dark fw-bold">Riwayat Transaksi</h2>
-                    {isConnected && (
-                      <span className="badge badge-success badge-pill d-flex align-items-center gap-1 pulse-live">
-                        <span className="pulse-dot"></span>
-                        LIVE
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="d-flex gap-2">
-                  <Button
-                    color="info"
-                    size="sm"
-                    onClick={refreshData}
-                    disabled={isFetching}
-                    className="px-3"
-                  >
-                    <i className={`fas fa-sync-alt ${isFetching ? 'fa-spin' : ''} me-1`} />
-                    Refresh
-                  </Button>
-                  <Button
-                    color="primary"
-                    size="sm"
-                    onClick={toggleScannerModal}
-                    className="px-3"
-                  >
-                    <i className="fas fa-barcode me-1" />
-                    Scan Ambil
-                  </Button>
-                  <div className="btn-group">
-                    <Button
-                      color={viewMode === "list" ? "primary" : "secondary"}
-                      size="sm"
-                      onClick={() => setViewMode("list")}
-                      className="px-3"
-                    >
-                      <i className="fas fa-list me-1" /> List
-                    </Button>
-                    <Button
-                      color={viewMode === "grid" ? "primary" : "secondary"}
-                      size="sm"
-                      onClick={() => setViewMode("grid")}
-                      className="px-3"
-                    >
-                      <i className="fas fa-th-large me-1" /> Grid
-                    </Button>
-                  </div>
-                </div>
+        <div className="hl-card mb-4">
+          <div className="p-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3" style={{ borderColor: "var(--hl-border)" }}>
+            <div>
+              <div className="d-flex align-items-center gap-2 mb-1">
+                <span className="hl-badge hl-badge-neutral" style={{ fontSize: "0.65rem", padding: "2px 8px" }}>
+                  HARMONY LAUNDRY
+                </span>
+                {isConnected && (
+                  <span className="hl-badge hl-badge-success" style={{ fontSize: "0.65rem", padding: "2px 8px" }}>
+                    <span className="pulse-dot"></span> LIVE
+                  </span>
+                )}
               </div>
-            </Row>
-          </CardHeader>
+              <h2 className="mb-0 fw-bold" style={{ fontSize: "1.35rem", color: "var(--hl-text-main)" }}>
+                Riwayat Transaksi
+              </h2>
+            </div>
 
-          <CardBody>
+            <div className="d-flex gap-2 align-items-center">
+              <button
+                type="button"
+                onClick={refreshData}
+                disabled={isFetching}
+                className="hl-btn-action hl-btn-detail"
+                title="Refresh Data (F5)"
+              >
+                <i className={`fas fa-sync-alt ${isFetching ? 'fa-spin' : ''}`} />
+                <span>Refresh</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleScannerModal}
+                className="hl-btn-action hl-btn-nota"
+                title="Scan Ambil (Alt + S)"
+              >
+                <i className="fas fa-barcode" />
+                <span>Scan Ambil</span>
+              </button>
+
+              <div className="btn-group ms-1">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("list")}
+                  className={`hl-btn-action ${viewMode === "list" ? "hl-btn-nota" : "hl-btn-detail"}`}
+                  style={{ borderRadius: "var(--hl-radius-sm) 0 0 var(--hl-radius-sm)" }}
+                  title="Tampilan Tabel List"
+                >
+                  <i className="fas fa-list" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("grid")}
+                  className={`hl-btn-action ${viewMode === "grid" ? "hl-btn-nota" : "hl-btn-detail"}`}
+                  style={{ borderRadius: "0 var(--hl-radius-sm) var(--hl-radius-sm) 0", borderLeft: "none" }}
+                  title="Tampilan Grid Card"
+                >
+                  <i className="fas fa-th-large" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-3">
             <OrderFilter />
             {viewMode === "list" ? <OrderTableView /> : <OrderGridView />}
             {pesanan && (
@@ -142,8 +146,8 @@ export const RiwayatPesan = () => {
                 nextPage={nextPage}
               />
             )}
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </Container>
 
       <OrderDetailsModal />

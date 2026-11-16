@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import axios from '../services/axios-instance';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 /**
  * useCart - Hook for Cart V2 (Clean Architecture)
@@ -11,7 +11,7 @@ import moment from 'moment';
  */
 const useCart = (authenticated, idCustomer = 0) => {
     const [cartItems, setCartItems] = useState(null);
-    const [estimasi, setEstimasi] = useState(moment());
+    const [estimasi, setEstimasi] = useState(dayjs());
     const [subTotal, setSubTotal] = useState(0);
     const timerRef = useRef(null);
 

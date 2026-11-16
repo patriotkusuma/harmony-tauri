@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardBody, Row, Col, Badge, Spinner, UncontrolledTooltip, Button } from 'reactstrap';
 import { useAiInsights, useOrderDuration } from '../../hooks/useAiInsights';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 
 const AiInsightWidget = () => {
@@ -284,6 +284,23 @@ const AiInsightWidget = () => {
                 .bg-light-success { background: rgba(45, 206, 137, 0.05); }
                 .border-left-success-solid { border-left: 3px solid #2dce89; }
                 .border-primary-op { border: 1px solid rgba(94, 114, 228, 0.2) !important; background: rgba(94, 114, 228, 0.03) !important; }
+
+                /* Varian tema gelap. Tanpa ini, .stat-pills tetap putih
+                   dan label abu di atasnya gagal kontras (2.56:1). */
+                body.dark-mode .stat-pills {
+                    background: #273449;
+                    border-color: rgba(255, 255, 255, 0.08);
+                    box-shadow: none;
+                }
+                body.dark-mode .bg-secondary-soft {
+                    background: rgba(255, 255, 255, 0.05);
+                }
+                body.dark-mode .text-dark-75 {
+                    color: #cbd5e1;
+                }
+                body.dark-mode .border-white-op {
+                    border-color: rgba(255, 255, 255, 0.12);
+                }
             `}</style>
         </Card>
     );

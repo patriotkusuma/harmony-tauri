@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, UncontrolledTooltip } from 'reactstrap';
 import RupiahFormater from 'utils/RupiahFormater';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const PurchaseListTable = ({ data, onEdit, onDelete, loading }) => {
     if (loading) {
@@ -65,10 +65,10 @@ const PurchaseListTable = ({ data, onEdit, onDelete, loading }) => {
                                     <td className="px-3 py-3 border-bottom-custom">
                                         <div className="date-block text-center rounded overflow-hidden">
                                             <div className="date-month font-weight-bold">
-                                                {moment(item.purchase_date).format('MMM')}
+                                                {dayjs(item.purchase_date).format('MMM')}
                                             </div>
                                             <div className="date-day font-weight-900">
-                                                {moment(item.purchase_date).format('DD')}
+                                                {dayjs(item.purchase_date).format('DD')}
                                             </div>
                                         </div>
                                     </td>

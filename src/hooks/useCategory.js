@@ -37,11 +37,11 @@ const useCategory = (authenticated) => {
         isError, 
         refetch 
     } = useQuery({
-        queryKey: [CATEGORY_QUERY_KEY[0], searchValue, headers],
+        queryKey: [CATEGORY_QUERY_KEY[0], searchValue],
         queryFn: fetchCategories,
         enabled: !!authenticated,
         staleTime: 10 * 60 * 1000, // 10 minutes
-        cacheTime: 30 * 60 * 1000, // 30 minutes
+        cacheTime: 30 * 60 * 1000, // deprecated v5, gcTime di global default
         // Fallback to local storage if API is slow/down
         initialData: () => {
             if (!searchValue) {

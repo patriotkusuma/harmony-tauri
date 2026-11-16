@@ -11,12 +11,6 @@ const Pagination = ({currentPage,rowPerPage, totalPosts, onPageChange, previousP
         siblingCount
     });
 
-    console.log(totalPosts)
-    console.log(currentPage)
-    console.log(rowPerPage)
-    console.log(siblingCount)
-
-
     if(currentPage === 0 || paginationRange.length <2) {
         return null;
     }
@@ -39,7 +33,7 @@ const Pagination = ({currentPage,rowPerPage, totalPosts, onPageChange, previousP
                 {paginationRange.map((pageNumber, index) => {
                     if(pageNumber === DOTS){
                         return (
-                            <PaginationItem>
+                            <PaginationItem key={`dots-${index}`}>
                                 ...
                             </PaginationItem>
                         )

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Badge, Button, Spinner, Pagination, PaginationItem, PaginationLink, Collapse } from "reactstrap";
 import RupiahFormater from "utils/RupiahFormater";
-import moment from "moment";
+import dayjs from 'dayjs';
 import BillingDetailModal from "components/Modals/BillingDetailModal";
 
 const BillingListTable = ({ 
@@ -129,8 +129,8 @@ const BillingListTable = ({
             </td>
             <td className="text-center">
                 <div className="d-flex flex-column text-muted" style={{fontSize: '0.8rem'}}>
-                    <span>{moment(b.created_at).format('DD MMM YYYY')}</span>
-                    <span>{moment(b.created_at).format('HH:mm')}</span>
+                    <span>{dayjs(b.created_at).format('DD MMM YYYY')}</span>
+                    <span>{dayjs(b.created_at).format('HH:mm')}</span>
                 </div>
             </td>
             <td className="text-end pr-5">
@@ -174,7 +174,7 @@ const BillingListTable = ({
                     {loading ? (
                         <tr>
                             <td colSpan="7" className="text-center py-5">
-                                <Spinner size="lg" color="primary" />
+                                <Spinner color="primary" />
                                 <h4 className="mt-3 text-muted font-weight-light">Mensinkronisasi data keuangan...</h4>
                             </td>
                         </tr>
@@ -241,7 +241,7 @@ const BillingListTable = ({
                                             </div>
                                         </td>
                                         <td className="text-center text-muted small">
-                                            {moment(item.root.created_at).format('DD/MM/YY')}
+                                            {dayjs(item.root.created_at).format('DD/MM/YY')}
                                         </td>
                                         <td className="text-end pr-5 text-muted">
                                              <small className="mr-3">Klik untuk rincian</small>

@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Label, Input, Row, Col, Alert, InputGroup, InputGroupText } from 'reactstrap';
 import Select from 'react-select';
-import Datetime from 'react-datetime'; 
-import moment from 'moment'; 
-import "react-datetime/css/react-datetime.css"; 
+import dayjs from 'dayjs';
 
 const StockOpnameModal = ({ isOpen, toggle, onSubmit, inventories, loading }) => {
     const [form, setForm] = useState({
         id_inventory: '',
         physical_stock: '',
-        audit_date: moment(), 
+        audit_date: dayjs(), 
         notes: ''
     });
 
@@ -30,7 +28,7 @@ const StockOpnameModal = ({ isOpen, toggle, onSubmit, inventories, loading }) =>
             setForm({
                 id_inventory: '',
                 physical_stock: '',
-                audit_date: moment(),
+                audit_date: dayjs(),
                 notes: ''
             });
             setSelectedOption(null);
@@ -42,17 +40,11 @@ const StockOpnameModal = ({ isOpen, toggle, onSubmit, inventories, loading }) =>
         setForm(prev => ({ ...prev, id_inventory: opt?.value || '' }));
     };
 
-    const handleDateChange = (date) => {
-        if (moment.isMoment(date) || typeof date === 'object') {
-            setForm(prev => ({ ...prev, audit_date: date }));
-        }
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!form.id_inventory) return;
         
-        const formattedDate = moment(form.audit_date).format('YYYY-MM-DD');
+        const formattedDate = dayjs(form.audit_date).format('YYYY-MM-DD');
         
         onSubmit({
             ...form,
@@ -123,32 +115,13 @@ const StockOpnameModal = ({ isOpen, toggle, onSubmit, inventories, loading }) =>
                             </FormGroup>
                         </Col>
                         <Col md="6">
-                            <FormGroup className="rdt-container">
+                            <FormGroup>
                                 <Label className="text-xs font-weight-bold text-muted ms-1 text-uppercase ls-1">Tanggal Audit</Label>
-                                <Datetime
-                                    timeFormat={false}
-                                    dateFormat="DD MMMM YYYY" // Format tampilan lebih cantik (contoh: 07 April 2026)
-                                    value={form.audit_date}
-                                    onChange={handleDateChange}
-                                    closeOnSelect={true}
-                                    inputProps={{
-                                        className: 'form-control border-0 bg-transparent py-0 font-weight-900 ls-05 text-primary',
-                                        placeholder: 'Pilih Tanggal',
-                                        readOnly: true,
-                                        style: { cursor: 'pointer', fontSize: '0.9rem' }
-                                    }}
-                                    renderInput={(props, openCalendar) => (
-                                        <div 
-                                            className="input-group-alternative border rounded-lg shadow-none overflow-hidden d-flex align-items-center bg-white" 
-                                            onClick={openCalendar}
-                                            style={{ height: 'calc(1.5em + 1.25rem + 2px)', cursor: 'pointer' }}
-                                        >
-                                            <div className="ps-3 pe-2 text-muted h5 mb-0">
-                                                <i className="fas fa-calendar-star" style={{ color: '#5e72e4' }} />
-                                            </div>
-                                            <input {...props} />
-                                        </div>
-                                    )}
+                                <Input
+                                    type="date"
+                                    value={dayjs(form.audit_date).format('YYYY-MM-DD')}
+                                    onChange={(e) => setForm(prev => ({ ...prev, audit_date: e.target.value ? dayjs(e.target.value) : dayjs() }))}
+                                    className="rounded-lg border-light py-2 font-weight-bold"
                                 />
                             </FormGroup>
                         </Col>
@@ -195,36 +168,7 @@ const StockOpnameModal = ({ isOpen, toggle, onSubmit, inventories, loading }) =>
                 .ls-1 { letter-spacing: 1px !important; }
                 .ls-05 { letter-spacing: 0.5px !important; }
                 .shadow-sm-inset { box-shadow: inset 0 2px 4px rgba(0,0,0,0.03); }
-
-                /* Custom styling untuk input yang dipilih agar tampil mewah */
-                .rdt-container input { 
-                    border: none !important;
-                    background: transparent !important;
-                    padding-left: 5px !important;
-                    box-shadow: none !important;
-                }
-
-                .rdtPicker {
-                    border-radius: 15px;
-                    border: 1px solid #e9ecef;
-                    box-shadow: 0 15px 35px rgba(50,50,93,0.2), 0 5px 15px rgba(0,0,0,0.17);
-                    padding: 15px;
-                    margin-top: 5px;
-                    background: #fff;
-                    z-index: 2000 !important;
-                    width: 280px;
-                }
-                .rdtDay { font-size: 0.85rem; padding: 10px; font-weight: 600; color: #32325d; border-radius: 8px; transition: all 0.2s; cursor: pointer; }
-                .rdtDay:hover { background-color: #5e72e4 !important; color: #fff !important; }
-                .rdtToday:before { border-bottom: 7px solid #5e72e4; }
-                .rdtActive, .rdtActive:hover { background-color: #5e72e4 !important; color: #fff !important; }
-                .rdtMonth, .rdtYear { padding: 10px; border-radius: 8px; cursor: pointer; }
-                .rdtMonth:hover, .rdtYear:hover { background-color: #5e72e4 !important; color: #fff !important; }
-                .rdtSwitch, .rdtNext, .rdtPrev { color: #5e72e4; font-weight: 900 !important; cursor: pointer; }
-                
-                body.dark-mode .rdtPicker { background-color: #1e293b; color: #f8fafc; border-color: rgba(255,255,255,0.1); }
-                body.dark-mode .rdtDay, body.dark-mode .rdtMonth, body.dark-mode .rdtYear { color: #94a3b8; }
-                body.dark-mode .rdtDay:hover { background-color: #818cf8 !important; color: #1e2d3d !important; }
+                body.dark-mode input[type="date"] { color-scheme: dark; }
             `}</style>
         </Modal>
     );

@@ -234,6 +234,22 @@ body.dark-mode .nav-link-new.active {
 body.dark-mode {
     color: #cbd5e1;
     background-color: #0f172a;
+
+    /* Token permukaan & garis — dipakai komponen agar tidak perlu
+       menulis warna mentah dan otomatis ikut tema. */
+    --surface-1: #0f172a;
+    --surface-2: #1e293b;
+    --surface-3: #273449;
+    --line-soft: rgba(255, 255, 255, 0.10);
+    --line-strong: rgba(255, 255, 255, 0.18);
+    --text-1: #f8fafc;
+    --text-2: #cbd5e1;
+    --text-3: #94a3b8;
+
+    /* Bootstrap 5 membaca variabel ini untuk .border / --bs-border-color.
+       Tanpa override, garis tetap abu-abu terang di atas kartu gelap. */
+    --bs-border-color: var(--line-soft);
+    --bs-border-color-translucent: var(--line-soft);
 }
 
 body.dark-mode .main-content {
@@ -286,6 +302,424 @@ body.dark-mode .card-header {
 body.dark-mode .footer, 
 body.dark-mode footer {
     background-color: transparent;
+}
+
+/* ------------------------------------------------------------------
+   Header tabel (CustomTable) — dua tema.
+   Sebelumnya warna ditulis inline (#f8f9fe / #8898aa) sehingga di dark
+   mode tetap terang dan teksnya nyaris tak terbaca.
+   ------------------------------------------------------------------ */
+/* ==========================================================================
+   HARMONY LAUNDRY - MODERN CLEAN & SLEEK DESIGN SYSTEM (v2026 Redesign)
+   ========================================================================== */
+
+:root {
+  --hl-primary: #4f46e5;
+  --hl-primary-hover: #4338ca;
+  --hl-primary-light: #eef2ff;
+  --hl-success: #10b981;
+  --hl-success-light: #ecfdf5;
+  --hl-warning: #f59e0b;
+  --hl-warning-light: #fffbeb;
+  --hl-danger: #ef4444;
+  --hl-danger-light: #fef2f2;
+  --hl-info: #06b6d4;
+  --hl-info-light: #ecfeff;
+  --hl-surface: #ffffff;
+  --hl-surface-alt: #f8fafc;
+  --hl-border: #e2e8f0;
+  --hl-border-subtle: #f1f5f9;
+  --hl-text-main: #0f172a;
+  --hl-text-muted: #64748b;
+  --hl-text-subtle: #94a3b8;
+  --hl-radius-sm: 6px;
+  --hl-radius-md: 10px;
+  --hl-radius-lg: 14px;
+  --hl-radius-pill: 9999px;
+  --hl-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --hl-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+}
+
+body.dark-mode {
+  --hl-primary: #6366f1;
+  --hl-primary-hover: #4f46e5;
+  --hl-primary-light: rgba(99, 102, 241, 0.15);
+  --hl-success: #10b981;
+  --hl-success-light: rgba(16, 185, 129, 0.15);
+  --hl-warning: #f59e0b;
+  --hl-warning-light: rgba(245, 158, 11, 0.15);
+  --hl-danger: #f87171;
+  --hl-danger-light: rgba(248, 113, 113, 0.15);
+  --hl-info: #22d3ee;
+  --hl-info-light: rgba(34, 211, 238, 0.15);
+  --hl-surface: #1e293b;
+  --hl-surface-alt: #0f172a;
+  --hl-border: rgba(255, 255, 255, 0.08);
+  --hl-border-subtle: rgba(255, 255, 255, 0.04);
+  --hl-text-main: #f8fafc;
+  --hl-text-muted: #cbd5e1;
+  --hl-text-subtle: #94a3b8;
+}
+
+/* Modern Card Container */
+.hl-card {
+  background: var(--hl-surface);
+  border: 1px solid var(--hl-border);
+  border-radius: var(--hl-radius-lg);
+  box-shadow: var(--hl-shadow-sm);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+/* Modern Table Styles */
+.hl-modern-table {
+  width: 100%;
+  margin-bottom: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+}
+
+.hl-modern-table thead th {
+  background: var(--hl-surface-alt);
+  color: var(--hl-text-subtle);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 1rem;
+  border-top: none;
+  border-bottom: 1px solid var(--hl-border);
+  white-space: nowrap;
+}
+
+.hl-modern-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.hl-modern-table tbody tr:hover {
+  background-color: var(--hl-surface-alt);
+}
+
+.hl-modern-table tbody td {
+  padding: 1rem 1rem;
+  vertical-align: middle;
+  border-top: none;
+  border-bottom: 1px solid var(--hl-border);
+  color: var(--hl-text-main);
+  font-size: 0.875rem;
+}
+
+/* Action Group: Nota + Print Dropdown + Detail */
+.hl-action-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 160px;
+}
+
+.hl-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--hl-radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.hl-btn-nota {
+  background: var(--hl-primary);
+  color: #ffffff !important;
+  border-color: var(--hl-primary);
+}
+.hl-btn-nota:hover {
+  background: var(--hl-primary-hover);
+  border-color: var(--hl-primary-hover);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.hl-btn-detail {
+  background: transparent;
+  color: var(--hl-text-muted) !important;
+  border-color: var(--hl-border);
+}
+.hl-btn-detail:hover {
+  background: var(--hl-surface-alt);
+  color: var(--hl-text-main) !important;
+  border-color: var(--hl-text-subtle);
+}
+
+.hl-btn-print-dropdown {
+  background: transparent;
+  color: var(--hl-text-muted) !important;
+  border-color: var(--hl-border);
+  padding: 0.45rem 0.6rem;
+}
+.hl-btn-print-dropdown:hover {
+  background: var(--hl-surface-alt);
+  color: var(--hl-primary) !important;
+  border-color: var(--hl-primary);
+}
+
+/* Dropdown Menu Styling */
+.hl-print-menu {
+  background: var(--hl-surface) !important;
+  border: 1px solid var(--hl-border) !important;
+  border-radius: var(--hl-radius-md) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  padding: 6px !important;
+  min-width: 190px !important;
+  z-index: 1050 !important;
+}
+
+.hl-print-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  color: var(--hl-text-main) !important;
+  border-radius: var(--hl-radius-sm) !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.hl-print-item:hover {
+  background-color: var(--hl-primary-light) !important;
+  color: var(--hl-primary) !important;
+}
+
+.hl-print-item i {
+  font-size: 0.95rem;
+  width: 18px;
+  text-align: center;
+}
+
+/* Modern Filter Panel */
+.hl-filter-card {
+  background: var(--hl-surface);
+  border: 1px solid var(--hl-border);
+  border-radius: var(--hl-radius-lg);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--hl-shadow-sm);
+}
+
+.hl-filter-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--hl-text-subtle);
+  margin-bottom: 0.4rem;
+}
+
+.hl-input {
+  background: var(--hl-surface-alt);
+  border: 1px solid var(--hl-border);
+  color: var(--hl-text-main);
+  border-radius: var(--hl-radius-sm);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.825rem;
+  font-weight: 500;
+  width: 100%;
+  transition: all 0.15s ease;
+}
+
+.hl-input:focus {
+  border-color: var(--hl-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--hl-primary-light);
+  background: var(--hl-surface);
+}
+
+/* Status Badges */
+.hl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--hl-radius-pill);
+  letter-spacing: 0.02em;
+}
+
+.hl-badge-success {
+  background: var(--hl-success-light);
+  color: var(--hl-success);
+}
+
+.hl-badge-warning {
+  background: var(--hl-warning-light);
+  color: var(--hl-warning);
+}
+
+.hl-badge-danger {
+  background: var(--hl-danger-light);
+  color: var(--hl-danger);
+}
+
+.hl-badge-info {
+  background: var(--hl-info-light);
+  color: var(--hl-info);
+}
+
+.hl-badge-neutral {
+  background: var(--hl-surface-alt);
+  color: var(--hl-text-muted);
+  border: 1px solid var(--hl-border);
+}
+
+/* Custom Table Head (Preserve Backward Compatibility) */
+.custom-table-head {
+    padding: 0.875rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    color: var(--hl-text-subtle);
+    background-color: var(--hl-surface-alt);
+    border-bottom: 1px solid var(--hl-border);
+}
+
+
+/* Label filter (OrderFilter). Kelas ini dipakai di 5 tempat tetapi
+   belum punya aturan, sehingga warnanya jatuh ke default yang pudar. */
+.label-premium {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #525f7f;
+    margin-bottom: 0.4rem;
+}
+
+body.dark-mode .label-premium {
+    color: #94a3b8;
+}
+
+/* Argon membuat .table transparan, sehingga warna kanvas halaman
+   (#f8f9fe) menembus seluruh tabel dan baris terlihat keruh.
+   Beri permukaan eksplisit agar baris tampil bersih. */
+.custom-table {
+    background-color: #ffffff;
+}
+
+body.dark-mode .custom-table {
+    background-color: var(--surface-2);
+}
+
+body.dark-mode .custom-table-head {
+    color: #94a3b8;
+    background-color: #1e293b;
+    border-bottom-color: var(--line-soft);
+}
+
+/* ------------------------------------------------------------------
+   Tombol outline: garis harus terlihat di kedua tema.
+   Argon memakai #f7fafc (nyaris putih) sehingga tombol "hilang" di
+   atas kartu putih. Pakai varian abu yang punya kontras cukup.
+   ------------------------------------------------------------------ */
+body:not(.dark-mode) .order-action-group .btn-outline-secondary,
+body:not(.dark-mode) .order-action-group .btn-outline-default {
+    color: #525f7f !important;
+    border-color: #d2d8e3 !important;
+    background-color: #ffffff;
+}
+
+body:not(.dark-mode) .order-action-group .btn-outline-secondary:hover,
+body:not(.dark-mode) .order-action-group .btn-outline-default:hover {
+    color: #32325d !important;
+    background-color: #f2f5fa !important;
+    border-color: #b9c3d3 !important;
+}
+
+/* ------------------------------------------------------------------
+   Dark mode: tombol outline & garis
+   Bootstrap .btn-outline-* dan .border memakai warna terang bawaan,
+   sehingga terlihat menyala di atas kartu gelap. Samakan ke token.
+   ------------------------------------------------------------------ */
+body.dark-mode .btn-outline-secondary,
+body.dark-mode .btn-outline-default {
+    color: var(--text-2) !important;
+    border-color: var(--line-strong) !important;
+    background-color: transparent;
+}
+
+body.dark-mode .btn-outline-secondary:hover,
+body.dark-mode .btn-outline-default:hover,
+body.dark-mode .btn-outline-secondary:focus-visible,
+body.dark-mode .btn-outline-default:focus-visible {
+    color: var(--text-1) !important;
+    background-color: var(--surface-3) !important;
+    border-color: var(--line-strong) !important;
+}
+
+body.dark-mode .border {
+    border-color: var(--line-soft) !important;
+}
+
+/* Fokus keyboard tetap terlihat jelas di tema gelap (WCAG 2.4.11). */
+body.dark-mode .btn:focus-visible,
+body.dark-mode .form-control:focus-visible,
+body.dark-mode .form-select:focus-visible {
+    outline: 2px solid #8fa4ff;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+/* ------------------------------------------------------------------
+   Kolom aksi pesanan — rapat, bukan tumpukan tombol selebar kolom.
+   ------------------------------------------------------------------ */
+.order-action-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+/* Nota & Detail memakai lebar penuh agar mudah ditekan. */
+.order-action-group .btn-full {
+    grid-column: 1 / -1;
+}
+
+.order-action-group .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    border-radius: 8px;
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+/* Label panjang dipendekkan agar tetap muat di kolom sempit. */
+@media (max-width: 1400px) {
+    .order-action-group .btn-label-long {
+        display: none;
+    }
+}
+
+/* Target sentuh minimal 44px untuk tombol aksi utama di layar sentuh. */
+@media (pointer: coarse) {
+    .order-action-group .btn {
+        min-height: 44px;
+    }
 }
 
 /* =========================================================
@@ -459,6 +893,48 @@ body.dark-mode .form-text {
 .btn-secondary,.btn-secondary:hover,.btn-secondary:focus,.btn-secondary:active,
 .btn-light,.btn-light:hover,.btn-light:focus,.btn-light:active { color:#212529 !important; }
 
+/* Di tema gelap, .btn-secondary berlatar gelap (#1f2933) sehingga
+   teks #212529 menjadi tak terbaca (rasio 1.05:1). Ganti teksnya
+   agar tetap terbaca, dan jangan biarkan aturan !important di atas
+   menang atas tema. */
+body.dark-mode .btn-secondary,
+body.dark-mode .btn-secondary:hover,
+body.dark-mode .btn-secondary:focus,
+body.dark-mode .btn-secondary:active,
+body.dark-mode .btn-light,
+body.dark-mode .btn-light:hover,
+body.dark-mode .btn-light:focus,
+body.dark-mode .btn-light:active {
+    color: #e5e7eb !important;
+    background-color: var(--surface-2) !important;
+    border-color: var(--line-strong) !important;
+}
+
+/* .btn-neutral berlatar putih dan tidak punya varian dark mode,
+   sehingga teks .text-primary yang ikut tema jadi terang di atas
+   putih (2.35:1). Samakan permukaannya ke token gelap. */
+body.dark-mode .btn-neutral,
+body.dark-mode .btn-neutral:hover,
+body.dark-mode .btn-neutral:focus,
+body.dark-mode .btn-neutral:active {
+    background-color: var(--surface-2) !important;
+    border-color: var(--line-strong) !important;
+    color: var(--text-1) !important;
+}
+
+/* .badge-neutral juga berlatar putih transparan. Di tema gelap
+   permukaannya digelapkan agar aksen .text-primary tetap terbaca. */
+body.dark-mode .badge-neutral {
+    background-color: var(--surface-3) !important;
+    color: var(--text-1) !important;
+}
+
+/* .bg-neutral dipatok putih dengan !important dan tanpa varian tema,
+   sehingga aksen terang (.text-primary) di atasnya gagal kontras. */
+body.dark-mode .bg-neutral {
+    background-color: var(--surface-3) !important;
+}
+
 /* Outline buttons */
 .btn-outline-primary { color:#5e72e4 !important; }
 .btn-outline-primary:hover,.btn-outline-primary:active { color:#fff !important; }
@@ -493,6 +969,35 @@ td .btn-outline-danger:hover,th .btn-outline-danger:hover,
 td .btn-outline-warning:hover,th .btn-outline-warning:hover { color:#fff !important; }
 /* Fix badge text color in tables - exclude specific light badges */
 .table .badge:not(.bg-secondary):not(.badge-secondary):not(.bg-light):not(.badge-light), .table .badge:not(.bg-secondary):not(.badge-secondary):not(.bg-light):not(.badge-light) * { color: #ffffff !important; }
+
+/* ------------------------------------------------------------------
+   Dark mode: tombol netral di dalam tabel.
+   Aturan td/th di atas memakai !important dan datang lebih akhir,
+   sehingga menimpa varian tema. Blok ini sengaja diletakkan setelahnya
+   agar tema gelap yang menang.
+   ------------------------------------------------------------------ */
+body.dark-mode td .btn-secondary,
+body.dark-mode th .btn-secondary,
+body.dark-mode td .btn-light,
+body.dark-mode th .btn-light,
+body.dark-mode td .btn-neutral,
+body.dark-mode th .btn-neutral {
+    color: var(--text-1) !important;
+    background-color: var(--surface-2) !important;
+    border-color: var(--line-strong) !important;
+}
+
+body.dark-mode td .btn-outline-secondary,
+body.dark-mode th .btn-outline-secondary {
+    color: var(--text-2) !important;
+    border-color: var(--line-strong) !important;
+}
+
+body.dark-mode td .btn-outline-secondary:hover,
+body.dark-mode th .btn-outline-secondary:hover {
+    color: var(--text-1) !important;
+    background-color: var(--surface-3) !important;
+}
 
 /* =========================================================
    Notification & Toast Enhancements
@@ -535,4 +1040,18 @@ td .btn-outline-warning:hover,th .btn-outline-warning:hover { color:#fff !import
     padding: 8px 12px !important;
     word-break: break-word !important; /* Forces break of long words */
     overflow-wrap: anywhere !important;
+}
+
+/* Route-level Suspense fallback (React.lazy) */
+.route-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #8898aa;
+}
+body.dark-mode .route-loading {
+    color: #8696a0;
 }

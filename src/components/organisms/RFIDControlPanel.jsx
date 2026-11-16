@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Badge, Button, Input, FormGroup } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const RFIDControlPanel = ({ 
     activeMode, 
@@ -46,7 +46,7 @@ const RFIDControlPanel = ({
                             {scannedRFID}
                         </Badge>
                         <div className="text-muted text-xs mt-2 italic">
-                            <i className="far fa-clock me-1" /> Scan terakhir: {moment(lastScan?.receivedAt).format("HH:mm:ss")}
+                            <i className="far fa-clock me-1" /> Scan terakhir: {dayjs(lastScan?.receivedAt).format("HH:mm:ss")}
                         </div>
                         <Button color="link" size="sm" className="text-danger mt-1" onClick={clearUID}>
                             <i className="fas fa-undo me-1" /> Reset Scan

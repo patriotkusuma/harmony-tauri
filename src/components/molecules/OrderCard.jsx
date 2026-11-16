@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, CardHeader, CardBody, CardFooter, Row, Col, Badge, Button } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 import CustomerAvatar from "components/atoms/CustomerAvatar";
 import RupiahFormater from "utils/RupiahFormater";
 import StatusBadge from "components/atoms/StatusBadge";
@@ -9,7 +11,8 @@ const OrderCard = ({
   pesan, 
   onClick, 
   onPrintName, 
-  onPrintInvoice, 
+  onPrintStrukFinal,
+  onPrintStrukCustomer, 
   onSendInvoice, 
   onSendNotification,
   onUpdateStatus,
@@ -188,7 +191,7 @@ const OrderCard = ({
           </div>
           <div className="text-end">
              <div className="mb-1">
-               <small className={isBatalOrDiambil ? "text-white-50" : "text-muted"}>{moment(pesan.tanggal_pesan).format('DD/MM/YY')}</small>
+               <small className={isBatalOrDiambil ? "text-white-50" : "text-muted"}>{dayjs(pesan.tanggal_pesan).format('DD/MM/YY')}</small>
              </div>
              <div className="d-flex" style={{ gap: '4px' }}>
                 <Button 
@@ -217,18 +220,27 @@ const OrderCard = ({
                      size="sm" 
                      className="p-1 px-2 shadow-none border" 
                      onClick={(e) => { e.stopPropagation(); onPrintName(); }}
-                     title="Print Nama"
+                     title="Print Nama (label proses pencucian)"
                    >
-                     <i className="fas fa-tag text-primary" />
+                     <i className="fas fa-user-tag text-primary" />
                    </Button>
                    <Button 
                      color="secondary" 
                      size="sm" 
                      className="p-1 px-2 shadow-none border" 
-                     onClick={(e) => { e.stopPropagation(); onPrintInvoice(); }}
-                     title="Print Invoice"
+                     onClick={(e) => { e.stopPropagation(); onPrintStrukFinal(); }}
+                     title="Print Struk Packing"
                    >
-                     <i className="fas fa-print text-default" />
+                     <i className="fas fa-box-archive text-success" />
+                   </Button>
+                   <Button 
+                     color="secondary" 
+                     size="sm" 
+                     className="p-1 px-2 shadow-none border" 
+                     onClick={(e) => { e.stopPropagation(); onPrintStrukCustomer(); }}
+                     title="Print Struk Customer (dengan QR)"
+                   >
+                     <i className="fas fa-receipt text-info" />
                    </Button>
                  </>
                )}

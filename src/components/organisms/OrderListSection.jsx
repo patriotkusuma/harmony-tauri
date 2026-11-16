@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Badge, Row, Col, Button, FormGroup, Label, Input } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const OrderListSection = ({ 
     activeMode, 
@@ -106,7 +106,7 @@ const OrderListSection = ({
                                                     {isSelected && <Badge color="primary" pill className="text-xs">Aktif</Badge>}
                                                 </div>
                                                 <h5 className="mb-1 text-dark font-weight-bold">{order.customer?.nama}</h5>
-                                                <small className="text-muted"><i className="far fa-clock me-1" />{moment(order.created_at).format("DD MMM, HH:mm")}</small>
+                                                <small className="text-muted"><i className="far fa-clock me-1" />{dayjs(order.created_at).format("DD MMM, HH:mm")}</small>
                                             </div>
                                             <Button color={isSelected ? "primary" : "secondary"} size="sm" className="rounded-circle btn-icon-only shadow-sm">
                                                 <i className={isSelected ? "fas fa-check" : "fas fa-plus"} />

@@ -1,37 +1,27 @@
-import React from 'react'
-import { Table } from 'reactstrap'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
+/**
+ * Modern Clean Table Wrapper
+ * Menggunakan class hl-modern-table untuk styling rapi tanpa inline styles.
+ */
 export const CustomTable = ({ headData, children }) => {
     return (
-        <div className="table-responsive">
-            <Table className="align-middle mb-0">
+        <div className="table-responsive hl-card">
+            <table className="hl-modern-table align-middle">
                 <thead>
                     <tr>
                         {headData.map((th, index) => (
-                            <td
-                                key={index}
-                                style={{
-                                    padding: '0.875rem 1rem',
-                                    fontSize: '0.7rem',
-                                    fontWeight: 800,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.8px',
-                                    color: '#8898aa',
-                                    backgroundColor: '#f8f9fe',
-                                    borderBottom: '2px solid #e9ecef',
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
+                            <th key={index}>
                                 {th}
-                            </td>
+                            </th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
                     {children}
                 </tbody>
-            </Table>
+            </table>
         </div>
     );
 };

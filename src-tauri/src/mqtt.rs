@@ -190,6 +190,5 @@ fn handle_publish(app: &AppHandle, state: &MqttState, topic: &str, payload: &[u8
     "ts_ms": parsed.get("ts_ms").and_then(Value::as_u64)
   });
 
-  let _ = app.emit("rfid-uid", uid);
   let _ = app.emit("rfid-scan-data", scan_payload);
 }

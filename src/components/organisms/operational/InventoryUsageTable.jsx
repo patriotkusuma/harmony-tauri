@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Row, Col } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 
 const InventoryUsageTable = ({ data, lowStockAlerts, aiInsight, loading }) => {
     if (loading) return (
@@ -99,8 +99,8 @@ const InventoryUsageTable = ({ data, lowStockAlerts, aiInsight, loading }) => {
                             data.map((item, idx) => (
                                 <tr key={idx} className="op-row">
                                     <td className="px-4 py-3 border-bottom-custom">
-                                        <span className="font-weight-800 item-title d-block">{moment(item.date).format("DD MMM YYYY")}</span>
-                                        <small className="d-block text-muted ls-1 font-weight-600">{moment(item.date).format("HH:mm")}</small>
+                                        <span className="font-weight-800 item-title d-block">{dayjs(item.date).format("DD MMM YYYY")}</span>
+                                        <small className="d-block text-muted ls-1 font-weight-600">{dayjs(item.date).format("HH:mm")}</small>
                                     </td>
                                     <td className="px-4 border-bottom-custom font-weight-900 item-title">
                                         {item.item_name}

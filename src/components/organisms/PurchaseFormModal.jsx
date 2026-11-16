@@ -4,7 +4,7 @@ import {
     Button, Row, Col, FormGroup, Label, Input,
     Alert
 } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const PurchaseFormModal = ({ 
     isOpen, 
@@ -17,7 +17,7 @@ const PurchaseFormModal = ({
 }) => {
     const [form, setForm] = useState({
         id_supplier: '',
-        purchase_date: moment().format('YYYY-MM-DD'),
+        purchase_date: dayjs().format('YYYY-MM-DD'),
         item_name: '',
         quantity: 1,
         id_unit: '',
@@ -33,7 +33,7 @@ const PurchaseFormModal = ({
         if (editMode && initialData) {
             setForm({
                 id_supplier: initialData.id_supplier || '',
-                purchase_date: initialData.purchase_date || moment().format('YYYY-MM-DD'),
+                purchase_date: initialData.purchase_date || dayjs().format('YYYY-MM-DD'),
                 item_name: initialData.item_name || '',
                 quantity: initialData.quantity || 1,
                 id_unit: initialData.id_unit || '',
@@ -47,7 +47,7 @@ const PurchaseFormModal = ({
         } else {
             setForm({
                 id_supplier: '',
-                purchase_date: moment().format('YYYY-MM-DD'),
+                purchase_date: dayjs().format('YYYY-MM-DD'),
                 item_name: '',
                 quantity: 1,
                 id_unit: '',

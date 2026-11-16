@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, Suspense, lazy } from "react";
 import { useLocation, Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import HarmonyLogo from "assets/img/brand/harmony-blue.png";
 // reactstrap components
@@ -10,16 +10,17 @@ import Sidebar from "components/Sidebar/SidebarNew";
 
 import routes from "routes";
 import axios from "../services/axios-instance";
-import DetailPesanan from "views/pages/DetailPesanan";
 import Cookies from "js-cookie";
 import { Bounce, toast } from "react-toastify";
-import Deposit from "views/pages/Deposit";
 import { useRawWebSocket } from "services/RawWebSocketContext";
 import { useMQTTRFID } from "hooks/useMQTTRFID";
 
-import Message from "views/pages/Message";
-import NotificationSetting from "views/pages/NotificationSetting";
-import RFIDManage from "views/pages/RFIDManage";
+// Route yang hanya dideklarasi di dalam layout ini, juga di-lazy-load.
+const DetailPesanan = lazy(() => import("views/pages/DetailPesanan"));
+const Deposit = lazy(() => import("views/pages/Deposit"));
+const Message = lazy(() => import("views/pages/Message"));
+const NotificationSetting = lazy(() => import("views/pages/NotificationSetting"));
+const RFIDManage = lazy(() => import("views/pages/RFIDManage"));
 
 import "assets/css/sidebar-collapse.css";
 
@@ -230,8 +231,9 @@ const Admin = (props) => {
           return null;
         }
         if (!prop.component) return null; // skip routes handled inline (e.g. NotificationSetting)
+        const Component = prop.component;
         return (
-          <Route path={prop.path} element={prop.component} key={key} exact />
+          <Route path={prop.path} element={<Component />} key={key} exact />
         );
       } else {
         return null;
@@ -282,18 +284,18 @@ const Admin = (props) => {
           onToggleMobile={() => setMobileOpen(prev => !prev)}
           mobileOpen={mobileOpen}
         />
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="/riwayat/:kodePesan" element={<DetailPesanan />} />
-          <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path="/pesanan/:kodePesan" element={<Navigate to="/pesanan/:pesanan" replace/>}/>
-          <Route path="/deposit" element={<Deposit/>} exact/>
-          <Route path="/messages" element={<Message/>} exact/>
-          <Route path="/notification-setting" element={<NotificationSetting selectedOutlet={selectedOutlet}/>} exact/>
-          <Route path="/rfid" element={<RFIDManage/>} exact/>
-
-
-        </Routes>
+        <Suspense fallback={<div className="route-loading">Memuat…</div>}>
+          <Routes>
+            {getRoutes(routes)}
+            <Route path="/riwayat/:kodePesan" element={<DetailPesanan />} />
+            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="/pesanan/:kodePesan" element={<Navigate to="/pesanan/:pesanan" replace/>}/>
+            <Route path="/deposit" element={<Deposit/>} exact/>
+            <Route path="/messages" element={<Message/>} exact/>
+            <Route path="/notification-setting" element={<NotificationSetting selectedOutlet={selectedOutlet}/>} exact/>
+            <Route path="/rfid" element={<RFIDManage/>} exact/>
+          </Routes>
+        </Suspense>
         <Container fluid>
           {/* <AdminFooter /> */}
         </Container>

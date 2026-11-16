@@ -1,6 +1,6 @@
 import React from "react";
 import { Table, Spinner } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 
 const RfidAuditTable = ({ data, loading }) => {
     if (loading) {
@@ -59,7 +59,7 @@ const RfidAuditTable = ({ data, loading }) => {
                                 </td>
                                 <td className="px-4 border-bottom-custom text-muted font-weight-bold">
                                     <i className="far fa-clock me-2 opacity-5" />
-                                    {item.last_scanned ? moment(item.last_scanned).format("DD MMM YYYY, HH:mm") : 'Belum Pernah Digunakan'}
+                                    {item.last_scanned ? dayjs(item.last_scanned).format("DD MMM YYYY, HH:mm") : 'Belum Pernah Digunakan'}
                                 </td>
                             </tr>
                         ))

@@ -5,7 +5,7 @@ import {
     Form, FormGroup, Label, Input,
     Table, Badge, Spinner
 } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 
 const fmt = (n) => `Rp ${Number(n || 0).toLocaleString("id-ID")}`;
 
@@ -15,7 +15,7 @@ const TransferTab = ({ data, loading, onCreateTransfer, onDeleteTransfer, accoun
         id_source_account: "",
         id_target_account: "",
         amount: "",
-        date: moment().format("YYYY-MM-DD"),
+        date: dayjs().format("YYYY-MM-DD"),
         description: ""
     });
 
@@ -29,7 +29,7 @@ const TransferTab = ({ data, loading, onCreateTransfer, onDeleteTransfer, accoun
             id_source_account: "",
             id_target_account: "",
             amount: "",
-            date: moment().format("YYYY-MM-DD"),
+            date: dayjs().format("YYYY-MM-DD"),
             description: ""
         });
     };
@@ -148,7 +148,7 @@ const TransferTab = ({ data, loading, onCreateTransfer, onDeleteTransfer, accoun
                                         <tr key={item.id || i}>
                                             <td className="px-4 py-3">
                                                 <span className="font-weight-bold text-dark small">
-                                                    {moment(item.transaction_date).format("DD MMM YYYY")}
+                                                    {dayjs(item.transaction_date).format("DD MMM YYYY")}
                                                 </span>
                                             </td>
                                             <td className="py-3">

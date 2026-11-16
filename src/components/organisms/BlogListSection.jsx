@@ -1,7 +1,7 @@
 import asset_0_xwssmc from "assets/img/brand/harmony-blue.png";
 import React from 'react';
 import { Row, Col, Card, CardBody, CardFooter, Badge, Button } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import Pagination from '../Pagination/Pagination';
 
 const BlogListSection = ({ blogs, totalBlogs, rowPerPage, currentPage, setCurrentPage, onEdit, onDelete, isLoading }) => {
@@ -53,7 +53,7 @@ const BlogListSection = ({ blogs, totalBlogs, rowPerPage, currentPage, setCurren
                         <CardBody className="d-flex flex-column flex-grow-1 p-4">
                           <small className="text-primary text-xs font-weight-bold mb-2">
                             <i className="far fa-calendar me-2"></i>
-                            {moment(blog.created_at).format("DD MMMM YYYY")}
+                            {dayjs(blog.created_at).format("DD MMMM YYYY")}
                           </small>
                           <h4 className="mb-3 text-dark font-weight-bold" style={{ fontSize: '1.2rem', lineHeight: '1.3', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', color: '#000' }}>
                             {blog.title}

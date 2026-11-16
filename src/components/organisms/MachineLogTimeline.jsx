@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardBody, Row, Col, Badge } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const PROCESS_META = {
     cuci: { color: "info", icon: "fas fa-water", label: "Cuci", gradient: "linear-gradient(135deg, #2196F3 0%, #00BCD4 100%)" },
@@ -11,10 +11,11 @@ const PROCESS_META = {
 
 const formatDuration = (start, end) => {
     if (!start || !end) return null;
-    const duration = moment.duration(moment(end).diff(moment(start)));
-    const hours = duration.hours();
-    const minutes = duration.minutes();
-    const seconds = duration.seconds();
+    const durationMs = dayjs(end).diff(dayjs(start));
+    const totalSeconds = Math.max(0, Math.floor(durationMs / 1000));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
     
     let result = "";
     if (hours > 0) result += `${hours}j `;
@@ -106,9 +107,9 @@ const MachineLogTimeline = ({ logs, loading }) => {
                                     </div>
                                     <div className="log-timing text-end">
                                         <div className="text-dark font-weight-bold h5 mb-0">
-                                            {moment(log.started_at).format("HH:mm")}
+                                            {dayjs(log.started_at).format("HH:mm")}
                                             {log.finished_at && (
-                                                <span className="text-muted font-weight-normal mx-2">→ {moment(log.finished_at).format("HH:mm")}</span>
+                                                <span className="text-muted font-weight-normal mx-2">→ {dayjs(log.finished_at).format("HH:mm")}</span>
                                             )}
                                         </div>
                                         {durationText && (

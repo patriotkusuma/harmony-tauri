@@ -1,5 +1,6 @@
-import React from 'react';
-import { Container, Row, Col, Button, Modal } from 'reactstrap';
+import React, { useEffect } from 'react';
+import { Modal } from 'reactstrap';
+import RupiahFormater from 'utils/RupiahFormater';
 
 // Layout & Hooks
 import Order from 'layouts/Order';
@@ -9,6 +10,16 @@ import { usePembayaran } from 'hooks/usePembayaran';
 import PaymentCustomerList from 'components/organisms/PaymentCustomerList';
 import PaymentDetailPanel from 'components/organisms/PaymentDetailPanel';
 import PaymentModalContent from 'components/Modals/PaymentModalContent';
+
+const todayLabel = () => {
+    const now = new Date();
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+    ];
+    return `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+};
 
 const Pembayaran = () => {
     const {
@@ -37,46 +48,85 @@ const Pembayaran = () => {
         refresh
     } = usePembayaran();
 
+    // Keyboard shortcuts: F8 to open payment modal, Esc to close/deselect
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'F8') {
+                e.preventDefault();
+                if (filtered && !isOpen) {
+                    handleOpenModal();
+                }
+            } else if (e.key === 'Escape') {
+                if (isOpen) {
+                    handleCloseModal();
+                } else if (filtered) {
+                    selectCustomer(filtered);
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [filtered, isOpen, handleOpenModal, handleCloseModal, selectCustomer]);
+
     return (
         <Order>
-            <div className="header bg-gradient-info pb-6 pt-4 pt-md-0 px-4 shadow-lg">
-                <Container fluid>
-                    <div className="header-body">
-                        <Row className="align-items-center py-4">
-                            <Col md="6">
-                                <h1 className="display-2 text-white font-weight-bold mb-0">Pembayaran Kasir</h1>
-                                <p className="text-white opacity-8 h4 mt-2 mb-0">
-                                    Proses tagihan aktif, penerimaan dana, dan konfirmasi pengambilan barang.
-                                </p>
-                            </Col>
-                            <Col md="6" className="text-end">
-                                <div className="btn-group shadow-premium rounded-pill overflow-hidden bg-white-20 p-1">
-                                    <Button
-                                        color={viewMode === "legacy" ? "white" : "link"}
-                                        size="sm"
-                                        onClick={() => setViewMode("legacy")}
-                                        className={`px-4 rounded-pill font-weight-bold ${viewMode === 'legacy' ? 'text-primary' : 'text-white'}`}
-                                    >
-                                        <i className="fas fa-list me-2" /> List View
-                                    </Button>
-                                    <Button
-                                        color={viewMode === "modern" ? "white" : "link"}
-                                        size="sm"
-                                        onClick={() => setViewMode("modern")}
-                                        className={`px-4 rounded-pill font-weight-bold ${viewMode === 'modern' ? 'text-primary' : 'text-white'}`}
-                                    >
-                                        <i className="fas fa-th-large me-2" /> Grid View
-                                    </Button>
-                                </div>
-                            </Col>
-                        </Row>
+            <div className="kasir-page">
+                {/* Modern Kasir Header */}
+                <header className="kasir-head mb-3">
+                    <div className="kasir-head__brand">
+                        <div className="kasir-head__icon" style={{ background: 'linear-gradient(135deg, #11cdef, #1171ef)' }}>
+                            <i className="fas fa-money-check-alt text-white" />
+                        </div>
+                        <div className="kasir-head__copy">
+                            <h1>Kasir Pembayaran</h1>
+                            <p>
+                                {todayLabel()} · Pelunasan Tagihan & Kas
+                            </p>
+                        </div>
                     </div>
-                </Container>
-            </div>
 
-            <Container className="mt--7 pb-5" fluid>
-                <Row className="gx-4">
-                    <Col lg="8" className="mb-4">
+                    <div className="kasir-head__right">
+                        {/* Quick Metrics */}
+                        <div className="d-none d-md-flex align-items-center me-3 px-3 py-1 bg-white rounded-pill border shadow-sm">
+                            <span className="text-muted small font-weight-bold me-2">Total Piutang:</span>
+                            <span className="font-weight-900 text-danger h6 mb-0">
+                                <RupiahFormater value={totalBlmBayar} />
+                            </span>
+                        </div>
+
+                        {/* Refresh Button */}
+                        <button
+                            type="button"
+                            className="kasir-head__action"
+                            onClick={() => refresh()}
+                            title="Segarkan data tagihan"
+                            disabled={loading}
+                        >
+                            <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''}`} />
+                            <span className="kasir-head__action-label">Segarkan</span>
+                        </button>
+
+                        {/* Bayar Action if Customer Selected */}
+                        {filtered && (
+                            <button
+                                type="button"
+                                className="kasir-head__action bg-primary text-white border-0 shadow-sm"
+                                onClick={handleOpenModal}
+                                title="Bayar Sekarang (F8)"
+                            >
+                                <i className="fas fa-cash-register me-1" />
+                                <span className="kasir-head__action-label font-weight-bold">Bayar (F8)</span>
+                                <kbd className="kasir-head__key text-primary bg-white">F8</kbd>
+                            </button>
+                        )}
+                    </div>
+                </header>
+
+                {/* Workspace Layout */}
+                <div className="kasir-payment-workspace">
+                    {/* Kolom Kiri: Daftar Pelanggan Tertagih */}
+                    <div className="kasir-payment-workspace__list">
                         <PaymentCustomerList 
                             customers={dataCustomer}
                             totalUnpaid={totalBlmBayar}
@@ -84,12 +134,14 @@ const Pembayaran = () => {
                             onSelect={selectCustomer}
                             selectedId={filtered?.id}
                             loading={loading}
-                            viewMode={viewMode === 'modern' ? 'modern' : 'legacy'}
+                            viewMode={viewMode}
+                            onToggleViewMode={setViewMode}
                             calculateCustomerBill={calculateCustomerBill}
                         />
-                    </Col>
+                    </div>
 
-                    <Col lg="4" className="mb-4">
+                    {/* Kolom Kanan: Rincian Tagihan & Aksi Bayar */}
+                    <aside className="kasir-payment-workspace__detail">
                         <PaymentDetailPanel 
                             customer={filtered}
                             onOpenPayment={handleOpenModal}
@@ -97,12 +149,19 @@ const Pembayaran = () => {
                             onStatusUpdate={updateStatus}
                             calculateCustomerBill={calculateCustomerBill}
                         />
-                    </Col>
-                </Row>
-            </Container>
+                    </aside>
+                </div>
+            </div>
 
             {/* Payment Modal */}
-            <Modal centered isOpen={isOpen} toggle={handleCloseModal} autoFocus={false} size="md" contentClassName="border-0 shadow-lg rounded-xl">
+            <Modal 
+                centered 
+                isOpen={isOpen} 
+                toggle={handleCloseModal} 
+                autoFocus={false} 
+                size="md" 
+                contentClassName="border-0 shadow-lg rounded-xl overflow-hidden"
+            >
                 <PaymentModalContent
                     isOpen={isOpen}
                     toggleModal={handleCloseModal}
@@ -119,38 +178,138 @@ const Pembayaran = () => {
             </Modal>
 
             <style>{`
-                .display-2 { font-size: 2.8rem; }
-                .bg-white-20 { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); }
-                .shadow-premium { box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07) !important; }
-                .rounded-xl { border-radius: 1.5rem !important; }
-                .modern-selection-overlay {
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    right: 0;
-                    z-index: 1040;
-                    padding-bottom: 2rem;
-                    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-                    height: 85vh;
+                .kasir-page {
+                    max-width: 1640px;
+                    margin: 0 auto;
+                }
+                .kasir-head {
                     display: flex;
-                    align-items: flex-end;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 16px;
+                    padding: 8px 12px;
+                    background: #ffffff;
+                    border: 1px solid #e9ecef;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
                 }
-                .btn-btn-close-modern {
-                    position: absolute;
-                    top: -20px;
-                    right: 10px;
-                    width: 45px;
-                    height: 45px;
-                    z-index: 1050;
+                .kasir-head__brand {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
                 }
-                .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
-                @keyframes slideUp {
-                    from { transform: translateY(100%); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
+                .kasir-head__icon {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.2rem;
                 }
-                @media (max-width: 768px) {
-                    .display-2 { font-size: 2rem; }
+                .kasir-head__copy h1 {
+                    font-size: 1.15rem;
+                    font-weight: 800;
+                    margin: 0;
+                    color: #212529;
                 }
+                .kasir-head__copy p {
+                    margin: 0;
+                    font-size: 0.75rem;
+                    color: #8898aa;
+                    font-weight: 600;
+                }
+                .kasir-head__right {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .kasir-head__action {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 7px 14px;
+                    background: #f8f9fe;
+                    border: 1px solid #e9ecef;
+                    border-radius: 20px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    color: #525f7f;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+                }
+                .kasir-head__action:hover {
+                    background: #e9ecef;
+                    transform: translateY(-1px);
+                }
+                .kasir-head__key {
+                    display: inline-block;
+                    padding: 1px 6px;
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    border-radius: 4px;
+                    background: #e9ecef;
+                    color: #32325d;
+                }
+
+                .kasir-payment-workspace {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr) 440px;
+                    gap: 16px;
+                    height: calc(100vh - 212px);
+                    min-height: 520px;
+                }
+                .kasir-payment-workspace > * { min-height: 0; }
+                .kasir-payment-workspace__list { min-width: 0; height: 100%; }
+                .kasir-payment-workspace__detail {
+                    display: flex;
+                    flex-direction: column;
+                    min-width: 0;
+                    height: 100%;
+                }
+
+                /* ── Dark Mode ── */
+                body.dark-mode .kasir-head {
+                    background: #1e293b !important;
+                    border-color: rgba(255, 255, 255, 0.08) !important;
+                }
+                body.dark-mode .kasir-head__copy h1 {
+                    color: #f8fafc !important;
+                }
+                body.dark-mode .kasir-head__copy p {
+                    color: #94a3b8 !important;
+                }
+                body.dark-mode .kasir-head__action {
+                    background: #0f172a !important;
+                    border-color: rgba(255, 255, 255, 0.12) !important;
+                    color: #cbd5e1 !important;
+                }
+                body.dark-mode .kasir-head__action:hover {
+                    background: #1e293b !important;
+                    color: #ffffff !important;
+                }
+                body.dark-mode .kasir-head__key {
+                    background: #1e293b !important;
+                    color: #818cf8 !important;
+                }
+                body.dark-mode .modal-content {
+                    background: #1e293b !important;
+                    border-color: rgba(255, 255, 255, 0.08) !important;
+                }
+
+                @media (max-width: 1199.98px) {
+                    .kasir-payment-workspace { grid-template-columns: minmax(0, 1fr) 390px; }
+                }
+                @media (max-width: 991.98px) {
+                    .kasir-payment-workspace {
+                        grid-template-columns: 1fr;
+                        height: auto;
+                        min-height: 0;
+                    }
+                    .kasir-payment-workspace__list { height: auto; }
+                    .kasir-payment-workspace__detail { height: auto; }
+                }
+                .rounded-xl { border-radius: 16px !important; }
             `}</style>
         </Order>
     );

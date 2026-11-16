@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Spinner, Badge, Input } from "reactstrap";
 import { toast } from "react-toastify";
-import moment from "moment";
+import dayjs from 'dayjs';
 import affiliateService from "../../../services/api/affiliate";
 
 const formatRupiah = (number) => {
@@ -131,8 +131,8 @@ const AffiliateCommissionsTab = () => {
               commissions.map((item, idx) => (
                 <tr key={idx} className="op-row">
                   <td className="px-4 py-3 border-bottom-custom text-dark font-weight-700 title-adaptive">
-                    {moment(item.CreatedAt).format("DD MMM YYYY")}
-                    <span className="d-block text-muted small">{moment(item.CreatedAt).format("HH:mm")}</span>
+                    {dayjs(item.CreatedAt).format("DD MMM YYYY")}
+                    <span className="d-block text-muted small">{dayjs(item.CreatedAt).format("HH:mm")}</span>
                   </td>
                   <td className="px-4 border-bottom-custom text-primary font-weight-bold tracking-widest">
                     #{item.IdPesanan}

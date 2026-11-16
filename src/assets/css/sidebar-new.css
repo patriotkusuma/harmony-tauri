@@ -9,8 +9,10 @@
   --sb-border: #e9ecef;
   --sb-text: #525f7f;
   --sb-text-hover: #212529;
-  --sb-icon: #8898aa;
-  --sb-heading: #8898aa;
+  /* Label & ikon nav: #8898aa hanya 2.95:1 di atas putih (gagal AA).
+     #64748b memberi ~4.7:1 tanpa terlihat "berat". */
+  --sb-icon: #64748b;
+  --sb-heading: #64748b;
   --sb-active-bg: #eef0fd;
   --sb-active-text: #5e72e4;
   --sb-active-icon: #5e72e4;
@@ -27,8 +29,12 @@ body.dark-mode {
   --sb-border: rgba(255,255,255,0.08);
   --sb-text: #94a3b8;
   --sb-text-hover: #e2e8f0;
-  --sb-icon: #64748b;
-  --sb-heading: #475569;
+  /* Ikon & label nav bawah: #94a3b8 memberi ~5.56:1 di atas
+     --sb-bg (#1e2a45); #64748b hanya 3.0:1 dan gagal WCAG AA. */
+  --sb-icon: #94a3b8;
+  /* Label grup: harus >= 4.5:1 di atas --sb-bg (#1e2a45).
+     #94a3b8 memberi ~5.56:1. */
+  --sb-heading: #94a3b8;
   --sb-active-bg: rgba(94,114,228,0.18);
   --sb-active-text: #818cf8;
   --sb-active-icon: #818cf8;

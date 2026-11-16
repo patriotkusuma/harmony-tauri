@@ -6,7 +6,9 @@ import React, { useRef } from 'react';
 import { useCustomerStore } from 'store/customerStore';
 
 const CustomerSearchBar = ({ onAdd }) => {
-  const { search, setSearch, loading } = useCustomerStore();
+  const search = useCustomerStore(s => s.search);
+  const setSearch = useCustomerStore(s => s.setSearch);
+  const loading = useCustomerStore(s => s.loading);
   const debounceRef = useRef(null);
 
   const handleChange = (e) => {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Table, Spinner, Badge, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from "reactstrap";
-import moment from "moment";
+import dayjs from 'dayjs';
 
 const formatCurrency = (val) => {
     if (val === undefined || val === null) return "Rp 0";
@@ -11,7 +11,7 @@ const WithdrawalTab = ({ data, loading, accounts, onCreateWithdrawal, onDeleteWi
     const [showModal, setShowModal] = useState(false);
     const [form, setForm] = useState({
         amount: "",
-        date: moment().format("YYYY-MM-DD"),
+        date: dayjs().format("YYYY-MM-DD"),
         description: "",
         id_account: "", 
     });
@@ -20,7 +20,7 @@ const WithdrawalTab = ({ data, loading, accounts, onCreateWithdrawal, onDeleteWi
     const toggleModal = () => {
         setShowModal(!showModal);
         if (!showModal) {
-            setForm({ amount: "", date: moment().format("YYYY-MM-DD"), description: "", id_account: "" });
+            setForm({ amount: "", date: dayjs().format("YYYY-MM-DD"), description: "", id_account: "" });
         }
     };
 
@@ -99,10 +99,10 @@ const WithdrawalTab = ({ data, loading, accounts, onCreateWithdrawal, onDeleteWi
                                 <td className="ps-4">
                                     <div className="d-flex align-items-center">
                                         <div className="date-badge me-3">
-                                            <span className="date-day">{moment(item.transaction_date).format("DD")}</span>
-                                            <span className="date-month">{moment(item.transaction_date).format("MMM")}</span>
+                                            <span className="date-day">{dayjs(item.transaction_date).format("DD")}</span>
+                                            <span className="date-month">{dayjs(item.transaction_date).format("MMM")}</span>
                                         </div>
-                                        <small className="text-muted">{moment(item.transaction_date).format("YYYY")}</small>
+                                        <small className="text-muted">{dayjs(item.transaction_date).format("YYYY")}</small>
                                     </div>
                                 </td>
                                 <td>

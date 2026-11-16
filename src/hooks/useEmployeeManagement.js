@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "../services/axios-instance";
 import { toast } from "react-toastify";
-import moment from "moment";
+import dayjs from 'dayjs';
 import Swal from "sweetalert2";
 import { useMQTTRFID } from "./useMQTTRFID";
 
@@ -30,7 +30,7 @@ export const useEmployeeManagement = () => {
     no_wa: "",
     gaji: 0,
     status: "active",
-    tanggal_masuk: moment().format("YYYY-MM-DD"),
+    tanggal_masuk: dayjs().format("YYYY-MM-DD"),
     outlet_ids: [],
   });
 
@@ -104,7 +104,7 @@ export const useEmployeeManagement = () => {
       no_wa: "",
       gaji: 0,
       status: "active",
-      tanggal_masuk: moment().format("YYYY-MM-DD"),
+      tanggal_masuk: dayjs().format("YYYY-MM-DD"),
       outlet_ids: [],
     });
   };
@@ -122,7 +122,7 @@ export const useEmployeeManagement = () => {
       no_wa: emp.no_wa || "",
       gaji: emp.gaji || 0,
       status: emp.status || "active",
-      tanggal_masuk: emp.tanggal_masuk ? moment(emp.tanggal_masuk).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD"),
+      tanggal_masuk: emp.tanggal_masuk ? dayjs(emp.tanggal_masuk).format("YYYY-MM-DD") : dayjs().format("YYYY-MM-DD"),
       outlet_ids: emp.outlets ? emp.outlets.map(o => o.id) : [],
     });
     setModal(true);

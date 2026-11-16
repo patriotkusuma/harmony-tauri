@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "../services/axios-instance";
-import moment from "moment";
+import dayjs from 'dayjs';
 import { toast } from "react-toastify";
 
 export const useOperationalReport = () => {
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({
-        startDate: moment().startOf('month').format("YYYY-MM-DD"),
-        endDate: moment().format("YYYY-MM-DD"),
+        startDate: dayjs().startOf('month').format("YYYY-MM-DD"),
+        endDate: dayjs().format("YYYY-MM-DD"),
         page: 1,
         limit: 50,
         outletId: ""

@@ -26,7 +26,12 @@ const EMPTY = {
 };
 
 const CustomerForm = () => {
-  const { selected, modalMode, createCustomer, updateCustomer, formLoading, formError } = useCustomerStore();
+  const selected = useCustomerStore(s => s.selected);
+  const modalMode = useCustomerStore(s => s.modalMode);
+  const createCustomer = useCustomerStore(s => s.createCustomer);
+  const updateCustomer = useCustomerStore(s => s.updateCustomer);
+  const formLoading = useCustomerStore(s => s.formLoading);
+  const formError = useCustomerStore(s => s.formError);
   const isEdit = modalMode === 'edit';
 
   const [form, setForm] = useState(EMPTY);

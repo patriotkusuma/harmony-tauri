@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container, Row, Col, Modal } from 'reactstrap';
 
 // Layout & Custom Hook
 import Order from 'layouts/Order';
@@ -8,6 +7,7 @@ import { useOrderManagement } from 'hooks/useOrderManagement';
 // Organisms
 import OrderHeader from 'components/organisms/OrderHeader';
 import OrderPackageGrid from 'components/organisms/OrderPackageGrid';
+import OrderCustomerBar from 'components/organisms/OrderCustomerBar';
 import OrderCartSection from 'components/organisms/OrderCartSection';
 import OrderCheckoutSection from 'components/organisms/OrderCheckoutSection';
 
@@ -24,10 +24,11 @@ const Pesan = () => {
         subTotal,
         category,
         nama,
-        setNama,
         telpon,
-        setTelpon,
+        idPelanggan,
         pelanggan,
+        customerInsights,
+        isSearchingCustomers,
         isLunas,
         setIsLunas,
         isCustomerModalOpen,
@@ -41,17 +42,20 @@ const Pesan = () => {
         setAntar,
         gabungBill,
         setGabungBill,
-        kode_pesan,
+        keterangan,
+        setKeterangan,
         isOrderButtonDisabled,
-        
+        kode_pesan,
+
         // Actions
         addCart,
         updateCart,
         removeOneCart,
         clearCart,
         searchCategory,
+        searchCustomers,
         selectCustomer,
-        resetCustomer,
+        selectNewCustomer,
         handlePrintNama,
         fetchAndPrintLastOrder,
         submitOrder,
@@ -64,80 +68,76 @@ const Pesan = () => {
 
     return (
         <Order>
-            {/* Simple Background Header */}
-            <div className="header bg-gradient-default pb-4 pt-5 pt-md-6 px-0 position-relative overflow-hidden">
-                <div className="pos-accent accent-1"></div>
-                <div className="pos-accent accent-2"></div>
-            </div>
+            <div className="kasir-page">
+                <OrderHeader
+                    kodePesan={kode_pesan}
+                    onPrintNama={handlePrintNama}
+                    onPrintLastOrder={fetchAndPrintLastOrder}
+                    onRFIDAttach={toggleRFIDAttach}
+                />
 
-            <Container className="mt--7 pb-5 position-relative" style={{ zIndex: 5 }} fluid>
-                <Row className="gx-4">
-                    {/* Left Column: Glass Panel with Title + Packages */}
-                    <Col lg="8">
-                        <div className="glass-panel-dark h-100 rounded-xl overflow-hidden shadow-premium border-0">
-                            <div className="p-4">
-                                <OrderHeader 
-                                    onSearch={searchCategory}
-                                    onPrintNama={handlePrintNama}
-                                    onPrintLastOrder={fetchAndPrintLastOrder}
-                                    onRFIDAttach={toggleRFIDAttach}
-                                />
-                                <div className="mt-2">
-                                    <OrderPackageGrid 
-                                        categories={category}
-                                        cartItems={cartItems}
-                                        onAddCart={addCart}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </Col>
-
-                    {/* Right Column: Cart + Checkout */}
-                    <Col lg="4" className="mt-4 mt-lg-0">
-                        <OrderCartSection 
-                            cartItems={cartItems}
-                            subTotal={subTotal}
-                            onUpdateCart={updateCart}
-                            onRemoveCart={removeOneCart}
-                            onClearCart={clearCart}
+                <div className="kasir-workspace">
+                    {/* Kiri: katalog paket */}
+                    <div className="kasir-workspace__catalog">
+                        <OrderPackageGrid
                             categories={category}
+                            cartItems={cartItems}
+                            onAddCart={addCart}
+                            onSearch={searchCategory}
                         />
-                        
-                        <OrderCheckoutSection 
-                            kodePesan={kode_pesan}
-                            nama={nama}
-                            telpon={telpon}
-                            estimasi={estimasi}
-                            subTotal={subTotal}
-                            isLunas={isLunas}
-                            setIsLunas={setIsLunas}
-                            antar={antar}
-                            setAntar={setAntar}
-                            gabungBill={gabungBill}
-                            setGabungBill={setGabungBill}
-                            keterangan={keterangan}
-                            setKeterangan={setKeterangan}
-                            onEditCustomer={toggleCustomerModal}
-                            onSubmitOrder={handleOrderSubmission}
-                            isOrderDisabled={isOrderButtonDisabled}
-                            onSendConfirmation={sendConfirmationWA}
-                        />
-                    </Col>
-                </Row>
-            </Container>
+                    </div>
+
+                    {/* Kanan: tiket pesanan */}
+                    <aside className="kasir-workspace__order">
+                        <div className="kasir-ticket">
+                            <OrderCustomerBar
+                                nama={nama}
+                                telpon={telpon}
+                                customerInsights={customerInsights}
+                                isExistingCustomer={Boolean(idPelanggan)}
+                                onChoose={toggleCustomerModal}
+                            />
+
+                            <OrderCartSection
+                                cartItems={cartItems}
+                                onUpdateCart={updateCart}
+                                onRemoveCart={removeOneCart}
+                                onClearCart={clearCart}
+                                categories={category}
+                            />
+
+                            <OrderCheckoutSection
+                                nama={nama}
+                                telpon={telpon}
+                                estimasi={estimasi}
+                                subTotal={subTotal}
+                                isLunas={isLunas}
+                                setIsLunas={setIsLunas}
+                                antar={antar}
+                                setAntar={setAntar}
+                                gabungBill={gabungBill}
+                                setGabungBill={setGabungBill}
+                                keterangan={keterangan}
+                                setKeterangan={setKeterangan}
+                                onSubmitOrder={handleOrderSubmission}
+                                isOrderDisabled={isOrderButtonDisabled}
+                                onSendConfirmation={sendConfirmationWA}
+                                customerInsights={customerInsights}
+                            />
+                        </div>
+                    </aside>
+                </div>
+            </div>
 
             {/* Modals */}
             <CustomerModal
                 isOpen={isCustomerModalOpen}
                 toggle={toggleCustomerModal}
-                nama={nama}
-                setNama={setNama}
-                telpon={telpon}
-                setTelpon={setTelpon}
                 pelanggan={pelanggan}
+                isSearchingCustomers={isSearchingCustomers}
+                onSearch={searchCustomers}
                 onSelectCustomer={selectCustomer}
-                resetCustomer={resetCustomer} 
+                onUseNewCustomer={selectNewCustomer}
             />
 
             <RFIDAttachLastOrderModal
@@ -145,37 +145,78 @@ const Pesan = () => {
                 toggle={toggleRFIDAttach}
             />
 
-            <Modal centered isOpen={isPaymentModalOpen} toggle={togglePaymentModal} contentClassName="rounded-xl border-0 shadow-lg p-0 overflow-hidden">
-                <PaymentModal
-                    isOpen={isPaymentModalOpen}
-                    toggle={togglePaymentModal}
-                    valueBayar={valueBayar}
-                    setValueBayar={setValueBayar}
-                    tipeBayar={tipeBayar}
-                    setTipeBayar={setTipeBayar}
-                    subTotal={subTotal}
-                    onSubmitPayment={submitOrder}
-                />
-            </Modal>
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                toggle={togglePaymentModal}
+                valueBayar={valueBayar}
+                setValueBayar={setValueBayar}
+                tipeBayar={tipeBayar}
+                setTipeBayar={setTipeBayar}
+                subTotal={subTotal}
+                nama={nama}
+                onSubmitPayment={submitOrder}
+            />
 
             <style>{`
-                .glass-panel-dark {
-                    background: rgba(50, 46, 46, 0.37);
-                    backdrop-filter: blur(40px);
-                    -webkit-backdrop-filter: blur(40px);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+                .kasir-page {
+                    max-width: 1640px;
+                    margin: 0 auto;
                 }
-                .pos-accent {
-                    position: absolute;
-                    border-radius: 50%;
-                    background: linear-gradient(135deg, rgba(94, 114, 228, 0.1) 0%, rgba(94, 114, 228, 0) 100%);
-                    z-index: 0;
+                .kasir-workspace {
+                    display: grid;
+                    grid-template-columns: minmax(0, 1fr) 396px;
+                    gap: 16px;
+                    height: calc(100vh - 212px);
+                    min-height: 520px;
                 }
-                .accent-1 { width: 500px; height: 500px; top: -150px; right: -100px; }
-                .accent-2 { width: 350px; height: 350px; bottom: -100px; left: -100px; }
-                .rounded-xl { border-radius: 1.5rem !important; }
-                .mt--8 { margin-top: -12rem !important; }
+                .kasir-workspace > * { min-height: 0; }
+                .kasir-workspace__catalog { min-width: 0; height: 100%; }
+                .kasir-workspace__order {
+                    display: flex;
+                    min-width: 0;
+                    min-height: 0;
+                }
+                .kasir-ticket {
+                    --kasir-radius: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    flex: 1;
+                    min-width: 0;
+                    min-height: 0;
+                    background: #fff;
+                    border-radius: var(--kasir-radius);
+                    box-shadow: 0 34px 80px -40px rgba(8, 18, 48, .65);
+                }
+                .kasir-ticket > .kasir-cust {
+                    border-top-left-radius: var(--kasir-radius);
+                    border-top-right-radius: var(--kasir-radius);
+                }
+                .kasir-ticket > .kasir-co {
+                    border-bottom-left-radius: var(--kasir-radius);
+                    border-bottom-right-radius: var(--kasir-radius);
+                }
+
+                /* ── Dark mode ─────────────────────────────────────── */
+                body.dark-mode .kasir-ticket {
+                    background: #161b22;
+                    box-shadow: 0 34px 80px -40px rgba(0, 0, 0, .95);
+                }
+                @media (max-width: 1199.98px) {
+                    .kasir-workspace { grid-template-columns: minmax(0, 1fr) 372px; }
+                }
+                @media (max-width: 991.98px) {
+                    .kasir-workspace {
+                        grid-template-columns: 1fr;
+                        height: auto;
+                        min-height: 0;
+                    }
+                    .kasir-workspace__catalog { height: auto; }
+                    .kasir-ticket { --kasir-radius: 18px; }
+                }
+                @media (max-width: 575.98px) {
+                    .kasir-workspace { gap: 12px; }
+                    .kasir-ticket { --kasir-radius: 16px; }
+                }
             `}</style>
         </Order>
     );

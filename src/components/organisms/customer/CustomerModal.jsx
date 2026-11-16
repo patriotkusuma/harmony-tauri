@@ -15,7 +15,9 @@ const TITLES = {
 };
 
 const CustomerModal = () => {
-  const { modalOpen, modalMode, closeModal } = useCustomerStore();
+  const modalOpen = useCustomerStore(s => s.modalOpen);
+  const modalMode = useCustomerStore(s => s.modalMode);
+  const closeModal = useCustomerStore(s => s.closeModal);
   if (!modalMode) return null;
 
   const title = TITLES[modalMode] ?? '';

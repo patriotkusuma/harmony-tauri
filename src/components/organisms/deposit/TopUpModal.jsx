@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Label, Input, InputGroup, InputGroupText, Spinner, ListGroup, ListGroupItem, Badge } from 'reactstrap';
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'services/axios-instance';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import CustomerAvatar from 'components/atoms/customer/CustomerAvatar';
 import { whatsappInstance } from 'services/whatsapp-instance';
 import { toast } from 'react-toastify';
@@ -183,6 +183,33 @@ const TopUpModal = ({ isOpen, toggle, data, setData, onSave, loading }) => {
                                 {amt.toLocaleString('id-ID')}
                             </Button>
                         ))}
+                    </div>
+                </FormGroup>
+
+                <FormGroup>
+                    <Label className="form-control-label">Metode Pembayaran</Label>
+                    <div className="d-flex gap-2 mb-3">
+                        {[
+                            { value: 'cash', label: 'Tunai (Laci Kasir)', icon: 'fas fa-money-bill-wave' },
+                            { value: 'qris', label: 'QRIS', icon: 'fas fa-qrcode' },
+                            { value: 'tf', label: 'Transfer Bank', icon: 'fas fa-university' },
+                        ].map((m) => {
+                            const active = (data.payment_method || 'cash') === m.value;
+                            return (
+                                <Button
+                                    key={m.value}
+                                    type="button"
+                                    size="sm"
+                                    color={active ? 'primary' : 'secondary'}
+                                    outline={!active}
+                                    className="flex-fill py-2"
+                                    onClick={() => setData({ ...data, payment_method: m.value })}
+                                >
+                                    <i className={`${m.icon} me-1`} />
+                                    {m.label}
+                                </Button>
+                            );
+                        })}
                     </div>
                 </FormGroup>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Row, Col } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import WebhookStatusBadge from '../../atoms/webhook/WebhookStatusBadge';
 
 const prettyJson = (str) => {
@@ -34,7 +34,7 @@ const WebhookModal = ({ isOpen, toggle, log }) => {
              </Col>
              <Col xs="6" md="3" className="mb-2">
                  <small className="text-muted font-weight-bold d-block text-uppercase">Waktu</small>
-                 <span className="font-weight-bold">{moment(log.created_at).format("DD/MM/YYYY HH:mm")}</span>
+                 <span className="font-weight-bold">{dayjs(log.created_at).format("DD/MM/YYYY HH:mm")}</span>
              </Col>
              <Col xs="6" md="3" className="mb-2">
                  <small className="text-muted font-weight-bold d-block text-uppercase">Target Device</small>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardBody, CardHeader, CardImg, Col, FormGroup, Label, Row, Badge, Button, Input } from 'reactstrap'; // Import Button and Input
-import moment from 'moment';
-import ReactDatetime from "react-datetime";
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 import RupiahFormater from 'utils/RupiahFormater';
 import { formatImageUrl } from 'utils/formatImageUrl';
 
@@ -58,7 +59,7 @@ const PesananInfoCard = ({ pesanan, kodePesan, updateNama , setKeterangan, setNa
                   border: '1px solid #e9ecef',
                   boxShadow: '0 1px 3px rgba(50,50,93,.15)'
                 }}
-                value={tanggalPesan ? moment(tanggalPesan).format("YYYY-MM-DDTHH:mm") : ""}
+                value={tanggalPesan ? dayjs(tanggalPesan).format("YYYY-MM-DDTHH:mm") : ""}
                 onChange={(e) => setTanggalPesan(e.target.value)}
               />
             </FormGroup>
@@ -79,7 +80,7 @@ const PesananInfoCard = ({ pesanan, kodePesan, updateNama , setKeterangan, setNa
                   border: '1px solid #e9ecef',
                   boxShadow: '0 1px 3px rgba(50,50,93,.15)'
                 }}
-                value={tanggalSelesai ? moment(tanggalSelesai).format("YYYY-MM-DDTHH:mm") : ""}
+                value={tanggalSelesai ? dayjs(tanggalSelesai).format("YYYY-MM-DDTHH:mm") : ""}
                 onChange={(e) => setTanggalSelesai(e.target.value)}
               />
             </FormGroup>

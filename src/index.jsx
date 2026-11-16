@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, HashRouter, Route, Routes, Navigate } from "react-router-dom";
 
@@ -24,15 +24,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/scss/argon-dashboard-react.scss";
 
 import AuthLayout from "layouts/Auth";
-import Dashboard from "views/pages/Dashboard";
 import Admin from "layouts/Admin";
-import Order from "layouts/Order";
-import Pesan from "views/pages/Pesan";
-import DetailPesanan from "views/pages/DetailPesanan";
-import Pembayaran from "views/pages/Pembayaran";
-import Login from "views/pages/Login";
-import Deposit from "views/pages/Deposit";
-import Message from "views/pages/Message";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MQTTRFIDProvider } from "hooks/useMQTTRFID";
 import FloatingRFIDStatus from "components/FloatingRFIDStatus";
@@ -41,6 +33,10 @@ import "assets/css/custom-ui.css";
 import "react-toastify/dist/ReactToastify.css";
 import { isElectronRuntime } from "services/runtime";
 import { RawWebSocketProvider } from "services/RawWebSocketContext";
+
+// Halaman kasir dimuat saat rutenya dibuka, bukan di bundle awal.
+const Pesan = lazy(() => import("views/pages/Pesan"));
+const Pembayaran = lazy(() => import("views/pages/Pembayaran"));
 
 // Electron package dibuka via file://, jadi pakai HashRouter agar routing tidak gagal.
 const Router = isElectronRuntime() ? HashRouter : BrowserRouter;
@@ -68,8 +64,8 @@ root.render(
           <Routes>
             <Route path="/admin/*" element={<Admin />} />
             <Route path="/auth/*" element={<AuthLayout />} />
-            <Route path="/pesanan" element={<Pesan/>}/>
-            <Route path="/pembayaran" element={<Pembayaran/>}/>
+            <Route path="/pesanan" element={<Suspense fallback={<div className="route-loading">Memuat…</div>}><Pesan/></Suspense>}/>
+            <Route path="/pembayaran" element={<Suspense fallback={<div className="route-loading">Memuat…</div>}><Pembayaran/></Suspense>}/>
 
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>

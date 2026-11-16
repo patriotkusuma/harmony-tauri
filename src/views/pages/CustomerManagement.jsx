@@ -10,7 +10,10 @@ import CustomerModal from 'components/organisms/customer/CustomerModal';
 import 'assets/css/customer-management.css';
 
 const CustomerManagement = () => {
-  const { fetchCustomers, openCreate, total, loading } = useCustomerStore();
+  const fetchCustomers = useCustomerStore(s => s.fetchCustomers);
+  const openCreate = useCustomerStore(s => s.openCreate);
+  const total = useCustomerStore(s => s.total);
+  const loading = useCustomerStore(s => s.loading);
 
   // Load on mount
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Spinner, Badge, Button } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import WebhookStatusBadge from '../../atoms/webhook/WebhookStatusBadge';
 
 const WebhookList = ({ logs, loading, onViewDetail }) => {
@@ -38,8 +38,8 @@ const WebhookList = ({ logs, loading, onViewDetail }) => {
                   #{log.id}
                 </td>
                 <td className="px-4 py-3 border-bottom-custom text-dark font-weight-700 title-adaptive">
-                  {moment(log.created_at).format("DD MMM YYYY")}
-                  <span className="d-block text-muted small">{moment(log.created_at).format("HH:mm:ss")}</span>
+                  {dayjs(log.created_at).format("DD MMM YYYY")}
+                  <span className="d-block text-muted small">{dayjs(log.created_at).format("HH:mm:ss")}</span>
                 </td>
                 <td className="px-4 border-bottom-custom">
                   <Badge color="default" className="text-lowercase">{log.event}</Badge>

@@ -58,7 +58,7 @@
 @import "../../../node_modules/bootstrap/scss/modal";
 @import "../../../node_modules/bootstrap/scss/tooltip";
 @import "../../../node_modules/bootstrap/scss/popover";
-@import "../../../node_modules/bootstrap/scss/carousel";
+// bootstrap/scss/carousel -> DIHAPUS: tidak ada carousel di src/.
 @import "../../../node_modules/bootstrap/scss/offcanvas";
 @import "../../../node_modules/bootstrap/scss/helpers";
 @import "../../../node_modules/bootstrap/scss/utilities/api";
@@ -70,19 +70,13 @@
 @import "argon-dashboard/custom/components";
 
 // Vendor (Plugins)
-
+// Catatan: bootstrap-datepicker & nouislider dihapus dari _vendors.scss karena
+// tidak dipakai aplikasi (datepicker = <input type="date"> native, tidak ada
+// noUiSlider di src/). Scrollbar tetap dipakai (perfect-scrollbar).
 @import "argon-dashboard/custom/vendors";
 
-// Docs components
-
-@import "argon-dashboard/docs/variables";
-@import "argon-dashboard/docs/nav";
-@import "argon-dashboard/docs/clipboard-js";
-@import "argon-dashboard/docs/component-examples";
-@import "argon-dashboard/docs/prism";
-@import "argon-dashboard/docs/content";
-@import "argon-dashboard/docs/sidebar";
-@import "argon-dashboard/docs/footer";
+// Docs components — DIHAPUS: tema dokumentasi Argon (nav, prism, sidebar,
+// component-examples) tidak dipakai di aplikasi POS dan hanya menambah ~40KB CSS.
 
 // React Differences
 @import "react/react-differences";

@@ -14,14 +14,18 @@
       sizes="76x76"
       href="/apple-icon.png"
     />
-    <!-- Fonts -->
+    <!-- Fonts: preconnect agar TLS handshake tidak memblokir render pertama -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
     <title>Panel Admin Harmony Laundry</title>
-    <!-- MQTT.js for WebSocket RFID integration -->
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <!-- mqtt.js TIDAK lagi dari CDN: sekarang di-bundle lokal via dynamic import
+         di useMQTTRFID.jsx, sehingga RFID tetap berfungsi saat offline. -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

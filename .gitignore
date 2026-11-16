@@ -39,3 +39,6 @@ yarn-error.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Hasil build lokal - jangan di-commit
+build-dev/

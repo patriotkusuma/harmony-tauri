@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Badge, Row, Col, Table } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const DeliveryOverview = ({ ambilPesanan }) => {
   return (
@@ -12,7 +12,7 @@ const DeliveryOverview = ({ ambilPesanan }) => {
                Ambil & Kirim
              </h5>
              <h3 className="mb-0 text-dark font-weight-bold" style={{ color: '#000' }}>
-               {moment().format("DD MMMM YYYY")}
+               {dayjs().format("DD MMMM YYYY")}
              </h3>
           </Col>
           <Col xs="auto">
@@ -56,7 +56,7 @@ const DeliveryOverview = ({ ambilPesanan }) => {
                              )}
                           </td>
                           <td className="py-3 border-0 text-center font-weight-bold h5 mb-0 text-primary">
-                             {moment(ambil.tanggal_selesai).format("HH:mm")}
+                             {dayjs(ambil.tanggal_selesai).format("HH:mm")}
                           </td>
                           <td className="py-3 border-0 text-end">
                              <Badge color={isDiambil ? "success" : "warning"} pill className="px-3 py-1 shadow-sm font-weight-bold text-uppercase" style={{ fontSize: '0.65rem', letterSpacing: '0.5px' }}>

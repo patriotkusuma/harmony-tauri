@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardHeader, CardBody, Badge, Button, Input } from 'reactstrap';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const RFIDScanPanel = ({ scanActive, setScanActive, scannedUID, lastScanTime, onRegisterManual }) => {
   return (
@@ -32,7 +32,7 @@ const RFIDScanPanel = ({ scanActive, setScanActive, scannedUID, lastScanTime, on
             </Badge>
             {lastScanTime && (
                 <div className="text-muted text-xs mt-2 italic font-weight-bold">
-                    <i className="far fa-clock me-1" /> Terdeteksi: {moment(lastScanTime).format("HH:mm:ss")}
+                    <i className="far fa-clock me-1" /> Terdeteksi: {dayjs(lastScanTime).format("HH:mm:ss")}
                 </div>
             )}
           </div>

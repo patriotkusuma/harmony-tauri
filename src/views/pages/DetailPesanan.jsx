@@ -11,6 +11,7 @@ import CustomerOrderSection from "components/organisms/CustomerOrderSection";
 import DeliveryLogSection from "components/organisms/DeliveryLogSection";
 import OrderCancelModal from "components/organisms/OrderCancelModal";
 import CreateModal from "components/Modals/DetailPesanan/Create";
+import BuktiPesananSection from "components/DetailPesanan/BuktiPesananSection";
 
 /* ================= PAGE COMPONENT ================= */
 const DetailPesanan = () => {
@@ -84,6 +85,15 @@ const DetailPesanan = () => {
                 updateAntarJemput={updateAntarJemput}
                 logs={logs}
               />
+            </Col>
+          </Row>
+        )}
+
+        {/* 3b. BUKTI-BUKTI PESANAN (pembayaran, foto baju, pengiriman) */}
+        {!loadingPesanan && kodePesan && (
+          <Row className="mt-4">
+            <Col lg="12">
+              <BuktiPesananSection kodePesan={kodePesan} />
             </Col>
           </Row>
         )}
